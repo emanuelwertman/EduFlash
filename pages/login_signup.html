@@ -35,7 +35,7 @@
         </form>
 
         <!-- Register Form -->
-        <form action="" id="registerForm" style="display: none;">
+        <form action="" id="registerForm" style="display: none;" onsubmit="return valid()">
             <h1>Register</h1>
             <div class="input-box">
                 <input type="text" placeholder="Username" required>
@@ -46,11 +46,11 @@
                 <i class='bx bxs-envelope'></i> 
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Password" required>
+                <input type="password" id="pass" placeholder="Password" required>
                 <i class='bx bxs-lock'></i> 
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Confirm Password" required>
+                <input type="password" id="confirmPass" placeholder="Confirm Password" required>
                 <i class='bx bxs-lock'></i> 
             </div>
 
