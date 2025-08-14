@@ -1,13 +1,203 @@
-:root { --maxw: 900px; }
-* { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+/* --------------------------------------------------
+  Fonts & Theme Tokens (Global)
+-------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-.nav {
-  display: flex; gap: 1rem; padding: 0.75rem 1rem; border-bottom: 1px solid #e5e7eb;
-  position: sticky; top: 0; background: white;
+:root {
+  --bg: #252422;
+  --ink: #FFFCF2;
+  --ink-dim: #CCC5B9;
+  --accent: #EB5E28;
+  --charcoal: #403D39;
+  --charcoal-50: #403D3955;
+  --glass: rgba(255, 255, 255, .06);
+  --stroke: rgba(255, 255, 255, .18);
+  --radius: 16px;
+  --radius-lg: 22px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .25);
 }
-.nav a { text-decoration: none; padding: 0.25rem 0.5rem; border-radius: 8px; }
-.nav a.active { background: #eef2ff; outline: 1px solid #c7d2fe; }
 
-.container { margin-inline: auto; max-width: var(--maxw); padding: 1.25rem; }
-.loading { padding: 2rem; text-align: center; }
+/* --------------------------------------------------
+  Base / Layout
+-------------------------------------------------- */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, var(--charcoal-50) 25%, transparent 25%) -19px 0 / 38px 38px,
+    linear-gradient(225deg, var(--charcoal) 25%, transparent 25%) -19px 0 / 38px 38px,
+    linear-gradient(315deg, var(--charcoal-50) 25%, transparent 25%) 0 0 / 38px 38px,
+    linear-gradient(45deg, var(--charcoal) 25%, var(--bg) 25%) 0 0 / 38px 38px;
+  background-color: var(--bg);
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* --------------------------------------------------
+  Utilities
+-------------------------------------------------- */
+.glass {
+  border: 2px solid var(--stroke);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.link {
+  color: var(--ink);
+  text-decoration: none;
+}
+.link:hover { color: var(--accent); }
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--stroke);
+  margin: 10px 0;
+}
+
+/* Pills / Chips */
+.pill {
+  font-size: .85rem;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  color: var(--ink);
+  background: rgba(255, 255, 255, .05);
+}
+.pill.ok { border-color: rgba(0, 0, 0, .2); }
+.pill.filter { cursor: default; }
+
+.chip {
+  align-self: flex-start;
+  font-size: .85rem;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--accent);
+  background: rgba(235, 94, 40, 0.25);
+  border: 1px solid rgba(235, 94, 40, 0.5);
+}
+
+.ok { color: #79ffb5; }
+.muted { color: var(--ink-dim); }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 40px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: .25s ease;
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--stroke);
+}
+.btn.ghost:hover {
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+.btn.accent {
+  background: var(--accent);
+  color: #fff;
+}
+.btn.accent:hover { background: #ff7a46; }
+
+/* --------------------------------------------------
+  Nav Bar
+-------------------------------------------------- */
+.ef-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 18px;
+  border: 2px solid var(--stroke);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px) brightness(30%);
+  background: var(--glass);
+  box-shadow: var(--shadow);
+  margin: 20px;
+  position: sticky;
+  top: 20px;
+  z-index: 1000;
+}
+
+.nav-logo {
+  height: 64px;
+  width: auto;
+  margin-right: 8px;
+  padding: 8px;
+  border-radius: 15px;
+  background: var(--ink-dim);
+}
+
+.ef-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: .3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.ef-links {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+.ef-links a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-weight: 500;
+}
+.ef-links a:hover, .ef-links a.active { color: var(--ink); }
+
+.ef-cta { display: flex; gap: 10px; }
+
+/* --------------------------------------------------
+  Footer & Logos
+-------------------------------------------------- */
+.footer-logo {
+  height: 40px;
+  width: auto;
+  margin-bottom: 6px;
+  padding: 8px;
+  border-radius: 15px;
+  background: var(--ink-dim);
+}
+
+h1, h2, h3 { color: var(--accent); }
+
+.ef-footer {
+  text-align: center;
+  color: var(--ink-dim);
+  margin: 28px 0 8px 0;
+}
+.ef-footer a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+}
+.ef-footer a:hover { text-decoration: underline; }
+
+/* --------------------------------------------------
+  Responsive (shared)
+-------------------------------------------------- */
+@media (max-width: 900px) {
+  .container { padding: 18px; }
+}
+@media (max-width: 640px) {
+  .ef-nav { gap: 12px; padding: 10px 12px; }
+}

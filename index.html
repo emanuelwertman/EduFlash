@@ -5,11 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EduFlash</title>
   <link rel="stylesheet" href="static/styles/styles.css" />
-</head>
-<body>
+  </head>
+  <body>
+  <header class="ef-nav">
+    <img src="static/assets/logo.png" alt="EduFlash Logo" class="nav-logo">
+    <a class="ef-logo" href="#" data-route>EduFlash</a>
+
+    <nav class="ef-links">
+      <a href="#/paths" data-route>Paths</a>
+      <a href="#/community" data-route>Community</a>
+      <a href="#/about" data-route>About</a>
+    </nav>
+
+    <div class="ef-cta">
+      <a class="btn ghost" href="#/login" data-route>Log in</a>
+      <a class="btn accent" href="#/login" data-route>Join Free</a>
+    </div>
+    <br>
+  </header>
   <main id="app" aria-live="polite">
+    
+
+
     <!-- page content will be injected here -->
+  
+  
   </main>
   <script type="module" src="static/js/router.js"></script>
-</body>
+  </body>
 </html>
