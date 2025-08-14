@@ -2,7 +2,7 @@
 const routes = {
   "/": { file: "static/pages/home.html", script: null },
   "/login": { file: "static/pages/login_signup.html", script: "static/js/login_signup.js" }, // e.g. "js/login.js"
-  "/paths": { file: "static/pages/paths.html", script: null }, // e.g. "js/paths.js"
+  "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js" },
 };
 
 // Keep track of last page module <script> so we can remove it when navigating
