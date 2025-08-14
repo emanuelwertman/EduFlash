@@ -1,114 +1,71 @@
 <link rel="stylesheet" href="static/styles/home.css">
 
-<section class="container">
-  <!-- Hero -->
-  <section class="hero glass">
-    <div class="hero-copy">
-      <h1>Free, structured lesson plans Powered by community + AI</h1>
-      <p>
-        Browse highly-rated community lessons or generate new ones instantly.
-        Follow grade-based subjects or dive into specialized paths like coding, cybersecurity, or art.
-      </p>
-      <div class="hero-actions">
-        <a class="btn accent" href="#/paths" data-route>Explore Paths</a>
-        <a class="btn ghost" href="#/login" data-route>Log in</a>
+  <div class="background">
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+    <span class="ball"></span>
+
+    <section class="hero">
+      <div class="hero-title">
+        <h1>Free, structured lesson plans Powered by community + AI</h1>
+        <p>
+          Browse highly-rated community lessons or generate new ones instantly.
+        </p>
+        <br><br>
+        <div class="hero-actions">
+          <a class="btn accent" href="#/paths" data-route>Explore Paths</a>
+          <a class="btn ghost" href="#/login" data-route>Log in</a>
+        </div>
       </div>
-    </div>
-    <div class="hero-card">
-      <div class="chip">Core Concept: Paths</div>
-      <ul class="hero-list">
-        <li><span>Grade 5 → Math</span><span class="pill ok">Addition • ★ 4.6</span></li>
-        <li><span></span><span class="pill ok">Subtraction • ★ 4.4</span></li>
-        <li><span></span><span class="pill ok">Multiplication • ★ 4.7</span></li>
-        <li><span></span><button class="tiny-btn">Generate Lesson (Division)</button></li>
-      </ul>
-      <hr>
-      <ul class="hero-list">
-        <li><span>Path: Cybersecurity</span><span class="pill ok">Pen-testing • Available</span></li>
-        <li><span></span><button class="tiny-btn">Generate Lesson (Network basics)</button></li>
-      </ul>
-      <hr>
-      <ul class="hero-list">
-        <li><span>Path: Art</span><span class="pill ok">Digital painting basics • Available</span></li>
-        <li><span></span><button class="tiny-btn">Generate Lesson (Color theory)</button></li>
-      </ul>
-    </div>
-  </section>
 
-  <!-- Hero Image Slot -->
-  <img src="static/assets/hero-banner.png" alt="Hero Image" class="hero-banner">
+      <div class="community">
+        <div class="community-exp">
+          <p>Something about community learning and how its important and beneficial or whatever </p>
+        </div>
+        <img src="static/assets/hero-banner.png" alt="Hero Image" class="community-image">
+      </div>
+    </section>
 
-  <!-- Search + Filters (visual only) -->
-  <section class="search glass">
-    <input type="text" placeholder="Search lessons, paths, or topics…" aria-label="Search">
-    <div class="filters">
-      <span class="pill filter">Grades</span>
-      <span class="pill filter">Math</span>
-      <span class="pill filter">Coding</span>
-      <span class="pill filter">Cybersecurity</span>
-      <span class="pill filter">Art</span>
-    </div>
-  </section>
+    <section class="tutorial">
+      <h1>How to use EduFlash</h1>
+      <div class="tutorial-section">
+        <img src="static/assets/placeholder.png" alt="Choose a path GIF" class="tutorial-image">
+        <div class="tutorial-caption-odd">
+          <h3>Choose a path</h3>
+          <p>blah blah blah blah blah explanation</p>
+        </div>
+        
+      </div>
+      <div class="tutorial-section">
+        <div class="tutorial-caption-even">
+          <h3>Browse Lessons</h3>
+          <p>blah blah blah blah blah explanation</p>
+        </div>
+        <img src="static/assets/placeholder.png" alt="Choose a path GIF" class="tutorial-image">
+      </div>
+      <div class="tutorial-section">
+        <img src="static/assets/placeholder.png" alt="Choose a path GIF" class="tutorial-image">
+        <div class="tutorial-caption-odd">
+          <h3>Generate AI Lessons</h3>
+          <p>blah blah blah blah blah explanation</p>
+        </div>
+      </div>
+      <div class="tutorial-section">
+        <div class="tutorial-caption-even">
+          <h3>Save, Share, or Rate</h3>
+          <p>blah blah blah blah blah explanation</p>
+        </div>
+        <img src="static/assets/placeholder.png" alt="Choose a path GIF" class="tutorial-image">
+      </div>
+    </section>
+  </div>
 
-  <!-- Key Features -->
-  <section class="features">
-    <article class="card glass">
-      <h3>Community Lesson Plans</h3>
-      <p>Submitted by teachers, students, and enthusiasts. Ratings help the best content shine.</p>
-    </article>
-    <article class="card glass">
-      <h3>AI-Generated Lessons</h3>
-      <p>Missing topic? Generate a clean, markdown-friendly lesson ready to read or print.</p>
-    </article>
-    <article class="card glass">
-      <h3>Multiple Path Types</h3>
-      <p>Follow school subjects by grade or explore specialized paths like coding or art.</p>
-    </article>
-  </section>
 
-  <!-- Path Preview -->
-  <section class="path-preview">
-    <header class="path-head">
-      <h2>Popular Paths</h2>
-      <a class="link" href="#/paths" data-route>View all paths →</a>
-    </header>
-
-    <div class="path-grid">
-      <a class="path-card glass" href="#/paths" data-route>
-        <div class="path-chip">Grade 5</div>
-        <h4>Math</h4>
-        <ul>
-          <li>Addition — <span class="ok">★ 4.6</span></li>
-          <li>Subtraction — <span class="ok">★ 4.4</span></li>
-          <li>Multiplication — <span class="ok">★ 4.7</span></li>
-          <li>Division — <span class="muted">Generate Lesson</span></li>
-        </ul>
-      </a>
-
-      <a class="path-card glass" href="#/paths" data-route>
-        <div class="path-chip">Specialized</div>
-        <h4>Cybersecurity</h4>
-        <ul>
-          <li>Pen-testing — <span class="ok">Available</span></li>
-          <li>Network basics — <span class="muted">Generate Lesson</span></li>
-        </ul>
-      </a>
-
-      <a class="path-card glass" href="#/paths" data-route>
-        <div class="path-chip">Specialized</div>
-        <h4>Art</h4>
-        <ul>
-          <li>Digital painting basics — <span class="ok">Available</span></li>
-          <li>Color theory — <span class="muted">Generate Lesson</span></li>
-        </ul>
-      </a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="ef-footer">
-    <img src="static/assets/logo.png" alt="EduFlash Logo" class="footer-logo">
-    <p>© <span id="year">2025</span> EduFlash • <a href="#/login" data-route>Join Free</a> • <a href="#/paths" data-route>Explore Paths</a></p>
-  </footer>
-
-</section>
+<!-- Footer -->
+<footer class="ef-footer">
+  <img src="static/assets/logo.png" alt="EduFlash Logo" class="footer-logo">
+  <p>© <span id="year">2025</span> EduFlash • <a href="#/login" data-route>Join Free</a> • <a href="#/paths" data-route>Explore Paths</a></p>
+</footer>

@@ -26,13 +26,9 @@ body {
   margin: 0;
   font-family: "Poppins", sans-serif;
   color: var(--ink);
-  background:
-    linear-gradient(135deg, var(--charcoal-50) 25%, transparent 25%) -19px 0 / 38px 38px,
-    linear-gradient(225deg, var(--charcoal) 25%, transparent 25%) -19px 0 / 38px 38px,
-    linear-gradient(315deg, var(--charcoal-50) 25%, transparent 25%) 0 0 / 38px 38px,
-    linear-gradient(45deg, var(--charcoal) 25%, var(--bg) 25%) 0 0 / 38px 38px;
-  background-color: var(--bg);
-}
+    background: var(--bg); /* Make the page background the same dark theme color so translucent elements
+       (like .ef-nav) blend correctly instead of showing white underneath. */
+  }
 
 .container {
   max-width: 1400px;
@@ -93,7 +89,7 @@ hr {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 48px;
   padding: 0 16px;
   border-radius: 40px;
   font-weight: 600;
@@ -136,7 +132,7 @@ hr {
 }
 
 .nav-logo {
-  height: 64px;
+  height: 48px;
   width: auto;
   margin-right: 8px;
   padding: 8px;

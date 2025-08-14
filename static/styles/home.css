@@ -1,97 +1,222 @@
-/* Home page: Tiny Button (hero list actions) */
-.tiny-btn {
-  font-size: .85rem;
-  padding: 6px 10px;
-  border: none;
-  border-radius: 12px;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+
+@keyframes move {
+  100% {
+    transform: translate3d(0, 0, 1px) rotate(360deg);
+  }
 }
-.tiny-btn:hover { background: #ff7a46; }
+
+.background {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #252422;
+  overflow-x: hidden;
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column; /* stack sections vertically so tutorial is under hero */
+  align-items: center;
+  justify-content: flex-start; /* let content flow from the top so page can scroll */
+}
+
+.ball {
+  position: absolute;
+  width: 15vmin;
+  height: 15vmin;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  pointer-events: none; /* don't block clicks/scroll on underlying elements */
+  animation: move linear infinite;
+}
+
+.ball:nth-child(odd) {
+    color: #471d0c;
+}
+
+.ball:nth-child(even) {
+    color: #3f3d39;
+}
+
+/* Using a custom attribute for variability */
+.ball:nth-child(1) {
+  top: 7%;
+  left: 88%;
+  animation-duration: 40s;
+  animation-delay: -3s;
+  transform-origin: 16vw -2vh;
+  box-shadow: 40vmin 0 5.703076368487546vmin currentColor;
+}
+.ball:nth-child(2) {
+  top: 2%;
+  left: 2%;
+  animation-duration: 53s;
+  animation-delay: -29s;
+  transform-origin: -19vw 21vh;
+  box-shadow: -40vmin 0 5.17594621519026vmin currentColor;
+}
+.ball:nth-child(3) {
+  top: 28%;
+  left: 18%;
+  animation-duration: 49s;
+  animation-delay: -8s;
+  transform-origin: -22vw 3vh;
+  box-shadow: 40vmin 0 5.248179047256236vmin currentColor;
+}
+.ball:nth-child(4) {
+  top: 12%;
+  left: 79%;
+  animation-duration: 26s;
+  animation-delay: -21s;
+  transform-origin: -17vw -6vh;
+  box-shadow: 40vmin 0 5.279749632220298vmin currentColor;
+}
+.ball:nth-child(5) {
+  top: 21%;
+  left: 15%;
+  animation-duration: 36s;
+  animation-delay: -40s;
+  transform-origin: 4vw 0vh;
+  box-shadow: -40vmin 0 5.964309466052033vmin currentColor;
+}
+.ball:nth-child(6) {
+  top: 0%;
+  left: 16%;
+  animation-duration: 31s;
+  animation-delay: -10s;
+  transform-origin: 18vw 4vh;
+  box-shadow: 40vmin 0 5.178483653434181vmin currentColor;
+}
+.ball:nth-child(7) {
+  top: 22%;
+  left: 17%;
+  animation-duration: 55s;
+  animation-delay: -6s;
+  transform-origin: 1vw -23vh;
+  box-shadow: -40vmin 0 5.703026794398318vmin currentColor;
+}
+.ball:nth-child(8) {
+  top: 29%;
+  left: 47%;
+  animation-duration: 43s;
+  animation-delay: -28s;
+  transform-origin: 25vw -3vh;
+  box-shadow: 40vmin 0 5.196265905749415vmin currentColor;
+}
 
 /* --------------------------------------------------
   Hero
 -------------------------------------------------- */
 .hero {
-  display: grid;
-  grid-template-columns: 1.1fr .9fr;
-  gap: 22px;
-  margin-top: 24px;
-  padding: 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: min(1100px, 92vw);
+  padding: 24px;
 }
 
-.hero-copy h1 {
+.hero-title h1 {
+  max-width: 24ch;
+  text-align: center;
   margin: 0 0 10px 0;
-  font-size: clamp(1.6rem, 2.2vw + 1rem, 2.4rem);
+  font-size: clamp(2.6rem, 3.2vw + 2rem, 3.4rem);
 }
-.hero-copy p {
-  margin: 0 0 16px 0;
+.hero-title p {
+  font-size: 18px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 60ch;
+  text-align: center;
   color: var(--ink-dim);
 }
 .hero-actions {
   display: flex;
+  justify-content: center; 
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.hero-card {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
 
-.hero-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+/* --------------------------------------------------
+  Community
+-------------------------------------------------- */
+
+
+.community {
+  margin-top: 48px;
   display: grid;
-  gap: 8px;
-}
-.hero-list li {
-  display: flex;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.hero-banner {
-  margin-top: 18px;
-  padding: 12px;
+  justify-items: center;
+  gap: 30px;
   width: 100%;
+}
+.community-exp {
+  text-align: center;
+}
+.community-image {
+  width: 100%;
+  max-width: 520px;
   height: auto;
   border-radius: 40px;
-  border: 2px dashed var(--accent);
+  border: 2px solid var(--accent);
   box-shadow: var(--shadow);
 }
 
 /* --------------------------------------------------
-  Search (visual only)
+  Tutorial
 -------------------------------------------------- */
-.search {
-  margin-top: 18px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.tutorial {
+  width: min(1100px, 92vw);
+  margin-top: 30vh;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
 }
-.search input {
-  width: 100%;
-  height: 46px;
-  padding: 0 16px;
-  border: 2px solid var(--stroke);
-  border-radius: 40px;
-  background: transparent;
-  color: var(--ink);
-  outline: none;
-}
-.search input::placeholder { color: var(--ink-dim); }
 
-.filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.tutorial-section {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  max-width: 40vw;
+  gap: 20px;
+}
+
+/*Had to make duplicates of each one to make it look cool*/
+
+.tutorial-caption-even {
+  text-align: right;
+}
+.tutorial-caption-odd {
+  text-align: left;
+}
+
+.tutorial-caption-even h3 {
+  color: var(--ink);
+  font-size: 32px;
+}
+.tutorial-caption-odd h3 {
+  color: var(--ink);
+  font-size: 32px;
+}
+.tutorial-caption-even p {
+  color: var(--ink-dim);
+  font-size: 18px;
+}
+.tutorial-caption-odd p {
+  color: var(--ink-dim);
+  font-size: 18px;
+}
+
+.tutorial-image {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  border-radius: 13px;
+  border: 2px solid var(--accent);
+  box-shadow: var(--shadow);
 }
 
 /* --------------------------------------------------
@@ -103,6 +228,7 @@
   grid-template-columns: repeat(3, 1fr);
   margin-top: 18px;
 }
+
 .card { padding: 18px; }
 .card h3 { margin: 0 0 6px 0; }
 .card p { margin: 0; color: var(--ink-dim); }
@@ -147,6 +273,19 @@
   border-radius: 999px;
   border: 1px solid var(--stroke);
   color: var(--ink-dim);
+}
+
+
+/* --------------------------------------------------
+  Responsive tweaks (home)
+-------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero-title h1 { max-width: 22ch; }
+  .community { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 640px) {
+  .hero { width: 94vw; padding: 18px; }
+  .hero-title h1 { font-size: clamp(2.2rem, 1.6rem + 3vw, 3rem); }
 }
 
 
