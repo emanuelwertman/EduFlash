@@ -9,7 +9,7 @@ fetch("static/data/paths.json")
     fuse = new Fuse(allPaths, {
       includeScore: true,
       threshold: 0.2,
-      minMatchCharLength: 2,
+      minMatchCharLength: 1,
       keys: [
         { name: "name", weight: 0.5 },
         { name: "levels.topics.name", weight: 0.4 },
@@ -45,10 +45,6 @@ document.querySelector(".search input").addEventListener("input", (e) => {
   renderPaths(filteredResults);
 });
 
-document.querySelector(".search .btn").addEventListener("click", () => {
-  console.log("Plus button clicked!");
-});
-
 function renderPaths(paths) {
   const targetDiv = document.querySelector(".selector");
   targetDiv.innerHTML = "";
@@ -77,7 +73,7 @@ function renderPaths(paths) {
         `;
 
     box.addEventListener("click", () => {
-      console.log(`Selected: ${path.name}`);
+      window.location.href = `#/topics/${path.id}`;
     });
 
     pathContainer.appendChild(box);

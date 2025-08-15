@@ -3,6 +3,8 @@ const routes = {
   "/": { file: "static/pages/home.html", script: null },
   "/login": { file: "static/pages/login_signup.html", script: "static/js/login_signup.js" }, // e.g. "js/login.js"
   "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js" },
+  "/topics": { file: "static/pages/topic.html", script: "static/js/topic.js" },
+  "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js" },
 };
 
 // Keep track of last page module <script> so we can remove it when navigating
@@ -14,7 +16,9 @@ function getRouteFromHash() {
   const raw = location.hash.replace(/^#/, "");
   if (!raw || raw === "/") return "/";
   // ensure it starts with "/"
-  return raw.startsWith("/") ? raw : `/${raw}`;
+  const withSlash = raw.startsWith("/") ? raw : `/${raw}`;
+  // Remove query parameters for route matching
+  return withSlash.split('?')[0];
 }
 
 /** Update active state on nav links */
@@ -29,7 +33,16 @@ function setActiveNav(route) {
 
 /** Load route file and inject into #app */
 async function render(route) {
-  const cfg = routes[route] || null;
+  // Check for dynamic routes
+  let cfg = routes[route] || null;
+  let routeParams = {};
+  
+  // If exact route not found, check for dynamic routes
+  if (!cfg && route.startsWith('/topics/')) {
+    cfg = routes['/topics'];
+    const pathId = route.split('/topics/')[1];
+    routeParams.path = pathId;
+  }
 
   setActiveNav(route);
 
