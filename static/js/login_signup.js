@@ -59,7 +59,7 @@ function valid() {
 }
 
 function createAccount(username, email, password) {
-  console.log("Log in active");
+  console.log("Creating account for:", username);
   const xhr = new XMLHttpRequest();
 
   xhr.open("POST", "/createaccount", false);
@@ -71,23 +71,31 @@ function createAccount(username, email, password) {
     password: password,
   };
 
+  console.log("Sending payload:", payload);
   xhr.send(JSON.stringify(payload));
+  
+  console.log("Response status:", xhr.status);
+  console.log("Response text:", xhr.responseText);
 
-  if (xhr.responseText !== "ok") {
-    const response = JSON.parse(xhr.responseText);
-    console.error("Error creating account:", response);
-    alert("This account is already taken. Please try again.");
-  } else {
-    const response = JSON.parse(xhr.responseText);
-    const sessionKey = response.session || response.key || response.token;
+  if (xhr.responseText === "ok") {
     alert("Account created successfully!");
-    document.cookie = "session=" + sessionKey + "; max-age=3600;";
+    const sessionToken = Date.now().toString();
+    document.cookie = "session=" + sessionToken + "; max-age=3600;";
     window.location.href = "#/paths";
+  } else {
+    try {
+      const response = JSON.parse(xhr.responseText);
+      console.error("Error creating account:", response);
+      alert("This account is already taken. Please try again.");
+    } catch (e) {
+      console.error("Error creating account:", xhr.responseText);
+      alert("Error creating account. Please try again.");
+    }
   }
 }
 
 function startSession(username, password) {
-  console.log("Log in active");
+  console.log("Starting session for:", username);
   const xhr = new XMLHttpRequest();
 
   xhr.open("POST", "/startsession", false);
@@ -98,15 +106,25 @@ function startSession(username, password) {
     password: password,
   };
 
+  console.log("Sending login payload:", payload);
   xhr.send(JSON.stringify(payload));
+  
+  console.log("Login response status:", xhr.status);
+  console.log("Login response text:", xhr.responseText);
 
   if (xhr.responseText === "badpass") {
     alert("Wrong password (-_-)");
   } else {
-    const response = JSON.parse(xhr.responseText);
-    const sessionKey = response.session || response.key || response.token;
-    document.cookie = "key=" + sessionKey + "; max-age=3600;";
-    window.location.href = "#/paths";
+    try {
+      const response = JSON.parse(xhr.responseText);
+      const sessionKey = response.session || response.key || response.token;
+      document.cookie = "session=" + sessionKey + "; max-age=3600;";
+      window.location.href = "#/paths";
+    } catch (e) {
+      console.log("Using response as session token:", xhr.responseText);
+      document.cookie = "session=" + xhr.responseText + "; max-age=3600;";
+      window.location.href = "#/paths";
+    }
   }
 }
 
