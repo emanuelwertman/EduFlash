@@ -2,11 +2,15 @@
 // We'll add marked.js and KaTeX dynamically
 
 let marked, katex;
+let pathsData = null;
 
 // Initialize the markdown editor
 async function initializeEditor() {
   // Load external libraries
   await loadExternalLibraries();
+  
+  // Load paths data
+  await loadPathsData();
   
   const editor = document.getElementById('markdownEditor');
   const preview = document.getElementById('previewContent');
@@ -14,11 +18,16 @@ async function initializeEditor() {
   const previewToggle = document.getElementById('previewToggle');
   const helpBtn = document.getElementById('helpBtn');
   const aiBtn = document.getElementById('aiBtn');
+  const titleInput = document.getElementById('guideTitle');
+  const topicSelect = document.getElementById('guideTopic');
   
   if (!editor || !preview) {
     console.error('Editor elements not found');
     return;
   }
+
+  // Populate topic dropdown
+  populateTopicDropdown();
 
   // Configure marked options
   marked.setOptions({
@@ -52,6 +61,17 @@ async function initializeEditor() {
         <p>There was an error rendering the preview:</p>
         <pre>${error.message}</pre>
       </div>`;
+    }
+  }
+
+  // Auto-update title when user starts typing in editor
+  function autoUpdateTitle() {
+    if (!titleInput.value.trim()) {
+      const content = editor.value;
+      const extractedTitle = extractTitle(content);
+      if (extractedTitle) {
+        titleInput.value = extractedTitle;
+      }
     }
   }
 
@@ -104,7 +124,10 @@ async function initializeEditor() {
   }
 
   // Event listeners
-  editor.addEventListener('input', updatePreview);
+  editor.addEventListener('input', () => {
+    updatePreview();
+    autoUpdateTitle();
+  });
   editor.addEventListener('scroll', syncScroll);
   
   // Save functionality
@@ -119,8 +142,94 @@ async function initializeEditor() {
   // AI button functionality (placeholder)
   aiBtn.addEventListener('click', handleAIAssistant);
   
+  // Title input validation
+  titleInput.addEventListener('input', validateTitle);
+  
+  // Topic select validation
+  topicSelect.addEventListener('change', validateTopic);
+  
   // Initial preview update
   updatePreview();
+}
+
+// Load paths data from JSON file
+async function loadPathsData() {
+  try {
+    const response = await fetch('/static/data/paths.json');
+    pathsData = await response.json();
+  } catch (error) {
+    console.error('Error loading paths data:', error);
+    pathsData = { paths: [] };
+  }
+}
+
+// Populate topic dropdown with hierarchical structure
+function populateTopicDropdown() {
+  const topicSelect = document.getElementById('guideTopic');
+  if (!topicSelect || !pathsData) return;
+
+  // Clear existing options except the first one
+  topicSelect.innerHTML = '<option value="">Select a topic...</option>';
+
+  // Create hierarchical structure: Path > Level > Topics
+  pathsData.paths.forEach(path => {
+    // Create optgroup for each path (subject area)
+    const pathOptgroup = document.createElement('optgroup');
+    pathOptgroup.label = `📚 ${path.name}`;
+    
+    path.levels.forEach(level => {
+      // Add level as a disabled option with visual hierarchy
+      const levelOption = document.createElement('option');
+      levelOption.disabled = true;
+      levelOption.textContent = `   📋 ${level.name}`;
+      levelOption.className = 'level-header';
+      pathOptgroup.appendChild(levelOption);
+      
+      // Add topics under this level
+      level.topics.forEach(topic => {
+        const option = document.createElement('option');
+        option.value = topic.id;
+        option.textContent = `      • ${topic.name}`;
+        option.className = 'topic-item';
+        option.dataset.pathId = path.id;
+        option.dataset.levelId = level.id;
+        option.dataset.pathName = path.name;
+        option.dataset.levelName = level.name;
+        option.dataset.topicName = topic.name;
+        pathOptgroup.appendChild(option);
+      });
+    });
+    
+    topicSelect.appendChild(pathOptgroup);
+  });
+}
+
+// Validate title input
+function validateTitle() {
+  const titleInput = document.getElementById('guideTitle');
+  const title = titleInput.value.trim();
+  
+  if (title.length > 100) {
+    titleInput.style.borderColor = '#ef4444';
+    titleInput.title = 'Title must be 100 characters or less';
+  } else {
+    titleInput.style.borderColor = '';
+    titleInput.title = '';
+  }
+}
+
+// Validate topic selection
+function validateTopic() {
+  const topicSelect = document.getElementById('guideTopic');
+  const selectedValue = topicSelect.value;
+  
+  if (selectedValue) {
+    topicSelect.style.borderColor = '';
+    topicSelect.title = '';
+  } else {
+    topicSelect.style.borderColor = '';
+    topicSelect.title = '';
+  }
 }
 
 // Load external libraries
@@ -175,19 +284,47 @@ function syncScroll() {
 // Save guide functionality
 function saveGuide() {
   const editor = document.getElementById('markdownEditor');
+  const titleInput = document.getElementById('guideTitle');
+  const topicSelect = document.getElementById('guideTopic');
+  
   const content = editor.value;
+  const title = titleInput.value.trim();
+  const selectedTopicId = topicSelect.value;
   
   if (!content.trim()) {
-    alert('Please add some content before saving.');
+    showNotification('Please add some content before saving.', 'error');
     return;
   }
   
-  // For now, just save to localStorage
-  // In a real app, this would send to a server
+  if (!title) {
+    showNotification('Please enter a title for your guide.', 'error');
+    titleInput.focus();
+    return;
+  }
+  
+  if (!selectedTopicId) {
+    showNotification('Please select a topic for your guide.', 'error');
+    topicSelect.focus();
+    return;
+  }
+  
+  // Get topic details from the selected option
+  const selectedOption = topicSelect.options[topicSelect.selectedIndex];
+  const topicData = {
+    id: selectedTopicId,
+    name: selectedOption.dataset.topicName,
+    pathId: selectedOption.dataset.pathId,
+    pathName: selectedOption.dataset.pathName,
+    levelId: selectedOption.dataset.levelId,
+    levelName: selectedOption.dataset.levelName
+  };
+  
+  // Create guide object
   const guide = {
     id: Date.now(),
-    title: extractTitle(content) || 'Untitled Guide',
+    title: title,
     content: content,
+    topic: topicData,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
@@ -197,7 +334,98 @@ function saveGuide() {
   guides.push(guide);
   localStorage.setItem('eduflash_guides', JSON.stringify(guides));
   
-  alert(`Guide "${guide.title}" saved successfully!`);
+  showNotification(`Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`, 'success');
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+  // Remove existing notifications
+  const existingNotifications = document.querySelectorAll('.notification');
+  existingNotifications.forEach(n => n.remove());
+  
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <div class="notification-content">
+      <span>${message}</span>
+      <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+    </div>
+  `;
+  
+  // Add notification styles if not already present
+  if (!document.querySelector('#notification-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'notification-styles';
+    styles.textContent = `
+      .notification {
+        position: fixed;
+        top: 100px;
+        right: 24px;
+        z-index: 10000;
+        max-width: 400px;
+        padding: 16px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(20px);
+        border: 2px solid;
+        animation: slideIn 0.3s ease-out;
+      }
+      
+      .notification-success {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: rgba(34, 197, 94, 0.3);
+        color: #15803d;
+      }
+      
+      .notification-error {
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #dc2626;
+      }
+      
+      .notification-info {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: #2563eb;
+      }
+      
+      .notification-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+      
+      .notification-close {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+      }
+      
+      .notification-close:hover {
+        opacity: 1;
+      }
+      
+      @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+  
+  document.body.appendChild(notification);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.style.animation = 'slideIn 0.3s ease-out reverse';
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 5000);
 }
 
 // Extract title from markdown content
@@ -265,12 +493,501 @@ document.addEventListener('keydown', (e) => {
 
 // Open markdown help in new tab
 function openMarkdownHelp() {
-  window.open('https://www.markdownguide.org/basic-syntax/', '_blank');
+  const modal = document.createElement('div');
+  modal.className = 'help-modal';
+  modal.innerHTML = `
+    <div class="help-modal-content">
+      <div class="help-modal-header">
+        <h3>📝 Markdown Guide & Shortcuts</h3>
+        <button class="help-modal-close" onclick="this.closest('.help-modal').remove()">×</button>
+      </div>
+      <div class="help-modal-body">
+        <div class="help-sections">
+          <div class="help-section">
+            <h4>🚀 Keyboard Shortcuts</h4>
+            <div class="shortcut-list">
+              <div class="shortcut"><kbd>Ctrl + S</kbd> Save guide</div>
+              <div class="shortcut"><kbd>Ctrl + /</kbd> Toggle preview (mobile)</div>
+              <div class="shortcut"><kbd>F1</kbd> Show this help</div>
+            </div>
+          </div>
+          
+          <div class="help-section">
+            <h4>📋 Markdown Syntax</h4>
+            <div class="syntax-list">
+              <div class="syntax-item">
+                <code># Heading 1</code>
+                <code>## Heading 2</code>
+                <code>### Heading 3</code>
+              </div>
+              <div class="syntax-item">
+                <code>**Bold text**</code>
+                <code>*Italic text*</code>
+                <code>\`Code\`</code>
+              </div>
+              <div class="syntax-item">
+                <code>- List item</code>
+                <code>1. Numbered item</code>
+                <code>[Link](url)</code>
+              </div>
+            </div>
+          </div>
+          
+          <div class="help-section">
+            <h4>🧮 Math Formulas</h4>
+            <div class="syntax-list">
+              <div class="syntax-item">
+                <code>$E = mc^2$</code> <span>Inline math</span>
+              </div>
+              <div class="syntax-item">
+                <code>$$\\int_0^1 x dx$$</code> <span>Block math</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="help-footer">
+          <a href="https://www.markdownguide.org/basic-syntax/" target="_blank" class="btn ghost">
+            Full Markdown Guide
+          </a>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add modal styles if not already present
+  if (!document.querySelector('#help-modal-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'help-modal-styles';
+    styles.textContent = `
+      .help-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease-out;
+      }
+      
+      .help-modal-content {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--stroke);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        width: 90%;
+        max-width: 700px;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s ease-out;
+      }
+      
+      .help-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid var(--stroke);
+      }
+      
+      .help-modal-header h3 {
+        margin: 0;
+        color: var(--accent);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      
+      .help-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--ink-dim);
+        transition: color 0.2s;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      
+      .help-modal-close:hover {
+        color: var(--ink);
+        background: var(--stroke);
+      }
+      
+      .help-modal-body {
+        padding: 24px;
+      }
+      
+      .help-sections {
+        display: grid;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+      
+      .help-section h4 {
+        margin: 0 0 12px 0;
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      
+      .shortcut-list {
+        display: grid;
+        gap: 8px;
+      }
+      
+      .shortcut {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 0.9rem;
+      }
+      
+      .shortcut kbd {
+        background: var(--charcoal);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        min-width: 80px;
+        text-align: center;
+      }
+      
+      .syntax-list {
+        display: grid;
+        gap: 8px;
+      }
+      
+      .syntax-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        flex-wrap: wrap;
+      }
+      
+      .syntax-item code {
+        background: var(--charcoal);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      
+      .syntax-item span {
+        color: var(--ink-dim);
+        font-style: italic;
+      }
+      
+      .help-footer {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 1px solid var(--stroke);
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
 }
 
 // AI Assistant placeholder function
 function handleAIAssistant() {
-  alert('AI Assistant feature coming soon! This will help you write and improve your guides with AI assistance.');
+  const modal = document.createElement('div');
+  modal.className = 'ai-modal';
+  modal.innerHTML = `
+    <div class="ai-modal-content">
+      <div class="ai-modal-header">
+        <h3>🤖 AI Content Assistant</h3>
+        <button class="ai-modal-close" onclick="this.closest('.ai-modal').remove()">×</button>
+      </div>
+      <div class="ai-modal-body">
+        <div class="ai-welcome">
+          <div class="ai-welcome-icon">✨</div>
+          <h4>Welcome to AI-Powered Content Creation!</h4>
+          <p>Your intelligent writing companion for educational content is being prepared with amazing features.</p>
+        </div>
+        
+        <div class="ai-feature-grid">
+          <div class="ai-feature">
+            <div class="ai-feature-icon">✍️</div>
+            <h4>Smart Content Generation</h4>
+            <p>Generate comprehensive educational content based on your selected topic and learning objectives</p>
+          </div>
+          <div class="ai-feature">
+            <div class="ai-feature-icon">🔍</div>
+            <h4>Content Enhancement</h4>
+            <p>Analyze and improve your existing content for clarity, engagement, and educational effectiveness</p>
+          </div>
+          <div class="ai-feature">
+            <div class="ai-feature-icon">�</div>
+            <h4>Curriculum Alignment</h4>
+            <p>Ensure your content aligns with educational standards and learning outcomes</p>
+          </div>
+          <div class="ai-feature">
+            <div class="ai-feature-icon">🎯</div>
+            <h4>Learning Objectives</h4>
+            <p>Automatically generate clear, measurable learning objectives for your educational guides</p>
+          </div>
+          <div class="ai-feature">
+            <div class="ai-feature-icon">💡</div>
+            <h4>Interactive Elements</h4>
+            <p>Suggest quizzes, exercises, and interactive components to enhance learning engagement</p>
+          </div>
+          <div class="ai-feature">
+            <div class="ai-feature-icon">📊</div>
+            <h4>Difficulty Assessment</h4>
+            <p>Automatically assess and adjust content difficulty to match your target audience</p>
+          </div>
+        </div>
+        
+        <div class="ai-status">
+          <div class="ai-status-badge">🚀 Coming Very Soon</div>
+          <p>We're putting the finishing touches on these powerful AI features. Get ready for the most intelligent educational content creation experience!</p>
+          <div class="ai-progress">
+            <div class="ai-progress-bar"></div>
+          </div>
+          <small>Development Progress: 85% Complete</small>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Add modal styles if not already present
+  if (!document.querySelector('#ai-modal-styles')) {
+    const styles = document.createElement('style');
+    styles.id = 'ai-modal-styles';
+    styles.textContent = `
+      .ai-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease-out;
+      }
+      
+      .ai-modal-content {
+        background: var(--glass);
+        backdrop-filter: blur(20px);
+        border: 2px solid var(--stroke);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        animation: slideUp 0.3s ease-out;
+      }
+      
+      .ai-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 1px solid var(--stroke);
+      }
+      
+      .ai-modal-header h3 {
+        margin: 0;
+        color: var(--accent);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      
+      .ai-modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--ink-dim);
+        transition: color 0.2s;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+      }
+      
+      .ai-modal-close:hover {
+        color: var(--ink);
+        background: var(--stroke);
+      }
+      
+      .ai-modal-body {
+        padding: 24px;
+      }
+      
+      .ai-feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 32px;
+      }
+      
+      .ai-welcome {
+        text-align: center;
+        padding: 24px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: var(--radius);
+        margin-bottom: 32px;
+      }
+      
+      .ai-welcome-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+      }
+      
+      .ai-welcome h4 {
+        margin: 0 0 12px 0;
+        color: var(--accent);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      
+      .ai-welcome p {
+        margin: 0;
+        color: var(--ink-dim);
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+      
+      .ai-feature {
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid var(--stroke);
+        border-radius: var(--radius);
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      
+      .ai-feature:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+      }
+      
+      .ai-feature-icon {
+        font-size: 2rem;
+        margin-bottom: 12px;
+      }
+      
+      .ai-feature h4 {
+        margin: 0 0 8px 0;
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+      
+      .ai-feature p {
+        margin: 0;
+        color: var(--ink-dim);
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+      
+      .ai-status {
+        text-align: center;
+        padding: 24px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        border-radius: var(--radius);
+      }
+      
+      .ai-status-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      
+      .ai-status p {
+        margin: 0 0 16px 0;
+        color: var(--ink-dim);
+        line-height: 1.6;
+      }
+      
+      .ai-progress {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        height: 8px;
+        margin: 16px 0 8px 0;
+        overflow: hidden;
+      }
+      
+      .ai-progress-bar {
+        height: 100%;
+        width: 85%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        animation: pulse 2s infinite;
+      }
+      
+      .ai-status small {
+        color: var(--ink-dim);
+        font-size: 0.8rem;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+      }
+    `;
+    document.head.appendChild(styles);
+  }
+
+  document.body.appendChild(modal);
+  
+  // Close modal when clicking outside
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.remove();
+    }
+  });
 }
 
 // Initialize when the page loads

@@ -1,11 +1,52 @@
 <section class="create-container">
   <div class="create-header">
-    <h1>Create Guide</h1>
+    <div class="header-content">
+      <h1>Create Guide</h1>
+      <div class="guide-meta">
+        <div class="input-group">
+          <label for="guideTitle">Guide Title</label>
+          <input type="text" id="guideTitle" placeholder="Enter your guide title..." class="title-input">
+        </div>
+        <div class="input-group">
+          <label for="guideTopic">Topic</label>
+          <select id="guideTopic" class="topic-select">
+            <option value="">Select a topic...</option>
+          </select>
+        </div>
+      </div>
+    </div>
     <div class="create-actions">
-      <button id="aiBtn" class="btn ghost" title="AI Assistant (Coming Soon)">AI</button>
-      <button id="helpBtn" class="btn ghost" title="Markdown Help">Help</button>
-      <button id="saveBtn" class="btn accent">Save Guide</button>
-      <button id="previewToggle" class="btn ghost">Toggle Preview</button>
+      <button id="helpBtn" class="btn ghost" title="Markdown Help">
+        <i class="fas fa-question-circle" style="width: 16px; height: 16px;"></i>
+        Help
+      </button>
+      <button id="previewToggle" class="btn ghost">
+        <i class="fas fa-eye" style="width: 16px; height: 16px;"></i>
+        Preview
+      </button>
+      <button id="saveBtn" class="btn accent">
+        <i class="fas fa-save" style="width: 16px; height: 16px;"></i>
+        Save Guide
+      </button>
+    </div>
+  </div>
+  
+  <!-- Standalone AI Assistant Section -->
+  <div class="ai-assistant-section">
+    <div class="ai-assistant-card">
+      <div class="ai-assistant-content">
+        <div class="ai-assistant-icon">
+          <i class="fas fa-brain" style="width: 32px; height: 32px; font-size: 32px;"></i>
+        </div>
+        <div class="ai-assistant-text">
+          <h3>✨ AI-Powered Content Assistant</h3>
+          <p>Get intelligent help writing your educational guide with AI assistance</p>
+        </div>
+      </div>
+      <button id="aiBtn" class="ai-assistant-btn">
+        <span class="ai-btn-text">Try AI Assistant</span>
+        <i class="fas fa-arrow-right" style="width: 20px; height: 20px;"></i>
+      </button>
     </div>
   </div>
   
@@ -15,38 +56,32 @@
         <h3>Editor</h3>
         <small>Supports Markdown and LaTeX (use $ for inline math, $$ for block math)</small>
       </div>
-      <textarea id="markdownEditor" placeholder="# Your Guide Title
+      <textarea id="markdownEditor" placeholder="# Getting Started
 
-Welcome to your guide! You can use **markdown** and LaTeX math.
+Write your educational guide here! You can use **markdown** and LaTeX math.
 
-## Example Math
-Inline math: $E = mc^2$
+## Quick Tips
+- Start with a clear title in the field above
+- Choose the appropriate topic from the dropdown
+- Use headers (##) to organize your content
+- Add **bold** and *italic* text for emphasis
+- Include math formulas: $E = mc^2$ (inline) or $$\int_{0}^{1} x^2 dx$$ (block)
 
-Block math:
-$$
-\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
-$$
+## Example Structure
+### Learning Objectives
+What will students learn from this guide?
 
-## Markdown Features
-- **Bold text**
-- *Italic text*
-- `Code snippets`
-- [Links](https://example.com)
+### Key Concepts
+Explain the main ideas...
 
-### Code Blocks
-```javascript
-function hello() {
-  console.log('Hello, world!');
-}
-```
+### Practice Problems
+1. Problem one
+2. Problem two
 
-> This is a blockquote
+### Summary
+Wrap up the key takeaways...
 
-1. Ordered list item 1
-2. Ordered list item 2
-
-- Unordered list item
-- Another item"></textarea>
+> Click the AI Assistant button for intelligent content suggestions!"></textarea>
     </div>
     
     <div class="preview-panel">
