@@ -10,7 +10,7 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background: #252422;
+  background: var(--bg);
   overflow-x: hidden;
   overflow-y: visible;
   display: flex;
@@ -30,11 +30,11 @@
 }
 
 .ball:nth-child(odd) {
-    color: #471d0c;
+  color: rgba(235,94,40,0.68); /* light warm orbs */
 }
 
 .ball:nth-child(even) {
-    color: #3f3d39;
+  color: rgba(64,61,57,0.62); /* subtle neutral orbs */
 }
 
 /* Using a custom attribute for variability */
@@ -107,6 +107,7 @@
   Hero
 -------------------------------------------------- */
 .hero {
+  top: 10vh;
   position: relative;
   display: flex;
   flex-direction: column;

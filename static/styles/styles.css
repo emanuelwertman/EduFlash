@@ -4,17 +4,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg: #252422;
-  --ink: #FFFCF2;
-  --ink-dim: #CCC5B9;
-  --accent: #EB5E28;
-  --charcoal: #403D39;
-  --charcoal-50: #403D3955;
-  --glass: rgba(255, 255, 255, .06);
-  --stroke: rgba(255, 255, 255, .18);
+  /* Lightened theme tokens (same accent preserved) */
+  --bg: #FBF8F6; /* page background */
+  --ink: #1F1F1F; /* primary text */
+  --ink-dim: #6F6B64; /* secondary text */
+  --accent: #EB5E28; /* keep original accent */
+  --charcoal: #403D39; /* neutral dark */
+  --charcoal-50: rgba(64,61,57,0.12);
+  --glass: rgba(16, 24, 32, 0.04); /* subtle translucent surface */
+  --stroke: rgba(0, 0, 0, 0.08);
   --radius: 16px;
   --radius-lg: 22px;
-  --shadow: 0 10px 30px rgba(0, 0, 0, .25);
+  --shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
 }
 
 /* --------------------------------------------------
@@ -110,7 +111,12 @@ hr {
   background: var(--accent);
   color: #fff;
 }
-.btn.accent:hover { background: #ff7a46; }
+.btn.accent:hover { 
+  background: #fff;
+  color:#EB5E28;
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
 
 /* --------------------------------------------------
   Nav Bar
@@ -120,12 +126,12 @@ hr {
   align-items: center;
   gap: 20px;
   padding: 14px 18px;
-  border: 2px solid var(--stroke);
+  border: 1px solid var(--stroke);
   border-radius: var(--radius);
-  backdrop-filter: blur(18px) brightness(30%);
-  background: var(--glass);
+  backdrop-filter: blur(8px) brightness(90%);
+  background: rgba(255,255,255,0.6);
   box-shadow: var(--shadow);
-  margin: 20px;
+  margin: 20px 20px 0 20px; /* keep top/side spacing but remove bottom gap */
   position: sticky;
   top: 20px;
   z-index: 1000;
@@ -137,7 +143,7 @@ hr {
   margin-right: 8px;
   padding: 8px;
   border-radius: 15px;
-  background: var(--ink-dim);
+  background: var(--bg);
 }
 
 .ef-logo {
@@ -171,7 +177,7 @@ hr {
   margin-bottom: 6px;
   padding: 8px;
   border-radius: 15px;
-  background: var(--ink-dim);
+  background: var(--bg);
 }
 
 h1, h2, h3 { color: var(--accent); }

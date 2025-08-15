@@ -1,13 +1,29 @@
-/* Login page specific styles only; global tokens and base live in styles.css */
-/* Center the auth card roughly like before, but within the #app container */
-.auth-page {
+.wrapper {
+    position: fixed;
+    inset: 0; 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 140px);
+    height: 100vh;
+    background-color: #e5e5f7;
+    background: radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 72.5px 72.5px, linear-gradient(#EB5E28 5.8px, transparent 5.8px) 0 -2.9px, linear-gradient(90deg, #EB5E28 5.8px, #e5e5f7 5.8px) -2.9px 0;
+    background-size: 145px 145px, 145px 145px, 72.5px 72.5px, 72.5px 72.5px;
+    overflow: hidden;
 }
 
-.wrapper {
+/* Add a translucent wash over the patterned background to reduce its visual weight */
+.wrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* light translucent layer to make the background much less prominent */
+    background: rgba(255, 255, 255, 0.78);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.wrapper form {
     width: 420px;
     background: var(--glass);
     border: 2px solid var(--stroke);
@@ -16,9 +32,13 @@
     color: var(--ink);
     border-radius: var(--radius-lg);
     padding: 30px 40px;
+    position: relative; /* sit above the ::before overlay */
+    z-index: 2;
+    max-height: calc(100vh - 80px); /* ensure the card fits inside the viewport */
+    overflow: auto; /* allow card content to scroll internally if necessary */
 }
 
-.wrapper h1 {
+.wrapper form h1 {
     font-size: 36px;
     text-align: center;
     color: var(--accent);
@@ -35,12 +55,11 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    border: none;
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
+    border: 1px solid var(--ink);
     border-radius: 40px;
     font-size: 16px;
-    color: #FFFCF2;
+    color: var(--ink);
     padding: 20px 45px 20px 20px;
 }
 
@@ -74,20 +93,26 @@
 
 .wrapper .btn {
     width: 100%;
-    height: 45px;
-    background: var(--ink);
-    border: none;
-    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 16px;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
     font-weight: 600;
-    transition: background-color 0.4s ease, color 0.4s ease;
+    text-decoration: none;
+    border: 2px solid transparent;
+    transition: .25s ease;
+    background: var(--accent);
+    color: #fff;
 }
 
-.btn:hover { background-color: #CCC5B9; color: #252422; }
+.btn:hover {
+    background: #fff;
+    color:#EB5E28;
+    border-color: var(--ink);
+    transform: translateY(-1px); 
+}
 
 .wrapper .register-link {
     font-size: 14.5px;
@@ -100,4 +125,13 @@
 .register-link p a:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+html, body { -webkit-overflow-scrolling: touch; }
+.wrapper::-webkit-scrollbar { display: none; }
+/* Firefox */
+html, body { scrollbar-width: none; }
+/* IE/Edge Legacy - fallback (hides overflow) */
+@supports (-ms-ime-align: auto) {
+    html, body { overflow: hidden; }
 }
