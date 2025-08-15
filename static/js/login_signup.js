@@ -61,12 +61,12 @@ function valid() {
   return true;
 }
 
-async function createAccount(username, email, password) {
+async function makeAccount(username, email, password) {
   try {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 10000);
 
-    const res = await fetch("/createaccount", {
+    const res = await fetch("/makeaccount", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({ username, email, password }),
@@ -133,7 +133,7 @@ function handleFormSubmit(event, formType) {
     const password = document.getElementById("pass").value;
 
     if (valid()) {
-      createAccount(username, email, password);
+      makeAccount(username, email, password);
     }
   } else if (formType === "login") {
     const username = document.getElementById("loginUsername").value;
