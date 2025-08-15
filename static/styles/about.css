@@ -134,16 +134,10 @@ body {
 
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 30px;
-  max-width: 1200px;
+  max-width: 800px;
   margin: 0 auto;
-}
-
-.team-grid .team-card:nth-child(4):last-child {
-  grid-column: 1 / -1;
-  width: calc((100% - 60px) / 3);
-  justify-self: center;
 }
 
 .team-card {
