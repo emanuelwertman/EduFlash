@@ -1,0 +1,185 @@
+<link rel="stylesheet" href="static/styles/profile.css">
+<script src="static/js/profile.js"></script>
+
+<div class="profile-container">
+  <!-- Profile Header Section -->
+  <section class="profile-header">
+    <div class="container">
+      <div class="profile-hero">
+        <div class="profile-avatar">
+          <div class="avatar-circle">
+            <img src="static/assets/placeholder.png" alt="Profile Picture" class="avatar-image" id="profileImage">
+            <div class="avatar-placeholder" id="avatarPlaceholder">JD</div>
+          </div>
+          <button class="avatar-edit-btn" id="editAvatarBtn">
+            <span>✏️</span>
+          </button>
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name" id="profileName">John Doe</h1>
+          <p class="profile-username" id="profileUsername">@johndoe</p>
+          <p class="profile-bio" id="profileBio">Passionate learner exploring the world of technology and education. Always eager to discover new concepts and share knowledge with the community.</p>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <span class="stat-number">42</span>
+              <span class="stat-label">Lessons Completed</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">156</span>
+              <span class="stat-label">Study Hours</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">8</span>
+              <span class="stat-label">Lessons Created</span>
+            </div>
+          </div>
+          <div class="profile-actions">
+            <button class="btn accent" id="editProfileBtn">Edit Profile</button>
+            <button class="btn ghost" id="shareProfileBtn">Share Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Profile Content Section -->
+  <section class="profile-content">
+    <div class="container">
+      <div class="profile-sections">
+        
+        <!-- Recent Activity Section -->
+        <div class="content-card glass">
+          <h3>Recent Activity</h3>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon">📚</div>
+              <div class="activity-details">
+                <p><strong>Completed lesson:</strong> "Advanced CSS Flexbox"</p>
+                <span class="activity-time">2 hours ago</span>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">⭐</div>
+              <div class="activity-details">
+                <p><strong>Rated lesson:</strong> "JavaScript DOM Manipulation" - 5 stars</p>
+                <span class="activity-time">1 day ago</span>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">💡</div>
+              <div class="activity-details">
+                <p><strong>Created lesson:</strong> "Introduction to React Hooks"</p>
+                <span class="activity-time">1 week ago</span>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">❤️</div>
+              <div class="activity-details">
+                <p><strong>Added to favorites:</strong> "Python for Data Analysis"</p>
+                <span class="activity-time">2 weeks ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Created Lessons Section -->
+        <div class="content-card glass">
+          <h3>Created Lessons</h3>
+          <div class="lessons-grid">
+            <div class="lesson-card glass">
+              <h4>Introduction to React Hooks</h4>
+              <p class="lesson-description">A comprehensive guide to understanding and using React Hooks in modern applications.</p>
+              <div class="lesson-stats">
+                <span class="stat">👁️ 124 views</span>
+                <span class="stat">⭐ 4.8 rating</span>
+                <span class="stat">💾 12 saves</span>
+              </div>
+              <div class="lesson-tags">
+                <span class="chip">React</span>
+                <span class="chip">JavaScript</span>
+                <span class="chip">Frontend</span>
+              </div>
+            </div>
+            <div class="lesson-card glass">
+              <h4>CSS Grid Layout Mastery</h4>
+              <p class="lesson-description">Learn how to create complex layouts with CSS Grid in this hands-on tutorial.</p>
+              <div class="lesson-stats">
+                <span class="stat">👁️ 89 views</span>
+                <span class="stat">⭐ 4.6 rating</span>
+                <span class="stat">💾 8 saves</span>
+              </div>
+              <div class="lesson-tags">
+                <span class="chip">CSS</span>
+                <span class="chip">Layout</span>
+                <span class="chip">Design</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Settings Section -->
+        <div class="content-card glass" id="settings-section" style="display: none;">
+          <h3>Account Settings</h3>
+          <div class="settings-form">
+            <div class="setting-item">
+              <label for="displayName">Display Name</label>
+              <input type="text" id="displayName" value="John Doe">
+            </div>
+            <div class="setting-item">
+              <label for="username">Username</label>
+              <input type="text" id="username" value="johndoe">
+            </div>
+            <div class="setting-item">
+              <label for="email">Email</label>
+              <input type="email" id="email" value="john.doe@email.com">
+            </div>
+            <div class="setting-item">
+              <label for="bio">Bio</label>
+              <textarea id="bio" rows="3">Passionate learner exploring the world of technology and education. Always eager to discover new concepts and share knowledge with the community.</textarea>
+            </div>
+            <div class="setting-actions">
+              <button class="btn accent" id="saveSettingsBtn">Save Changes</button>
+              <button class="btn ghost" id="cancelEditBtn">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Footer -->
+<footer class="ef-footer">
+  <img src="static/assets/logo.png" alt="EduFlash Logo" class="footer-logo">
+  <p>© <span id="year">2025</span> EduFlash • <a href="#/login?mode=register" data-route>Join Free</a> • <a href="#/paths" data-route>Explore Paths</a></p>
+</footer>
+
+<script>
+// Backup script to ensure the edit button works
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        const editBtn = document.getElementById('editProfileBtn');
+        const settingsDiv = document.getElementById('settings-section');
+        
+        if (editBtn && settingsDiv) {
+            console.log('Backup script found elements');
+            editBtn.onclick = function() {
+                console.log('Backup edit button clicked');
+                if (settingsDiv.style.display === 'none') {
+                    settingsDiv.style.display = 'block';
+                    settingsDiv.style.visibility = 'visible';
+                    editBtn.textContent = 'Cancel Edit';
+                    console.log('Settings shown by backup script');
+                } else {
+                    settingsDiv.style.display = 'none';
+                    editBtn.textContent = 'Edit Profile';
+                    console.log('Settings hidden by backup script');
+                }
+            };
+        } else {
+            console.log('Backup script elements not found:', {editBtn: !!editBtn, settingsDiv: !!settingsDiv});
+        }
+    }, 500);
+});
+</script>
