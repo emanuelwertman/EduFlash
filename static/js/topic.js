@@ -34,7 +34,6 @@ function showLevels(path) {
     currentPath = path;
     currentLevel = null;
     
-    // Hide topic container and show level container
     document.getElementById('topic-container').style.display = 'none';
     document.getElementById('level-container').style.display = 'grid';
     
@@ -44,7 +43,6 @@ function showLevels(path) {
 function showTopics(level) {
     currentLevel = level;
     
-    // Hide level container and show topic container
     document.getElementById('level-container').style.display = 'none';
     document.getElementById('topic-container').style.display = 'grid';
     
@@ -62,13 +60,12 @@ function renderLevels(levels) {
     backButton.onclick = () => window.location.hash = '#/paths';
     container.appendChild(backButton);
     
-    // Create a path-container for consistent styling
     const levelGrid = document.createElement('div');
     levelGrid.className = 'path-container';
     
     levels.forEach(level => {
         const levelBox = document.createElement('div');
-        levelBox.className = 'path-box'; // Reuse the same styling as paths
+        levelBox.className = 'path-box';
         levelBox.innerHTML = `
             <h3 class="path-title">${level.name}</h3>
             <p class="path-description">${level.topics.length} topics available</p>
@@ -89,14 +86,12 @@ function renderTopics(topics) {
     const container = document.getElementById('topic-container');
     container.innerHTML = '';
     
-    // Add back button
     const backButton = document.createElement('button');
     backButton.className = 'back-to-levels';
     backButton.innerHTML = '← Back to Levels';
     backButton.onclick = () => showLevels(currentPath);
     container.appendChild(backButton);
     
-    // Add search section - exact HTML structure from paths
     const searchSection = document.createElement('section');
     searchSection.className = 'search glass';
     searchSection.innerHTML = `
@@ -105,11 +100,9 @@ function renderTopics(topics) {
     `;
     container.appendChild(searchSection);
     
-    // Create topics grid
     const topicsGrid = document.createElement('div');
     topicsGrid.className = 'path-container';
     
-    // Function to render topics (adapted from renderPaths)
     const renderFilteredTopics = (topicsToRender) => {
         topicsGrid.innerHTML = '';
         
@@ -139,10 +132,8 @@ function renderTopics(topics) {
         });
     };
     
-    // Initialize with all topics
     renderFilteredTopics(topics);
     
-    // Add search functionality - adapted from paths.js
     searchSection.querySelector('input').addEventListener('input', (e) => {
         const query = e.target.value.trim();
         if (!query) {
@@ -150,7 +141,6 @@ function renderTopics(topics) {
             return;
         }
         
-        // Simple search for topics (filtering by name)
         const filteredTopics = topics.filter(topic => 
             topic.name.toLowerCase().includes(query.toLowerCase())
         );
