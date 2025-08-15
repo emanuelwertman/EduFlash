@@ -2,39 +2,41 @@ const showForm = (mode) => {
   const registerForm = document.getElementById("registerForm");
   const loginForm = document.getElementById("loginForm");
 
-  registerForm.style.display = mode === "register" ? "block" : "none";
-  loginForm.style.display = mode === "login" ? "block" : "none";
+  if (registerForm && loginForm) {
+    registerForm.style.display = mode === "register" ? "block" : "none";
+    loginForm.style.display = mode === "login" ? "block" : "none";
+  }
 };
 
-document.addEventListener("click", (e) => {
-  const id = e.target && e.target.id;
-  if (id === "register") showForm("register");
-  else if (id === "login") showForm("login");
-});
+function initLoginSignup() {
+  document.addEventListener("click", (e) => {
+    const id = e.target && e.target.id;
+    if (id === "register") showForm("register");
+    else if (id === "login") showForm("login");
+  });
 
-document.addEventListener("DOMContentLoaded", function () {
   const registerForm = document.getElementById("registerForm");
+  const loginForm = document.getElementById("loginForm");
+  
   if (registerForm) {
     registerForm.addEventListener("submit", function (event) {
       handleFormSubmit(event, "register");
     });
   }
 
-  // Handle login form submission
-  const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function (event) {
       handleFormSubmit(event, "login");
     });
   }
-});
 
-(function checkMode() {
   const hash = location.hash || "";
   const params = new URLSearchParams(hash.split("?")[1] || "");
   const mode = params.get("mode");
   if (mode) showForm(mode);
-})();
+}
+
+initLoginSignup();
 
 function valid() {
   const password = document.getElementById("pass").value;
@@ -44,7 +46,7 @@ function valid() {
 
   if (!passwordRegex.test(password)) {
     alert(
-      "Password must be at least 8 characters long and contain:\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character (@$!%*?&)"
+      "Password must be at least 8 characters long and contain:\n- One uppercase letter\n- One lowercase letter\n- One number\n- One special character (@$!%*?&_)"
     );
     return false;
   }
@@ -75,7 +77,6 @@ async function createAccount(username, email, password) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
-    // Prefer: server sets HttpOnly cookie. If not:
     const sessionKey = data.session || data.key || data.token;
     if (sessionKey && data.status !== "error") {
       document.cookie = `session=${sessionKey}; Max-Age=3600; Path=/; SameSite=Lax; Secure`;
@@ -127,18 +128,16 @@ function handleFormSubmit(event, formType) {
   event.preventDefault();
 
   if (formType === "register") {
-    const form = document.getElementById("registerForm");
-    const username = form.querySelector('input[placeholder="Username"]').value;
-    const email = form.querySelector('input[placeholder="Email"]').value;
-    const password = form.querySelector("#pass").value;
+    const username = document.getElementById("registerUsername").value;
+    const email = document.getElementById("registerEmail").value;
+    const password = document.getElementById("pass").value;
 
     if (valid()) {
       createAccount(username, email, password);
     }
   } else if (formType === "login") {
-    const form = document.getElementById("loginForm");
-    const username = form.querySelector('input[placeholder="Username"]').value;
-    const password = form.querySelector('input[placeholder="Password"]').value;
+    const username = document.getElementById("loginUsername").value;
+    const password = document.getElementById("loginPassword").value;
 
     if (!username || !password) {
       alert("Please fill in all fields.");
