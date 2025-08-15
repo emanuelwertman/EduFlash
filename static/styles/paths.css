@@ -90,6 +90,7 @@ body {
     font-size: 7vmin;
     margin-bottom: 0;
     line-height: 1.2;
+    color: #FFFCF2;
 }
 
 #contrast {
@@ -123,7 +124,8 @@ body {
     margin-top: 18px;
     padding: 18px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
 }
 
@@ -138,11 +140,27 @@ body {
     outline: none;
 }
 
-.search input::placeholder {
-    color: var(--ink-dim);
+.search .btn {
+    height: 46px;
+    width: 46px;
+    min-width: 46px;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 400;
 }
 
-.filters {
+.search .btn:hover {
+    background: var(--accent);
+}
+
+.search .btn:hover #plus {
+    color: #fff;
+}
+
+.search input::placeholder {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
