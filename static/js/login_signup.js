@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Handle login form submission
   const loginForm = document.getElementById("loginForm");
   if (loginForm) {
     loginForm.addEventListener("submit", function (event) {
@@ -58,73 +59,67 @@ function valid() {
   return true;
 }
 
-function createAccount(username, email, password) {
-  console.log("Creating account for:", username);
-  const xhr = new XMLHttpRequest();
+async function createAccount(username, email, password) {
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 10000);
 
-  xhr.open("POST", "/createaccount", false);
-  xhr.setRequestHeader("Content-Type", "application/json");
+    const res = await fetch("/createaccount", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ username, email, password }),
+      signal: controller.signal
+    });
+    clearTimeout(id);
 
-  const payload = {
-    username: username,
-    email: email,
-    password: password,
-  };
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-  console.log("Sending payload:", payload);
-  xhr.send(JSON.stringify(payload));
-  
-  console.log("Response status:", xhr.status);
-  console.log("Response text:", xhr.responseText);
-
-  if (xhr.responseText === "ok") {
-    alert("Account created successfully!");
-    const sessionToken = Date.now().toString();
-    document.cookie = "session=" + sessionToken + "; max-age=3600;";
-    window.location.href = "#/paths";
-  } else {
-    try {
-      const response = JSON.parse(xhr.responseText);
-      console.error("Error creating account:", response);
-      alert("This account is already taken. Please try again.");
-    } catch (e) {
-      console.error("Error creating account:", xhr.responseText);
-      alert("Error creating account. Please try again.");
+    // Prefer: server sets HttpOnly cookie. If not:
+    const sessionKey = data.session || data.key || data.token;
+    if (sessionKey && data.status !== "error") {
+      document.cookie = `session=${sessionKey}; Max-Age=3600; Path=/; SameSite=Lax; Secure`;
+      window.location.href = "#/paths";
+    } else {
+      alert(data.message || "This account is already taken. Please try again.");
     }
+  } catch (err) {
+    alert("Could not create account. Please try again.");
+    console.error(err);
   }
 }
 
-function startSession(username, password) {
-  console.log("Starting session for:", username);
-  const xhr = new XMLHttpRequest();
+async function startSession(username, password) {
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 10000);
 
-  xhr.open("POST", "/startsession", false);
-  xhr.setRequestHeader("Content-Type", "application/json");
+    const res = await fetch("/startsession", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ username, password }),
+      signal: controller.signal
+    });
+    clearTimeout(id);
 
-  const payload = {
-    username: username,
-    password: password,
-  };
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-  console.log("Sending login payload:", payload);
-  xhr.send(JSON.stringify(payload));
-  
-  console.log("Login response status:", xhr.status);
-  console.log("Login response text:", xhr.responseText);
-
-  if (xhr.responseText === "badpass") {
-    alert("Wrong password (-_-)");
-  } else {
-    try {
-      const response = JSON.parse(xhr.responseText);
-      const sessionKey = response.session || response.key || response.token;
-      document.cookie = "session=" + sessionKey + "; max-age=3600;";
-      window.location.href = "#/paths";
-    } catch (e) {
-      console.log("Using response as session token:", xhr.responseText);
-      document.cookie = "session=" + xhr.responseText + "; max-age=3600;";
-      window.location.href = "#/paths";
+    if (data.status === "badpass" || data.error === "badpass") {
+      alert("Wrong password (-_-)");
+      return;
     }
+
+    const sessionKey = data.session || data.key || data.token;
+    if (sessionKey) {
+      document.cookie = `session=${sessionKey}; Max-Age=3600; Path=/; SameSite=Lax; Secure`;
+      window.location.href = "#/paths";
+    } else {
+      alert("Login failed. Please try again.");
+    }
+  } catch (err) {
+    alert("Could not log in. Check your connection and try again.");
+    console.error(err);
   }
 }
 
