@@ -1,0 +1,387 @@
+/* Reset any inherited margins/padding */
+#app {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling on the main app */
+}
+
+.create-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 24px;
+  height: calc(100vh - 120px); /* Fixed height for proper scrolling */
+  display: flex;
+  flex-direction: column;
+  background: var(--bg); /* Use website's background color */
+}
+
+.create-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 2px solid var(--stroke);
+}
+
+.create-header h1 {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.75rem;
+}
+
+.create-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Modern button styling */
+.create-actions .btn {
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.create-actions .btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--stroke);
+}
+
+.create-actions .btn.ghost:hover {
+  background: var(--glass);
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+
+.create-actions .btn.accent {
+  background: var(--accent);
+  color: #fff;
+}
+
+.create-actions .btn.accent:hover {
+  background: #fff;
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+/* Special styling for AI button */
+#aiBtn {
+  background: var(--charcoal);
+  color: white;
+  position: relative;
+}
+
+#aiBtn:hover {
+  background: #fff;
+  color: var(--charcoal);
+  border-color: var(--charcoal);
+  transform: translateY(-1px);
+}
+
+#helpBtn, #aiBtn {
+  min-width: 70px;
+}
+
+.editor-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+  min-height: 0; /* Allow flex items to shrink below content size */
+}
+
+.editor-panel,
+.preview-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 2px solid var(--stroke);
+  min-height: 0; /* Allow flex items to shrink below content size */
+  overflow: hidden;
+}
+
+.panel-header {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
+
+.panel-header h3 {
+  margin: 0 0 6px 0;
+  color: var(--ink);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.panel-header small {
+  color: var(--ink-dim);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+#markdownEditor {
+  flex: 1;
+  border: none;
+  padding: 24px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.3);
+  color: var(--ink);
+  min-height: 0; /* Allow to shrink below content size */
+  overflow-y: auto; /* Add scrollbar to editor */
+  transition: all 0.3s ease;
+}
+
+#markdownEditor:focus {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+#markdownEditor::placeholder {
+  color: var(--ink-dim);
+  font-style: italic;
+}
+
+.preview-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.3);
+  font-family: "Poppins", sans-serif;
+  line-height: 1.7;
+  color: var(--ink);
+  min-height: 0; /* Allow to shrink below content size */
+}
+
+/* Modern markdown styling for preview */
+.preview-content h1, .preview-content h2, .preview-content h3, 
+.preview-content h4, .preview-content h5, .preview-content h6 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.preview-content h1 { 
+  font-size: 2.25rem; 
+  border-bottom: 3px solid var(--stroke); 
+  padding-bottom: 0.5rem;
+}
+
+.preview-content h2 { 
+  font-size: 1.875rem;
+  color: var(--ink);
+}
+
+.preview-content h3 { 
+  font-size: 1.5rem;
+  color: var(--charcoal);
+}
+
+.preview-content p {
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+.preview-content blockquote {
+  border-left: 4px solid var(--accent);
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  background: var(--charcoal-50);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink);
+  font-style: italic;
+}
+
+.preview-content code {
+  background: var(--charcoal-50);
+  color: var(--charcoal);
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.preview-content pre {
+  background: var(--glass);
+  border: 2px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+}
+
+.preview-content pre code {
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.preview-content ul, .preview-content ol {
+  margin: 1.25rem 0;
+  padding-left: 2rem;
+}
+
+.preview-content li {
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+
+.preview-content a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.preview-content a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.preview-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.preview-content th, .preview-content td {
+  border: 1px solid var(--stroke);
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.preview-content th {
+  background: var(--glass);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.preview-content td {
+  color: var(--ink);
+}
+
+/* Custom scrollbar styling */
+#markdownEditor::-webkit-scrollbar,
+.preview-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+#markdownEditor::-webkit-scrollbar-track,
+.preview-content::-webkit-scrollbar-track {
+  background: var(--stroke);
+  border-radius: 4px;
+}
+
+#markdownEditor::-webkit-scrollbar-thumb,
+.preview-content::-webkit-scrollbar-thumb {
+  background: var(--charcoal-50);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+#markdownEditor::-webkit-scrollbar-thumb:hover,
+.preview-content::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .create-container {
+    padding: 16px;
+    overflow: hidden; /* Ensure no scrolling on mobile */
+  }
+  
+  .editor-container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .preview-panel {
+    order: -1;
+  }
+  
+  .create-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding: 16px 20px;
+  }
+  
+  .create-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .create-actions {
+    justify-content: center;
+  }
+  
+  .create-actions .btn {
+    font-size: 13px;
+    height: 40px;
+    padding: 0 16px;
+  }
+  
+  #markdownEditor,
+  .preview-content {
+    padding: 16px;
+  }
+}
+
+/* Hide preview on mobile by default */
+@media (max-width: 768px) {
+  .preview-panel {
+    display: none;
+  }
+  
+  .preview-panel.show-mobile {
+    display: flex;
+  }
+  
+  .editor-panel.hide-mobile {
+    display: none;
+  }
+}
+
+
+html, body { -webkit-overflow-scrolling: touch; }
+.wrapper::-webkit-scrollbar { display: none; }
+/* Firefox */
+html, body { scrollbar-width: none; }
+/* IE/Edge Legacy - fallback (hides overflow) */
+@supports (-ms-ime-align: auto) {
+    html, body { overflow: hidden; }
+}

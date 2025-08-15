@@ -7,6 +7,7 @@ const routes = {
   "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js" },
   "/about": { file: "static/pages/about.html", script: "static/js/about.js" },
   "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js" },
+  "/create": { file: "static/pages/create.html", script: "static/js/create.js" },
 };
 
 // Keep track of last page module <script> so we can remove it when navigating

@@ -1,0 +1,62 @@
+<section class="create-container">
+  <div class="create-header">
+    <h1>Create Guide</h1>
+    <div class="create-actions">
+      <button id="aiBtn" class="btn ghost" title="AI Assistant (Coming Soon)">AI</button>
+      <button id="helpBtn" class="btn ghost" title="Markdown Help">Help</button>
+      <button id="saveBtn" class="btn accent">Save Guide</button>
+      <button id="previewToggle" class="btn ghost">Toggle Preview</button>
+    </div>
+  </div>
+  
+  <div class="editor-container">
+    <div class="editor-panel">
+      <div class="panel-header">
+        <h3>Editor</h3>
+        <small>Supports Markdown and LaTeX (use $ for inline math, $$ for block math)</small>
+      </div>
+      <textarea id="markdownEditor" placeholder="# Your Guide Title
+
+Welcome to your guide! You can use **markdown** and LaTeX math.
+
+## Example Math
+Inline math: $E = mc^2$
+
+Block math:
+$$
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+$$
+
+## Markdown Features
+- **Bold text**
+- *Italic text*
+- `Code snippets`
+- [Links](https://example.com)
+
+### Code Blocks
+```javascript
+function hello() {
+  console.log('Hello, world!');
+}
+```
+
+> This is a blockquote
+
+1. Ordered list item 1
+2. Ordered list item 2
+
+- Unordered list item
+- Another item"></textarea>
+    </div>
+    
+    <div class="preview-panel">
+      <div class="panel-header">
+        <h3>Preview</h3>
+        <small>Live preview of your guide</small>
+      </div>
+      <div id="previewContent" class="preview-content">
+        <p></p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -3,6 +3,9 @@
 -------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* Page-specific styles */
+@import url('./create.css');
+
 :root {
   /* Lightened theme tokens (same accent preserved) */
   --bg: #FBF8F6; /* page background */
