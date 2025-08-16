@@ -4,14 +4,16 @@
 let marked, katex;
 let pathsData = null;
 
+const editorApp = {};
+
 // Initialize the markdown editor
 async function initializeEditor() {
   // Load external libraries
   await loadExternalLibraries();
-  
+
   // Load paths data
   await loadPathsData();
-  
+
   const editor = document.getElementById('markdownEditor');
   const preview = document.getElementById('previewContent');
   const saveBtn = document.getElementById('saveBtn');
@@ -20,7 +22,7 @@ async function initializeEditor() {
   const aiBtn = document.getElementById('aiBtn');
   const titleInput = document.getElementById('guideTitle');
   const topicSelect = document.getElementById('guideTopic');
-  
+
   if (!editor || !preview) {
     console.error('Editor elements not found');
     return;
@@ -31,7 +33,7 @@ async function initializeEditor() {
 
   // Configure marked options
   marked.setOptions({
-    highlight: function(code, lang) {
+    highlight: function (code, lang) {
       // Basic syntax highlighting would go here
       return code;
     },
@@ -42,16 +44,16 @@ async function initializeEditor() {
   // Update preview function
   function updatePreview() {
     const markdownText = editor.value;
-    
+
     try {
       // First convert markdown to HTML
       let html = marked.parse(markdownText);
-      
+
       // Then process LaTeX math
       html = processLatexMath(html);
-      
+
       preview.innerHTML = html;
-      
+
       // Render KaTeX math
       renderMathInElement(preview);
     } catch (error) {
@@ -63,6 +65,11 @@ async function initializeEditor() {
       </div>`;
     }
   }
+
+  editorApp.updatePreview = updatePreview;
+
+  editor.addEventListener('input', updatePreview)
+  updatePreview()
 
   // Auto-update title when user starts typing in editor
   function autoUpdateTitle() {
@@ -81,19 +88,19 @@ async function initializeEditor() {
     html = html.replace(/\$\$([\s\S]*?)\$\$/g, (match, math) => {
       return `<div class="math-block">${math.trim()}</div>`;
     });
-    
+
     // Handle inline math ($...$) - but not if it's already in a block
     html = html.replace(/\$([^$\n]+?)\$/g, (match, math) => {
       return `<span class="math-inline">${math.trim()}</span>`;
     });
-    
+
     return html;
   }
 
   // Render math using KaTeX
   function renderMathInElement(element) {
     if (!katex) return;
-    
+
     // Render block math
     const mathBlocks = element.querySelectorAll('.math-block');
     mathBlocks.forEach(block => {
@@ -107,7 +114,7 @@ async function initializeEditor() {
         block.innerHTML = `<span style="color: red;">Math Error: ${e.message}</span>`;
       }
     });
-    
+
     // Render inline math
     const mathInlines = element.querySelectorAll('.math-inline');
     mathInlines.forEach(inline => {
@@ -129,25 +136,25 @@ async function initializeEditor() {
     autoUpdateTitle();
   });
   editor.addEventListener('scroll', syncScroll);
-  
+
   // Save functionality
   saveBtn.addEventListener('click', saveGuide);
-  
+
   // Preview toggle for mobile
   previewToggle.addEventListener('click', togglePreview);
-  
+
   // Help button functionality
   helpBtn.addEventListener('click', openMarkdownHelp);
-  
+
   // AI button functionality (placeholder)
   aiBtn.addEventListener('click', handleAIAssistant);
-  
+
   // Title input validation
   titleInput.addEventListener('input', validateTitle);
-  
+
   // Topic select validation
   topicSelect.addEventListener('change', validateTopic);
-  
+
   // Initial preview update
   updatePreview();
 }
@@ -176,7 +183,7 @@ function populateTopicDropdown() {
     // Create optgroup for each path (subject area)
     const pathOptgroup = document.createElement('optgroup');
     pathOptgroup.label = `📚 ${path.name}`;
-    
+
     path.levels.forEach(level => {
       // Add level as a disabled option with visual hierarchy
       const levelOption = document.createElement('option');
@@ -184,7 +191,7 @@ function populateTopicDropdown() {
       levelOption.textContent = `   📋 ${level.name}`;
       levelOption.className = 'level-header';
       pathOptgroup.appendChild(levelOption);
-      
+
       // Add topics under this level
       level.topics.forEach(topic => {
         const option = document.createElement('option');
@@ -199,7 +206,7 @@ function populateTopicDropdown() {
         pathOptgroup.appendChild(option);
       });
     });
-    
+
     topicSelect.appendChild(pathOptgroup);
   });
 }
@@ -208,7 +215,7 @@ function populateTopicDropdown() {
 function validateTitle() {
   const titleInput = document.getElementById('guideTitle');
   const title = titleInput.value.trim();
-  
+
   if (title.length > 100) {
     titleInput.style.borderColor = '#ef4444';
     titleInput.title = 'Title must be 100 characters or less';
@@ -222,7 +229,7 @@ function validateTitle() {
 function validateTopic() {
   const topicSelect = document.getElementById('guideTopic');
   const selectedValue = topicSelect.value;
-  
+
   if (selectedValue) {
     topicSelect.style.borderColor = '';
     topicSelect.title = '';
@@ -241,7 +248,7 @@ async function loadExternalLibraries() {
   } else {
     marked = window.marked;
   }
-  
+
   // Load KaTeX
   if (!window.katex) {
     // Load KaTeX CSS
@@ -249,7 +256,7 @@ async function loadExternalLibraries() {
     katexCSS.rel = 'stylesheet';
     katexCSS.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css';
     document.head.appendChild(katexCSS);
-    
+
     // Load KaTeX JS
     await loadScript('https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js');
     katex = window.katex;
@@ -273,9 +280,9 @@ function loadScript(src) {
 function syncScroll() {
   const editor = document.getElementById('markdownEditor');
   const preview = document.getElementById('previewContent');
-  
+
   if (!editor || !preview) return;
-  
+
   const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
   const previewScrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
   preview.scrollTop = previewScrollTop;
@@ -286,28 +293,28 @@ function saveGuide() {
   const editor = document.getElementById('markdownEditor');
   const titleInput = document.getElementById('guideTitle');
   const topicSelect = document.getElementById('guideTopic');
-  
+
   const content = editor.value;
   const title = titleInput.value.trim();
   const selectedTopicId = topicSelect.value;
-  
+
   if (!content.trim()) {
     showNotification('Please add some content before saving.', 'error');
     return;
   }
-  
+
   if (!title) {
     showNotification('Please enter a title for your guide.', 'error');
     titleInput.focus();
     return;
   }
-  
+
   if (!selectedTopicId) {
     showNotification('Please select a topic for your guide.', 'error');
     topicSelect.focus();
     return;
   }
-  
+
   // Get topic details from the selected option
   const selectedOption = topicSelect.options[topicSelect.selectedIndex];
   const topicData = {
@@ -318,7 +325,7 @@ function saveGuide() {
     levelId: selectedOption.dataset.levelId,
     levelName: selectedOption.dataset.levelName
   };
-  
+
   // Create guide object
   const guide = {
     id: Date.now(),
@@ -328,12 +335,12 @@ function saveGuide() {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
-  
+
   // Get existing guides
   const guides = JSON.parse(localStorage.getItem('eduflash_guides') || '[]');
   guides.push(guide);
   localStorage.setItem('eduflash_guides', JSON.stringify(guides));
-  
+
   showNotification(`Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`, 'success');
 }
 
@@ -342,7 +349,7 @@ function showNotification(message, type = 'info') {
   // Remove existing notifications
   const existingNotifications = document.querySelectorAll('.notification');
   existingNotifications.forEach(n => n.remove());
-  
+
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.innerHTML = `
@@ -351,7 +358,7 @@ function showNotification(message, type = 'info') {
       <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
     </div>
   `;
-  
+
   // Add notification styles if not already present
   if (!document.querySelector('#notification-styles')) {
     const styles = document.createElement('style');
@@ -416,9 +423,9 @@ function showNotification(message, type = 'info') {
     `;
     document.head.appendChild(styles);
   }
-  
+
   document.body.appendChild(notification);
-  
+
   // Auto-remove after 5 seconds
   setTimeout(() => {
     if (notification.parentElement) {
@@ -444,7 +451,7 @@ function extractTitle(content) {
 function togglePreview() {
   const editor = document.querySelector('.editor-panel');
   const preview = document.querySelector('.preview-panel');
-  
+
   if (window.innerWidth <= 768) {
     editor.classList.toggle('hide-mobile');
     preview.classList.toggle('show-mobile');
@@ -475,7 +482,7 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     saveGuide();
   }
-  
+
   // Ctrl+/ or Cmd+/ to toggle preview on mobile
   if ((e.ctrlKey || e.metaKey) && e.key === '/') {
     e.preventDefault();
@@ -483,7 +490,7 @@ document.addEventListener('keydown', (e) => {
       togglePreview();
     }
   }
-  
+
   // F1 for help
   if (e.key === 'F1') {
     e.preventDefault();
@@ -706,7 +713,7 @@ function openMarkdownHelp() {
   }
 
   document.body.appendChild(modal);
-  
+
   // Close modal when clicking outside
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
@@ -881,39 +888,57 @@ function handleAIAssistant() {
   }
 
   document.body.appendChild(modal);
-  
+
   // Variables to store input values
-  let aiTopic = '';
-  let aiLanguage = '';
-  
+  let topic = '';
+  let lang = '';
+
   // Get references to the input elements
   const topicInput = modal.querySelector('#topic');
   const languageInput = modal.querySelector('#language');
   const generateBtn = modal.querySelector('#generate-btn');
-  
+
   // Add event listeners to save input values to variables
   topicInput.addEventListener('input', (e) => {
-    aiTopic = e.target.value;
+    topic = e.target.value;
   });
-  
+
   languageInput.addEventListener('input', (e) => {
-    aiLanguage = e.target.value;
+    lang = e.target.value;
   });
-  
+
   // Add click event listener to the generate button
   generateBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    
+
     // Update variables with current input values
-    aiTopic = topicInput.value;
-    aiLanguage = languageInput.value;
-    
-    console.log('AI Topic:', aiTopic);
-    console.log('AI Language:', aiLanguage);
-    
-    // You can add your generation logic here using the aiTopic and aiLanguage variables
+    topic = topicInput.value;
+    lang = languageInput.value;
+
+    console.log('AI Topic:', topic);
+    console.log('AI Language:', lang);
+
+    //replace this with the actual fetch url for the flask instance whatever that is
+    fetch("http://127.0.0.1:5000/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic: topic, lang: lang })
+    })
+      .then(response => response.json())
+      .then(data => {
+        const receivedTopic = data.flaskoutput;
+        // console.log(receivedTopic);
+        const editor = document.getElementById('markdownEditor')
+
+        editor.value = receivedTopic
+        editorApp.updatePreview();
+        console.log("populated")
+
+      })
+      .catch(err => console.error(err))
+
   });
-  
+
   // Close modal when clicking outside
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
