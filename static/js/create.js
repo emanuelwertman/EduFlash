@@ -722,7 +722,7 @@ function handleAIAssistant() {
   modal.innerHTML = `
     <div class="ai-modal-content">
       <div class="ai-modal-header">
-        <h3>🤖 AI Content Assistant</h3>
+        <h3>AI Guide Assistant</h3>
         <button class="ai-modal-close" onclick="this.closest('.ai-modal').remove()">×</button>
       </div>
       <div class="ai-modal-body">
@@ -732,47 +732,15 @@ function handleAIAssistant() {
           <p>Your intelligent writing companion for educational content is being prepared with amazing features.</p>
         </div>
         
-        <div class="ai-feature-grid">
-          <div class="ai-feature">
-            <div class="ai-feature-icon">✍️</div>
-            <h4>Smart Content Generation</h4>
-            <p>Generate comprehensive educational content based on your selected topic and learning objectives</p>
+        <div class="ai-settings">
+          <div class="input-box">
+            <input type="text" id="topic" placeholder="Topic" required>
           </div>
-          <div class="ai-feature">
-            <div class="ai-feature-icon">🔍</div>
-            <h4>Content Enhancement</h4>
-            <p>Analyze and improve your existing content for clarity, engagement, and educational effectiveness</p>
-          </div>
-          <div class="ai-feature">
-            <div class="ai-feature-icon">�</div>
-            <h4>Curriculum Alignment</h4>
-            <p>Ensure your content aligns with educational standards and learning outcomes</p>
-          </div>
-          <div class="ai-feature">
-            <div class="ai-feature-icon">🎯</div>
-            <h4>Learning Objectives</h4>
-            <p>Automatically generate clear, measurable learning objectives for your educational guides</p>
-          </div>
-          <div class="ai-feature">
-            <div class="ai-feature-icon">💡</div>
-            <h4>Interactive Elements</h4>
-            <p>Suggest quizzes, exercises, and interactive components to enhance learning engagement</p>
-          </div>
-          <div class="ai-feature">
-            <div class="ai-feature-icon">📊</div>
-            <h4>Difficulty Assessment</h4>
-            <p>Automatically assess and adjust content difficulty to match your target audience</p>
+          <div class="input-box">
+            <input type="text" id="language" placeholder="Language" required>
           </div>
         </div>
-        
-        <div class="ai-status">
-          <div class="ai-status-badge">🚀 Coming Very Soon</div>
-          <p>We're putting the finishing touches on these powerful AI features. Get ready for the most intelligent educational content creation experience!</p>
-          <div class="ai-progress">
-            <div class="ai-progress-bar"></div>
-          </div>
-          <small>Development Progress: 85% Complete</small>
-        </div>
+        <button type="submit" class="btn" id="generate-btn">Generate</button>
       </div>
     </div>
   `;
@@ -849,13 +817,6 @@ function handleAIAssistant() {
         padding: 24px;
       }
       
-      .ai-feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-bottom: 32px;
-      }
-      
       .ai-welcome {
         text-align: center;
         padding: 24px;
@@ -883,83 +844,27 @@ function handleAIAssistant() {
         line-height: 1.6;
       }
       
-      .ai-feature {
-        background: rgba(255, 255, 255, 0.3);
-        border: 1px solid var(--stroke);
+      .ai-settings {
+        margin-bottom: 20px;
+      }
+      
+      .input-box {
+        margin-bottom: 16px;
+      }
+      
+      .input-box input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--stroke);
         border-radius: var(--radius);
-        padding: 20px;
-        text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      
-      .ai-feature:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow);
-      }
-      
-      .ai-feature-icon {
-        font-size: 2rem;
-        margin-bottom: 12px;
-      }
-      
-      .ai-feature h4 {
-        margin: 0 0 8px 0;
+        background: var(--glass);
         color: var(--ink);
-        font-weight: 600;
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       
-      .ai-feature p {
-        margin: 0;
-        color: var(--ink-dim);
-        font-size: 0.875rem;
-        line-height: 1.5;
-      }
-      
-      .ai-status {
-        text-align: center;
-        padding: 24px;
-        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-        border: 1px solid rgba(102, 126, 234, 0.2);
-        border-radius: var(--radius);
-      }
-      
-      .ai-status-badge {
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        margin-bottom: 12px;
-      }
-      
-      .ai-status p {
-        margin: 0 0 16px 0;
-        color: var(--ink-dim);
-        line-height: 1.6;
-      }
-      
-      .ai-progress {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 10px;
-        height: 8px;
-        margin: 16px 0 8px 0;
-        overflow: hidden;
-      }
-      
-      .ai-progress-bar {
-        height: 100%;
-        width: 85%;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        border-radius: 10px;
-        animation: pulse 2s infinite;
-      }
-      
-      .ai-status small {
-        color: var(--ink-dim);
-        font-size: 0.8rem;
+      .input-box input:focus {
+        outline: none;
+        border-color: var(--accent);
       }
       
       @keyframes fadeIn {
@@ -971,16 +876,43 @@ function handleAIAssistant() {
         from { transform: translateY(30px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
       }
-      
-      @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.7; }
-      }
     `;
     document.head.appendChild(styles);
   }
 
   document.body.appendChild(modal);
+  
+  // Variables to store input values
+  let aiTopic = '';
+  let aiLanguage = '';
+  
+  // Get references to the input elements
+  const topicInput = modal.querySelector('#topic');
+  const languageInput = modal.querySelector('#language');
+  const generateBtn = modal.querySelector('#generate-btn');
+  
+  // Add event listeners to save input values to variables
+  topicInput.addEventListener('input', (e) => {
+    aiTopic = e.target.value;
+  });
+  
+  languageInput.addEventListener('input', (e) => {
+    aiLanguage = e.target.value;
+  });
+  
+  // Add click event listener to the generate button
+  generateBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    // Update variables with current input values
+    aiTopic = topicInput.value;
+    aiLanguage = languageInput.value;
+    
+    console.log('AI Topic:', aiTopic);
+    console.log('AI Language:', aiLanguage);
+    
+    // You can add your generation logic here using the aiTopic and aiLanguage variables
+  });
   
   // Close modal when clicking outside
   modal.addEventListener('click', (e) => {
