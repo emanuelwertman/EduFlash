@@ -947,7 +947,7 @@ function handleAIAssistant() {
     fetch("http://eduflash.org/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic: topic, lang: lang }),
+      body: JSON.stringify({ token: getCookie("session"), topic: topic, lang: lang }),
     })
       .then((response) => response.json())
       .then((data) => {
