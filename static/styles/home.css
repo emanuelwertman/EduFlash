@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
 
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
 @keyframes move {
   100% {
     transform: translate3d(0, 0, 1px) rotate(360deg);
@@ -9,6 +17,7 @@
 body {
   position: relative;
   width: 100%;
+  max-width: 100vw;
   min-height: 100vh;
   background: var(--bg);
   overflow-x: hidden;
@@ -17,9 +26,11 @@ body {
 
 .background {
   display: flex;
-  flex-direction: column; /* stack sections vertically so tutorial is under hero */
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* let content flow from the top so page can scroll */
+  justify-content: flex-start;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 .ball {
@@ -28,19 +39,20 @@ body {
   height: 15vmin;
   border-radius: 50%;
   backface-visibility: hidden;
-  pointer-events: none; /* don't block clicks/scroll on underlying elements */
+  pointer-events: none;
   animation: move linear infinite;
+  z-index: -1;
 }
 
 .ball:nth-child(odd) {
-  color: rgba(235,94,40,0.68); /* light warm orbs */
+  color: rgba(235,94,40,0.68);
 }
 
 .ball:nth-child(even) {
-  color: rgba(64,61,57,0.62); /* subtle neutral orbs */
+  color: rgba(64,61,57,0.62);
 }
 
-/* Using a custom attribute for variability */
+
 .ball:nth-child(1) {
   top: 7%;
   left: 88%;
@@ -155,6 +167,8 @@ body {
   justify-items: center;
   gap: 30px;
   width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
 }
 .community-exp {
   text-align: center;
@@ -187,6 +201,7 @@ body {
   width: 100%;
   max-width: 900px;
   gap: 20px;
+  box-sizing: border-box;
 }
 
 /*Had to make duplicates of each one to make it look cool*/

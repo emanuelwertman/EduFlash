@@ -1,12 +1,12 @@
 const routes = {
   "/": { file: "static/pages/home.html", script: null },
   "/login": { file: "static/pages/login_signup.html", script: "static/js/login_signup.js" },
-  "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js", protected: true },
-  "/topics": { file: "static/pages/topic.html", script: "static/js/topic.js", protected: true },
-  "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js", protected: true },
+  "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js", protected: false },
+  "/topics": { file: "static/pages/topic.html", script: "static/js/topic.js", protected: false },
+  "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js", protected: false },
   "/about": { file: "static/pages/about.html", script: "static/js/about.js" },
-  "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js", protected: true },
-  "/create": { file: "static/pages/create.html", script: "static/js/create.js", protected: true },
+  "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js", protected: false },
+  "/create": { file: "static/pages/create.html", script: "static/js/create.js", protected: false },
 };
 
 let activePageScriptEl = null;
