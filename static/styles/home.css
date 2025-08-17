@@ -6,13 +6,16 @@
   }
 }
 
-.background {
+body {
   position: relative;
   width: 100%;
   min-height: 100vh;
   background: var(--bg);
   overflow-x: hidden;
   overflow-y: visible;
+}
+
+.background {
   display: flex;
   flex-direction: column; /* stack sections vertically so tutorial is under hero */
   align-items: center;

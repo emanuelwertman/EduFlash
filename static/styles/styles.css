@@ -3,9 +3,6 @@
 -------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-/* Page-specific styles */
-@import url('./create.css');
-
 :root {
   /* Lightened theme tokens (same accent preserved) */
   --bg: #FBF8F6; /* page background */
@@ -171,6 +168,37 @@ hr {
 
 .ef-cta { display: flex; gap: 10px; }
 
+.mobile-cta {
+  display: none;
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.bar {
+  display: block;
+  width: 25px;
+  height: 3px;
+  margin: 5px auto;
+  background-color: var(--ink);
+  transition: all 0.3s ease;
+}
+
+.hamburger.active .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 /* --------------------------------------------------
   Footer & Logos
 -------------------------------------------------- */
@@ -203,6 +231,82 @@ h1, h2, h3 { color: var(--accent); }
 @media (max-width: 900px) {
   .container { padding: 18px; }
 }
+
+@media (max-width: 768px) {
+  .ef-nav {
+    padding: 8px 16px;
+  }
+  
+  .ef-cta {
+    display: none;
+  }
+  
+  .hamburger {
+    display: block;
+  }
+
+  .ef-links {
+    position: fixed;
+    left: -100vw;
+    top: 88px;
+    gap: 0;
+    flex-direction: column;
+    background-color: var(--bg);
+    width: 100%;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem 0;
+    border-top: 1px solid var(--stroke);
+    margin-left: 0;
+    z-index: 999;
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .ef-links a {
+    display: block;
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+    color: var(--ink);
+  }
+
+  .ef-links a:hover {
+    color: var(--accent);
+  }
+
+  .ef-links.active {
+    left: 0;
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .mobile-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 1rem;
+    padding: 0 2rem;
+  }
+
+  .mobile-cta .btn {
+    text-align: center;
+    padding: 12px 20px;
+  }
+}
+
 @media (max-width: 640px) {
-  .ef-nav { gap: 12px; padding: 10px 12px; }
+  .ef-nav {
+    padding: 8px 12px;
+  }
+  
+  .nav-logo {
+    height: 40px;
+  }
+  
+  .ef-logo {
+    font-size: 1.1rem;
+  }
 }

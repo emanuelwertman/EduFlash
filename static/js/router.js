@@ -43,7 +43,6 @@ function setActiveNav(route) {
   });
 }
 
-/** Load route file and inject into #app */
 async function render(route) {
   // Check for dynamic routes
   let cfg = routes[route] || null;
@@ -56,9 +55,7 @@ async function render(route) {
     routeParams.path = pathId;
   }
 
-  // Check authentication for protected routes
   if (cfg && cfg.protected && !isAuthenticated()) {
-    // Redirect to login page
     window.location.hash = '#/login';
     return;
   }
@@ -122,4 +119,58 @@ function removeActivePageScript() {
 
 // Listen for navigation
 window.addEventListener("hashchange", () => render(getRouteFromHash()));
-window.addEventListener("DOMContentLoaded", () => render(getRouteFromHash()));
+window.addEventListener("DOMContentLoaded", () => {
+  render(getRouteFromHash());
+  initMobileMenu();
+});
+
+// Hamburger menu functionality
+function initMobileMenu() {
+  const hamburger = document.querySelector('.hamburger');
+  const navMenu = document.querySelector('.ef-links');
+  const navLinks = document.querySelectorAll('.ef-links a, .mobile-cta a');
+
+  if (hamburger && navMenu) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navMenu.classList.toggle('active');
+      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    // Close menu when clicking on nav links or CTA buttons
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close menu on window resize to desktop size
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        hamburger.classList.remove('active');
+        navMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+}
