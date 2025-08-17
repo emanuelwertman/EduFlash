@@ -1,0 +1,126 @@
+<link rel="stylesheet" href="static/styles/lessons.css">
+
+<section class="lessons-container">
+  <!-- Hero Section -->
+  <div class="lessons-hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-graduation-cap"></i>
+        <span>Learn & Explore</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="gradient-text">Master</span> Every Concept
+      </h1>
+      <p class="hero-subtitle">
+        Dive deep into expertly crafted lessons designed to accelerate your learning journey
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="totalLessons">0</span>
+          <span class="stat-label">Lessons Available</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" id="totalTopics">0</span>
+          <span class="stat-label">Topics Covered</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" id="completedLessons">0</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-elements">
+        <div class="float-element math">∫</div>
+        <div class="float-element science">⚛</div>
+        <div class="float-element code">{ }</div>
+        <div class="float-element book">📚</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="lessons-filters">
+    <div class="filter-group">
+      <label for="pathFilter">Subject Area</label>
+      <select id="pathFilter" class="filter-select">
+        <option value="">All Subjects</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="levelFilter">Difficulty Level</label>
+      <select id="levelFilter" class="filter-select">
+        <option value="">All Levels</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="searchFilter">Search Lessons</label>
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchFilter" placeholder="Search by title or topic...">
+        <button id="clearSearch" class="clear-btn">×</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lessons Grid -->
+  <div class="lessons-grid" id="lessonsGrid">
+    <!-- Lessons will be populated here -->
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-icon">📖</div>
+    <h3>No Lessons Found</h3>
+    <p>Try adjusting your filters or search terms.</p>
+    <button class="btn accent" onclick="clearAllFilters()">Clear Filters</button>
+  </div>
+
+  <!-- Lesson Modal -->
+  <div class="lesson-modal" id="lessonModal" style="display: none;">
+    <div class="lesson-modal-content">
+      <div class="lesson-modal-header">
+        <div class="lesson-meta">
+          <span class="lesson-path" id="modalLessonPath"></span>
+          <span class="lesson-level" id="modalLessonLevel"></span>
+        </div>
+        <button class="lesson-modal-close" onclick="closeLessonModal()">×</button>
+      </div>
+      <div class="lesson-modal-body">
+        <h1 id="modalLessonTitle"></h1>
+        <div class="lesson-info">
+          <div class="info-item">
+            <i class="fas fa-clock"></i>
+            <span id="modalLessonDuration">5 min read</span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-tag"></i>
+            <span id="modalLessonTopic"></span>
+          </div>
+          <div class="info-item">
+            <i class="fas fa-calendar"></i>
+            <span id="modalLessonDate"></span>
+          </div>
+        </div>
+        <div class="lesson-content" id="modalLessonContent">
+          <!-- Rendered markdown content will appear here -->
+        </div>
+      </div>
+      <div class="lesson-modal-footer">
+        <button class="btn ghost" onclick="closeLessonModal()">Close</button>
+        <button class="btn accent" onclick="markAsCompleted()">
+          <i class="fas fa-check"></i>
+          Mark as Complete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" id="loadingState">
+    <div class="loading-spinner"></div>
+    <p>Loading amazing lessons...</p>
+  </div>
+</section>

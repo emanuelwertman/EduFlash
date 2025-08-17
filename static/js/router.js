@@ -7,7 +7,6 @@ const routes = {
   "/about": { file: "static/pages/about.html", script: "static/js/about.js" },
   "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js", protected: false },
   "/create": { file: "static/pages/create.html", script: "static/js/create.js", protected: false },
-  "/lessons": { file: "static/pages/create.html", script: "static/js/create.js", protected: false },
 };
 
 let activePageScriptEl = null;
@@ -70,6 +69,13 @@ async function render(route) {
     const pathId = route.split('/topics/')[1];
     routeParams.path = pathId;
   }
+  
+  // Handle dynamic lesson routes
+  if (!cfg && route.startsWith('/lessons/')) {
+    cfg = routes['/lessons'];
+    const lessonName = route.split('/lessons/')[1];
+    routeParams.lesson = lessonName;
+  }
 
   if (cfg && cfg.protected && !isAuthenticated()) {
     window.location.hash = '#/login';
@@ -96,7 +102,7 @@ async function render(route) {
     app.innerHTML = html;
 
     // Optionally load per-page JS module if declared
-    await loadPageScript(cfg.script);
+    await loadPageScript(cfg.script, routeParams);
 
     // Move focus for a11y
     const firstH1 = app.querySelector("h1, h2, [tabindex], a, button, input, textarea, select");
@@ -110,9 +116,12 @@ async function render(route) {
 }
 
 /** Load a page-specific ES module (if provided) and remove previous one */
-async function loadPageScript(modulePath) {
+async function loadPageScript(modulePath, routeParams = {}) {
   removeActivePageScript();
   if (!modulePath) return;
+
+  // Store route parameters globally so the script can access them
+  window.routeParams = routeParams;
 
   // Dynamically add a <script type="module"> so it executes properly
   activePageScriptEl = document.createElement("script");
