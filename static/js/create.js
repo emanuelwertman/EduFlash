@@ -348,6 +348,12 @@ function saveGuide() {
     file: content,
     topic: topicData,
   };
+  const res = fetch("/api/makepage", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(guide)
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   // Get existing guides
   const guides = JSON.parse(localStorage.getItem('eduflash_guides') || '[]');
