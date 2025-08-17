@@ -1,17 +1,26 @@
-// js/router.js
 const routes = {
   "/": { file: "static/pages/home.html", script: null },
-  "/login": { file: "static/pages/login_signup.html", script: "static/js/login_signup.js" }, // e.g. "js/login.js"
-  "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js" },
-  "/topics": { file: "static/pages/topic.html", script: "static/js/topic.js" },
-  "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js" },
+  "/login": { file: "static/pages/login_signup.html", script: "static/js/login_signup.js" },
+  "/paths": { file: "static/pages/paths.html", script: "static/js/paths.js", protected: true },
+  "/topics": { file: "static/pages/topic.html", script: "static/js/topic.js", protected: true },
+  "/lessons": { file: "static/pages/lessons.html", script: "static/js/lessons.js", protected: true },
   "/about": { file: "static/pages/about.html", script: "static/js/about.js" },
-  "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js" },
-  "/create": { file: "static/pages/create.html", script: "static/js/create.js" },
+  "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js", protected: true },
+  "/create": { file: "static/pages/create.html", script: "static/js/create.js", protected: true },
 };
 
-// Keep track of last page module <script> so we can remove it when navigating
 let activePageScriptEl = null;
+
+function isAuthenticated() {
+  const cookies = document.cookie.split(';');
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split('=');
+    if (name === 'session' && value && value !== 'undefined') {
+      return true;
+    }
+  }
+  return false;
+}
 
 /** Normalize hash to a route key */
 function getRouteFromHash() {
@@ -45,6 +54,13 @@ async function render(route) {
     cfg = routes['/topics'];
     const pathId = route.split('/topics/')[1];
     routeParams.path = pathId;
+  }
+
+  // Check authentication for protected routes
+  if (cfg && cfg.protected && !isAuthenticated()) {
+    // Redirect to login page
+    window.location.hash = '#/login';
+    return;
   }
 
   setActiveNav(route);
