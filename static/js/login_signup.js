@@ -66,7 +66,7 @@ async function makeAccount(username, email, password) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 10000);
 
-    const res = await fetch("/makeaccount", {
+    const res = await fetch("/api/makeaccount", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({ username, email, password }),
@@ -99,7 +99,7 @@ async function startSession(username, password) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 10000);
 
-    const res = await fetch("/startsession", {
+    const res = await fetch("/api/startsession", {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify({ username, password }),

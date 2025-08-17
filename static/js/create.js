@@ -919,7 +919,7 @@ function handleAIAssistant() {
     console.log('AI Language:', lang);
 
     //replace this with the actual fetch url for the flask instance whatever that is
-    fetch("http://127.0.0.1:5000/generate", {
+    fetch("http://eduflash.org/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ topic: topic, lang: lang })
