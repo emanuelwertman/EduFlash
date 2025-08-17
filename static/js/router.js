@@ -43,6 +43,19 @@ function setActiveNav(route) {
   });
 }
 
+function updateAuthButtons() {
+  const isLoggedIn = isAuthenticated();
+  const authButtons = document.querySelectorAll('.ef-cta, .mobile-cta');
+  
+  authButtons.forEach(buttonContainer => {
+    if (isLoggedIn) {
+      buttonContainer.style.display = 'none';
+    } else {
+      buttonContainer.style.display = '';
+    }
+  });
+}
+
 async function render(route) {
   // Check for dynamic routes
   let cfg = routes[route] || null;
@@ -61,6 +74,7 @@ async function render(route) {
   }
 
   setActiveNav(route);
+  updateAuthButtons();
 
   const app = document.getElementById("app");
   if (!cfg) {
@@ -121,6 +135,7 @@ function removeActivePageScript() {
 window.addEventListener("hashchange", () => render(getRouteFromHash()));
 window.addEventListener("DOMContentLoaded", () => {
   render(getRouteFromHash());
+  updateAuthButtons();
   initMobileMenu();
 });
 
