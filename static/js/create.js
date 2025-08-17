@@ -944,18 +944,17 @@ function handleAIAssistant() {
     document.querySelector(".boxes").style.display = "block";
 
     //replace this with the actual fetch url for the flask instance whatever that is
-    fetch("http://eduflash.org/api/generate", {
+    fetch("https://eduflash.org/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: getCookie("session"), topic: topic, lang: lang }),
     })
-      .then((response) => response.json())
+      .then((response) => response.text())
       .then((data) => {
-        const receivedTopic = data.flaskoutput;
         // console.log(receivedTopic);
         const editor = document.getElementById("markdownEditor");
 
-        editor.value = receivedTopic;
+        editor.value = data;
         editorApp.updatePreview();
         console.log("populated");
         document.querySelector(".boxes").style.display = "none";
