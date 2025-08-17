@@ -56,6 +56,8 @@ function updateAuthButtons() {
   });
 }
 
+window.updateAuthButtons = updateAuthButtons;
+
 async function render(route) {
   // Check for dynamic routes
   let cfg = routes[route] || null;

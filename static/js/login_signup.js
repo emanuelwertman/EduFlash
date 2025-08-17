@@ -80,6 +80,10 @@ async function makeAccount(username, email, password) {
     const sessionKey = data.session || data.key || data.token;
     if (sessionKey && data.status !== "error") {
       document.cookie = `session=${sessionKey}; Max-Age=3600; Path=/; SameSite=Lax; Secure`;
+      // Update auth buttons immediately after setting session
+      if (window.updateAuthButtons) {
+        window.updateAuthButtons();
+      }
       window.location.href = "#/paths";
     } else {
       alert(data.message || "This account is already taken. Please try again.");
@@ -114,6 +118,10 @@ async function startSession(username, password) {
     const sessionKey = data.session || data.key || data.token;
     if (sessionKey) {
       document.cookie = `session=${sessionKey}; Max-Age=3600; Path=/; SameSite=Lax; Secure`;
+      // Update auth buttons immediately after setting session
+      if (window.updateAuthButtons) {
+        window.updateAuthButtons();
+      }
       window.location.href = "#/paths";
     } else {
       alert("Login failed. Please try again.");

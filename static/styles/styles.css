@@ -236,6 +236,14 @@ h1, h2, h3 { color: var(--accent); }
 @media (max-width: 768px) {
   .ef-nav {
     padding: 8px 16px;
+    position: sticky;
+    top: 0;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    z-index: 1001;
   }
   
   .ef-cta {
@@ -249,7 +257,7 @@ h1, h2, h3 { color: var(--accent); }
   .ef-links {
     position: fixed;
     left: -100vw;
-    top: 88px;
+    top: 80px;
     gap: 0;
     flex-direction: column;
     background-color: var(--bg);
@@ -301,6 +309,14 @@ h1, h2, h3 { color: var(--accent); }
 @media (max-width: 640px) {
   .ef-nav {
     padding: 8px 12px;
+    position: sticky;
+    top: 0;
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    z-index: 1001;
   }
   
   .nav-logo {
