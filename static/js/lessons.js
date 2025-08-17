@@ -21,6 +21,46 @@ function getCookie(name) {
   return '';
 }
 
+// Helper functions for URL generation and lesson finding
+// Create URL-friendly slug from title
+function createSlug(title) {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .trim('-'); // Remove leading/trailing hyphens
+}
+
+// Generate lesson URL
+function generateLessonUrl(lesson) {
+  const slug = createSlug(lesson.title);
+  return `#/lessons/${slug}`;
+}
+
+// Find lesson by name or ID
+function findLessonByName(lessonName) {
+  // Try to find by exact ID first
+  let lesson = lessonsData.find(l => l.id === lessonName);
+  
+  if (!lesson) {
+    // Try to find by topic ID (for links from topics page)
+    lesson = lessonsData.find(l => l.topic.id === lessonName);
+  }
+  
+  if (!lesson) {
+    // Try to find by title slug (convert title to URL-friendly format)
+    lesson = lessonsData.find(l => createSlug(l.title) === lessonName);
+  }
+  
+  if (!lesson) {
+    // Try to find by partial title match
+    lesson = lessonsData.find(l => l.title.toLowerCase().includes(lessonName.toLowerCase().replace(/-/g, ' ')));
+  }
+  
+  return lesson;
+}
+
 // Initialize the lessons page
 async function initializeLessons() {
   // Load external libraries
@@ -875,45 +915,6 @@ initializeLessons().catch(error => {
 });
 
 // Helper functions for specific lesson view
-
-// Find lesson by name or ID
-function findLessonByName(lessonName) {
-  // Try to find by exact ID first
-  let lesson = lessonsData.find(l => l.id === lessonName);
-  
-  if (!lesson) {
-    // Try to find by topic ID (for links from topics page)
-    lesson = lessonsData.find(l => l.topic.id === lessonName);
-  }
-  
-  if (!lesson) {
-    // Try to find by title slug (convert title to URL-friendly format)
-    lesson = lessonsData.find(l => createSlug(l.title) === lessonName);
-  }
-  
-  if (!lesson) {
-    // Try to find by partial title match
-    lesson = lessonsData.find(l => l.title.toLowerCase().includes(lessonName.toLowerCase().replace(/-/g, ' ')));
-  }
-  
-  return lesson;
-}
-
-// Create URL-friendly slug from title
-function createSlug(title) {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .trim('-'); // Remove leading/trailing hyphens
-}
-
-// Generate lesson URL
-function generateLessonUrl(lesson) {
-  const slug = createSlug(lesson.title);
-  return `#/lessons/${slug}`;
-}
 
 // Hide main lessons view elements
 function hideMainLessonsView() {
