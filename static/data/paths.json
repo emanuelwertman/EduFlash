@@ -10,42 +10,42 @@
           "id": "basic",
           "name": "Basic",
           "topics": [
-            { "id": "addition", "name": "Addition", "hasCommunityLessons": true },
-            { "id": "subtraction", "name": "Subtraction", "hasCommunityLessons": true },
-            { "id": "multiplication", "name": "Multiplication", "hasCommunityLessons": true },
-            { "id": "division", "name": "Division", "hasCommunityLessons": true },
-            { "id": "geometry-basics", "name": "Geometry Basics", "hasCommunityLessons": true }
+            { "id": "addition", "name": "Addition", "hasCommunityLessons": false },
+            { "id": "subtraction", "name": "Subtraction", "hasCommunityLessons": false },
+            { "id": "multiplication", "name": "Multiplication", "hasCommunityLessons": false },
+            { "id": "division", "name": "Division", "hasCommunityLessons": false },
+            { "id": "geometry-basics", "name": "Geometry Basics", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "intermediate",
           "name": "Intermediate",
           "topics": [
-            { "id": "fractions", "name": "Fractions", "hasCommunityLessons": true },
-            { "id": "decimals", "name": "Decimals", "hasCommunityLessons": true },
-            { "id": "probability", "name": "Probability", "hasCommunityLessons": true },
-            { "id": "statistics", "name": "Statistics", "hasCommunityLessons": true }
+            { "id": "fractions", "name": "Fractions", "hasCommunityLessons": false },
+            { "id": "decimals", "name": "Decimals", "hasCommunityLessons": false },
+            { "id": "probability", "name": "Probability", "hasCommunityLessons": false },
+            { "id": "statistics", "name": "Statistics", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "advanced",
           "name": "Advanced",
           "topics": [
-            { "id": "algebra", "name": "Algebra", "hasCommunityLessons": true },
-            { "id": "pre-calculus", "name": "Pre-calculus", "hasCommunityLessons": true },
-            { "id": "calculus", "name": "Calculus", "hasCommunityLessons": true },
-            { "id": "number-theory", "name": "Number Theory", "hasCommunityLessons": true },
-            { "id": "discrete-math", "name": "Discrete Math", "hasCommunityLessons": true }
+            { "id": "algebra", "name": "Algebra", "hasCommunityLessons": false },
+            { "id": "pre-calculus", "name": "Pre-calculus", "hasCommunityLessons": false },
+            { "id": "calculus", "name": "Calculus", "hasCommunityLessons": false },
+            { "id": "number-theory", "name": "Number Theory", "hasCommunityLessons": false },
+            { "id": "discrete-math", "name": "Discrete Math", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "higher-level-studies",
           "name": "Higher-level Studies",
           "topics": [
-            { "id": "multivariable-calculus", "name": "Multivariable Calculus", "hasCommunityLessons": true },
-            { "id": "linear-algebra", "name": "Linear Algebra", "hasCommunityLessons": true },
-            { "id": "differential-equations", "name": "Differential Equations", "hasCommunityLessons": true },
-            { "id": "real-analysis", "name": "Real Analysis", "hasCommunityLessons": true }
+            { "id": "multivariable-calculus", "name": "Multivariable Calculus", "hasCommunityLessons": false },
+            { "id": "linear-algebra", "name": "Linear Algebra", "hasCommunityLessons": false },
+            { "id": "differential-equations", "name": "Differential Equations", "hasCommunityLessons": false },
+            { "id": "real-analysis", "name": "Real Analysis", "hasCommunityLessons": false }
           ]
         }
       ]
@@ -58,41 +58,41 @@
           "id": "basic",
           "name": "Basic",
           "topics": [
-            { "id": "living-vs-non-living", "name": "Living vs Non-living", "hasCommunityLessons": true },
-            { "id": "states-of-matter", "name": "States of Matter", "hasCommunityLessons": true },
-            { "id": "ecosystems", "name": "Ecosystems", "hasCommunityLessons": true }
+            { "id": "living-vs-non-living", "name": "Living vs Non-living", "hasCommunityLessons": false },
+            { "id": "states-of-matter", "name": "States of Matter", "hasCommunityLessons": false },
+            { "id": "ecosystems", "name": "Ecosystems", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "intermediate",
           "name": "Intermediate",
           "topics": [
-            { "id": "cells", "name": "Cells", "hasCommunityLessons": true },
-            { "id": "evolution", "name": "Evolution", "hasCommunityLessons": true },
-            { "id": "geology", "name": "Geology", "hasCommunityLessons": true },
-            { "id": "astronomy", "name": "Astronomy", "hasCommunityLessons": true },
-            { "id": "human-anatomy", "name": "Human Anatomy", "hasCommunityLessons": true }
+            { "id": "cells", "name": "Cells", "hasCommunityLessons": false },
+            { "id": "evolution", "name": "Evolution", "hasCommunityLessons": false },
+            { "id": "geology", "name": "Geology", "hasCommunityLessons": false },
+            { "id": "astronomy", "name": "Astronomy", "hasCommunityLessons": false },
+            { "id": "human-anatomy", "name": "Human Anatomy", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "advanced",
           "name": "Advanced",
           "topics": [
-            { "id": "chemistry", "name": "Chemistry", "hasCommunityLessons": true },
-            { "id": "physics", "name": "Physics", "hasCommunityLessons": true },
-            { "id": "biology", "name": "Biology", "hasCommunityLessons": true },
-            { "id": "environmental-science", "name": "Environmental Science", "hasCommunityLessons": true }
+            { "id": "chemistry", "name": "Chemistry", "hasCommunityLessons": false },
+            { "id": "physics", "name": "Physics", "hasCommunityLessons": false },
+            { "id": "biology", "name": "Biology", "hasCommunityLessons": false },
+            { "id": "environmental-science", "name": "Environmental Science", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "high-level",
           "name": "High-level",
           "topics": [
-            { "id": "high-level-chemistry", "name": "High-level Chemistry", "hasCommunityLessons": true },
-            { "id": "high-level-physics", "name": "High-level Physics", "hasCommunityLessons": true },
-            { "id": "high-level-biology", "name": "High-level Biology", "hasCommunityLessons": true },
-            { "id": "molecular-biology", "name": "Molecular Biology", "hasCommunityLessons": true },
-            { "id": "quantum-physics", "name": "Quantum Physics", "hasCommunityLessons": true }
+            { "id": "high-level-chemistry", "name": "High-level Chemistry", "hasCommunityLessons": false },
+            { "id": "high-level-physics", "name": "High-level Physics", "hasCommunityLessons": false },
+            { "id": "high-level-biology", "name": "High-level Biology", "hasCommunityLessons": false },
+            { "id": "molecular-biology", "name": "Molecular Biology", "hasCommunityLessons": false },
+            { "id": "quantum-physics", "name": "Quantum Physics", "hasCommunityLessons": false }
           ]
         }
       ]
@@ -105,48 +105,48 @@
           "id": "basic",
           "name": "Basic",
           "topics": [
-            { "id": "computers", "name": "Computers", "hasCommunityLessons": true },
-            { "id": "website", "name": "Website", "hasCommunityLessons": true },
-            { "id": "hardware", "name": "Hardware", "hasCommunityLessons": true },
-            { "id": "python", "name": "Python", "hasCommunityLessons": true }
+            { "id": "computers", "name": "Computers", "hasCommunityLessons": false },
+            { "id": "website", "name": "Website", "hasCommunityLessons": false },
+            { "id": "hardware", "name": "Hardware", "hasCommunityLessons": false },
+            { "id": "python", "name": "Python", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "intermediate",
           "name": "Intermediate",
           "topics": [
-            { "id": "binary", "name": "Binary", "hasCommunityLessons": true },
-            { "id": "algorithm", "name": "Algorithm", "hasCommunityLessons": true },
-            { "id": "programs", "name": "Programs", "hasCommunityLessons": true },
-            { "id": "software", "name": "Software", "hasCommunityLessons": true },
-            { "id": "java", "name": "Java", "hasCommunityLessons": true },
-            { "id": "game-design", "name": "Game Design", "hasCommunityLessons": true }
+            { "id": "binary", "name": "Binary", "hasCommunityLessons": false },
+            { "id": "algorithm", "name": "Algorithm", "hasCommunityLessons": false },
+            { "id": "programs", "name": "Programs", "hasCommunityLessons": false },
+            { "id": "software", "name": "Software", "hasCommunityLessons": false },
+            { "id": "java", "name": "Java", "hasCommunityLessons": false },
+            { "id": "game-design", "name": "Game Design", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "advanced",
           "name": "Advanced",
           "topics": [
-            { "id": "networking", "name": "Networking", "hasCommunityLessons": true },
-            { "id": "cybersecurity", "name": "Cybersecurity", "hasCommunityLessons": true },
-            { "id": "c-plus-plus", "name": "C++", "hasCommunityLessons": true },
-            { "id": "operating-systems", "name": "Operating Systems", "hasCommunityLessons": true },
-            { "id": "data-science", "name": "Data Science", "hasCommunityLessons": true },
-            { "id": "cloud-computing", "name": "Cloud Computing", "hasCommunityLessons": true },
-            { "id": "databases", "name": "Databases", "hasCommunityLessons": true },
-            { "id": "ai-fundamentals", "name": "AI Fundamentals", "hasCommunityLessons": true }
+            { "id": "networking", "name": "Networking", "hasCommunityLessons": false },
+            { "id": "cybersecurity", "name": "Cybersecurity", "hasCommunityLessons": false },
+            { "id": "c-plus-plus", "name": "C++", "hasCommunityLessons": false },
+            { "id": "operating-systems", "name": "Operating Systems", "hasCommunityLessons": false },
+            { "id": "data-science", "name": "Data Science", "hasCommunityLessons": false },
+            { "id": "cloud-computing", "name": "Cloud Computing", "hasCommunityLessons": false },
+            { "id": "databases", "name": "Databases", "hasCommunityLessons": false },
+            { "id": "ai-fundamentals", "name": "AI Fundamentals", "hasCommunityLessons": false }
           ]
         },
         {
           "id": "high-level",
           "name": "High Level",
           "topics": [
-            { "id": "chip-architecture", "name": "Chip Architecture", "hasCommunityLessons": true },
-            { "id": "robotics", "name": "Robotics", "hasCommunityLessons": true },
-            { "id": "encoding", "name": "Encoding", "hasCommunityLessons": true },
-            { "id": "web-security", "name": "Web Security", "hasCommunityLessons": true },
-            { "id": "distributed-systems", "name": "Distributed Systems", "hasCommunityLessons": true },
-            { "id": "machine-learning", "name": "Machine Learning", "hasCommunityLessons": true }
+            { "id": "chip-architecture", "name": "Chip Architecture", "hasCommunityLessons": false },
+            { "id": "robotics", "name": "Robotics", "hasCommunityLessons": false },
+            { "id": "encoding", "name": "Encoding", "hasCommunityLessons": false },
+            { "id": "web-security", "name": "Web Security", "hasCommunityLessons": false },
+            { "id": "distributed-systems", "name": "Distributed Systems", "hasCommunityLessons": false },
+            { "id": "machine-learning", "name": "Machine Learning", "hasCommunityLessons": false }
           ]
         }
       ]
@@ -156,28 +156,28 @@
       "name": "History",
       "levels": [
         { "id": "basic", "name": "Basic", "topics": [
-          { "id": "what-is-history", "name": "What is History?", "hasCommunityLessons": true },
-          { "id": "timelines", "name": "Timelines", "hasCommunityLessons": true },
-          { "id": "ancient-civilizations", "name": "Ancient Civilizations", "hasCommunityLessons": true },
-          { "id": "primary-vs-secondary-sources", "name": "Primary vs Secondary Sources", "hasCommunityLessons": true }
+          { "id": "what-is-history", "name": "What is History?", "hasCommunityLessons": false },
+          { "id": "timelines", "name": "Timelines", "hasCommunityLessons": false },
+          { "id": "ancient-civilizations", "name": "Ancient Civilizations", "hasCommunityLessons": false },
+          { "id": "primary-vs-secondary-sources", "name": "Primary vs Secondary Sources", "hasCommunityLessons": false }
         ]},
         { "id": "intermediate", "name": "Intermediate", "topics": [
-          { "id": "medieval-history", "name": "Medieval History", "hasCommunityLessons": true },
-          { "id": "renaissance", "name": "Renaissance", "hasCommunityLessons": true },
-          { "id": "colonialism", "name": "Colonialism", "hasCommunityLessons": true },
-          { "id": "historical-methods", "name": "Historical Methods", "hasCommunityLessons": true }
+          { "id": "medieval-history", "name": "Medieval History", "hasCommunityLessons": false },
+          { "id": "renaissance", "name": "Renaissance", "hasCommunityLessons": false },
+          { "id": "colonialism", "name": "Colonialism", "hasCommunityLessons": false },
+          { "id": "historical-methods", "name": "Historical Methods", "hasCommunityLessons": false }
         ]},
         { "id": "advanced", "name": "Advanced", "topics": [
-          { "id": "world-wars", "name": "World Wars", "hasCommunityLessons": true },
-          { "id": "modern-history", "name": "Modern History", "hasCommunityLessons": true },
-          { "id": "political-systems", "name": "Political Systems", "hasCommunityLessons": true },
-          { "id": "historiography", "name": "Historiography", "hasCommunityLessons": true }
+          { "id": "world-wars", "name": "World Wars", "hasCommunityLessons": false },
+          { "id": "modern-history", "name": "Modern History", "hasCommunityLessons": false },
+          { "id": "political-systems", "name": "Political Systems", "hasCommunityLessons": false },
+          { "id": "historiography", "name": "Historiography", "hasCommunityLessons": false }
         ]},
         { "id": "high-level", "name": "High-level", "topics": [
-          { "id": "historical-analysis", "name": "Historical Analysis", "hasCommunityLessons": true },
-          { "id": "comparative-history", "name": "Comparative History", "hasCommunityLessons": true },
-          { "id": "globalization", "name": "Globalization", "hasCommunityLessons": true },
-          { "id": "conflict-and-peace-studies", "name": "Conflict & Peace Studies", "hasCommunityLessons": true }
+          { "id": "historical-analysis", "name": "Historical Analysis", "hasCommunityLessons": false },
+          { "id": "comparative-history", "name": "Comparative History", "hasCommunityLessons": false },
+          { "id": "globalization", "name": "Globalization", "hasCommunityLessons": false },
+          { "id": "conflict-and-peace-studies", "name": "Conflict & Peace Studies", "hasCommunityLessons": false }
         ]}
       ]
     },
@@ -186,28 +186,28 @@
       "name": "Languages",
       "levels": [
         { "id": "basic", "name": "Basic", "topics": [
-          { "id": "language-basics", "name": "Language Basics", "hasCommunityLessons": true },
-          { "id": "alphabet-and-pronunciation", "name": "Alphabet & Pronunciation", "hasCommunityLessons": true },
-          { "id": "common-phrases", "name": "Common Phrases", "hasCommunityLessons": true },
-          { "id": "grammar-intro", "name": "Grammar Intro", "hasCommunityLessons": true }
+          { "id": "language-basics", "name": "Language Basics", "hasCommunityLessons": false },
+          { "id": "alphabet-and-pronunciation", "name": "Alphabet & Pronunciation", "hasCommunityLessons": false },
+          { "id": "common-phrases", "name": "Common Phrases", "hasCommunityLessons": false },
+          { "id": "grammar-intro", "name": "Grammar Intro", "hasCommunityLessons": false }
         ]},
         { "id": "intermediate", "name": "Intermediate", "topics": [
-          { "id": "reading-comprehension", "name": "Reading Comprehension", "hasCommunityLessons": true },
-          { "id": "vocabulary-building", "name": "Vocabulary Building", "hasCommunityLessons": true },
-          { "id": "writing-skills", "name": "Writing Skills", "hasCommunityLessons": true },
-          { "id": "conversation-practice", "name": "Conversation Practice", "hasCommunityLessons": true }
+          { "id": "reading-comprehension", "name": "Reading Comprehension", "hasCommunityLessons": false },
+          { "id": "vocabulary-building", "name": "Vocabulary Building", "hasCommunityLessons": false },
+          { "id": "writing-skills", "name": "Writing Skills", "hasCommunityLessons": false },
+          { "id": "conversation-practice", "name": "Conversation Practice", "hasCommunityLessons": false }
         ]},
         { "id": "advanced", "name": "Advanced", "topics": [
-          { "id": "advanced-grammar", "name": "Advanced Grammar", "hasCommunityLessons": true },
-          { "id": "translation-techniques", "name": "Translation Techniques", "hasCommunityLessons": true },
-          { "id": "literature", "name": "Literature", "hasCommunityLessons": true },
-          { "id": "academic-writing", "name": "Academic Writing", "hasCommunityLessons": true }
+          { "id": "advanced-grammar", "name": "Advanced Grammar", "hasCommunityLessons": false },
+          { "id": "translation-techniques", "name": "Translation Techniques", "hasCommunityLessons": false },
+          { "id": "literature", "name": "Literature", "hasCommunityLessons": false },
+          { "id": "academic-writing", "name": "Academic Writing", "hasCommunityLessons": false }
         ]},
         { "id": "high-level", "name": "High-level", "topics": [
-          { "id": "linguistics", "name": "Linguistics", "hasCommunityLessons": true },
-          { "id": "dialectology", "name": "Dialectology", "hasCommunityLessons": true },
-          { "id": "sociolinguistics", "name": "Sociolinguistics", "hasCommunityLessons": true },
-          { "id": "interpretation", "name": "Interpretation", "hasCommunityLessons": true }
+          { "id": "linguistics", "name": "Linguistics", "hasCommunityLessons": false },
+          { "id": "dialectology", "name": "Dialectology", "hasCommunityLessons": false },
+          { "id": "sociolinguistics", "name": "Sociolinguistics", "hasCommunityLessons": false },
+          { "id": "interpretation", "name": "Interpretation", "hasCommunityLessons": false }
         ]}
       ]
     },
@@ -216,28 +216,28 @@
       "name": "Arts",
       "levels": [
         { "id": "basic", "name": "Basic", "topics": [
-          { "id": "elements-of-art", "name": "Elements of Art", "hasCommunityLessons": true },
-          { "id": "drawing-basics", "name": "Drawing Basics", "hasCommunityLessons": true },
-          { "id": "color-theory", "name": "Color Theory", "hasCommunityLessons": true },
-          { "id": "music-basics", "name": "Music Basics", "hasCommunityLessons": true }
+          { "id": "elements-of-art", "name": "Elements of Art", "hasCommunityLessons": false },
+          { "id": "drawing-basics", "name": "Drawing Basics", "hasCommunityLessons": false },
+          { "id": "color-theory", "name": "Color Theory", "hasCommunityLessons": false },
+          { "id": "music-basics", "name": "Music Basics", "hasCommunityLessons": false }
         ]},
         { "id": "intermediate", "name": "Intermediate", "topics": [
-          { "id": "painting-techniques", "name": "Painting Techniques", "hasCommunityLessons": true },
-          { "id": "photography", "name": "Photography", "hasCommunityLessons": true },
-          { "id": "digital-art", "name": "Digital Art", "hasCommunityLessons": true },
-          { "id": "music-theory", "name": "Music Theory", "hasCommunityLessons": true }
+          { "id": "painting-techniques", "name": "Painting Techniques", "hasCommunityLessons": false },
+          { "id": "photography", "name": "Photography", "hasCommunityLessons": false },
+          { "id": "digital-art", "name": "Digital Art", "hasCommunityLessons": false },
+          { "id": "music-theory", "name": "Music Theory", "hasCommunityLessons": false }
         ]},
         { "id": "advanced", "name": "Advanced", "topics": [
-          { "id": "sculpture", "name": "Sculpture", "hasCommunityLessons": true },
-          { "id": "animation", "name": "Animation", "hasCommunityLessons": true },
-          { "id": "composition", "name": "Composition", "hasCommunityLessons": true },
-          { "id": "performance", "name": "Performance", "hasCommunityLessons": true }
+          { "id": "sculpture", "name": "Sculpture", "hasCommunityLessons": false },
+          { "id": "animation", "name": "Animation", "hasCommunityLessons": false },
+          { "id": "composition", "name": "Composition", "hasCommunityLessons": false },
+          { "id": "performance", "name": "Performance", "hasCommunityLessons": false }
         ]},
         { "id": "high-level", "name": "High-level", "topics": [
-          { "id": "art-history", "name": "Art History", "hasCommunityLessons": true },
-          { "id": "portfolio-development", "name": "Portfolio Development", "hasCommunityLessons": true },
-          { "id": "sound-design", "name": "Sound Design", "hasCommunityLessons": true },
-          { "id": "stagecraft", "name": "Stagecraft", "hasCommunityLessons": true }
+          { "id": "art-history", "name": "Art History", "hasCommunityLessons": false },
+          { "id": "portfolio-development", "name": "Portfolio Development", "hasCommunityLessons": false },
+          { "id": "sound-design", "name": "Sound Design", "hasCommunityLessons": false },
+          { "id": "stagecraft", "name": "Stagecraft", "hasCommunityLessons": false }
         ]}
       ]
     },
@@ -246,28 +246,28 @@
       "name": "Economics",
       "levels": [
         { "id": "basic", "name": "Basic", "topics": [
-          { "id": "what-is-economics", "name": "What is Economics?", "hasCommunityLessons": true },
-          { "id": "supply-and-demand", "name": "Supply & Demand", "hasCommunityLessons": true },
-          { "id": "markets", "name": "Markets", "hasCommunityLessons": true },
-          { "id": "personal-finance", "name": "Personal Finance", "hasCommunityLessons": true }
+          { "id": "what-is-economics", "name": "What is Economics?", "hasCommunityLessons": false },
+          { "id": "supply-and-demand", "name": "Supply & Demand", "hasCommunityLessons": false },
+          { "id": "markets", "name": "Markets", "hasCommunityLessons": false },
+          { "id": "personal-finance", "name": "Personal Finance", "hasCommunityLessons": false }
         ]},
         { "id": "intermediate", "name": "Intermediate", "topics": [
-          { "id": "microeconomics", "name": "Microeconomics", "hasCommunityLessons": true },
-          { "id": "macroeconomics", "name": "Macroeconomics", "hasCommunityLessons": true },
-          { "id": "elasticity", "name": "Elasticity", "hasCommunityLessons": true },
-          { "id": "costs-and-production", "name": "Costs & Production", "hasCommunityLessons": true }
+          { "id": "microeconomics", "name": "Microeconomics", "hasCommunityLessons": false },
+          { "id": "macroeconomics", "name": "Macroeconomics", "hasCommunityLessons": false },
+          { "id": "elasticity", "name": "Elasticity", "hasCommunityLessons": false },
+          { "id": "costs-and-production", "name": "Costs & Production", "hasCommunityLessons": false }
         ]},
         { "id": "advanced", "name": "Advanced", "topics": [
-          { "id": "game-theory", "name": "Game Theory", "hasCommunityLessons": true },
-          { "id": "finance", "name": "Finance", "hasCommunityLessons": true },
-          { "id": "international-trade", "name": "International Trade", "hasCommunityLessons": true },
-          { "id": "development-economics", "name": "Development Economics", "hasCommunityLessons": true }
+          { "id": "game-theory", "name": "Game Theory", "hasCommunityLessons": false },
+          { "id": "finance", "name": "Finance", "hasCommunityLessons": false },
+          { "id": "international-trade", "name": "International Trade", "hasCommunityLessons": false },
+          { "id": "development-economics", "name": "Development Economics", "hasCommunityLessons": false }
         ]},
         { "id": "high-level", "name": "High-level", "topics": [
-          { "id": "econometrics", "name": "Econometrics", "hasCommunityLessons": true },
-          { "id": "policy-analysis", "name": "Policy Analysis", "hasCommunityLessons": true },
-          { "id": "entrepreneurship", "name": "Entrepreneurship", "hasCommunityLessons": true },
-          { "id": "behavioral-economics", "name": "Behavioral Economics", "hasCommunityLessons": true }
+          { "id": "econometrics", "name": "Econometrics", "hasCommunityLessons": false },
+          { "id": "policy-analysis", "name": "Policy Analysis", "hasCommunityLessons": false },
+          { "id": "entrepreneurship", "name": "Entrepreneurship", "hasCommunityLessons": false },
+          { "id": "behavioral-economics", "name": "Behavioral Economics", "hasCommunityLessons": false }
         ]}
       ]
     }

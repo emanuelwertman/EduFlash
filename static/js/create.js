@@ -4,6 +4,21 @@
 let marked, katex;
 let pathsData = null;
 
+function getCookie(name) {
+  const cookieString = decodeURIComponent(document.cookie);
+  const cookies = cookieString.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    let cookie = cookies[i];
+    while (cookie.charAt(0) === ' ') {
+      cookie = cookie.substring(1);
+    }
+    if (cookie.indexOf(name + '=') === 0) {
+      return cookie.substring(name.length + 1, cookie.length);
+    }
+  }
+  return '';
+}
+
 const editorApp = {};
 
 // Initialize the markdown editor
@@ -328,12 +343,10 @@ function saveGuide() {
 
   // Create guide object
   const guide = {
-    id: Date.now(),
+    token: getCookie("session"),
     title: title,
-    content: content,
+    file: content,
     topic: topicData,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
   };
 
   // Get existing guides
