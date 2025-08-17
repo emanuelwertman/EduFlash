@@ -7,6 +7,7 @@ const routes = {
   "/about": { file: "static/pages/about.html", script: "static/js/about.js" },
   "/profile": { file: "static/pages/profile.html", script: "static/js/profile.js", protected: false },
   "/create": { file: "static/pages/create.html", script: "static/js/create.js", protected: false },
+  "/lessons": { file: "static/pages/create.html", script: "static/js/create.js", protected: false },
 };
 
 let activePageScriptEl = null;
