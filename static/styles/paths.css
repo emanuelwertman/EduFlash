@@ -77,7 +77,7 @@ body {
 }
 
 .subtitle {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
     color: var(--ink-dim);
     margin-bottom: 3rem;
     font-weight: 400;
@@ -89,12 +89,13 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 4rem;
+    padding: 0 1rem;
 }
 
 .search {
     width: 100%;
     max-width: 600px;
-    padding: 2rem;
+    padding: clamp(1rem, 3vw, 2rem);
     background: rgba(255, 255, 255, 0.95);
     border: 3px solid var(--accent);
     border-radius: 60px;
@@ -113,13 +114,13 @@ body {
 
 .search input {
     width: 100%;
-    height: 60px;
-    padding: 0 24px;
+    height: clamp(50px, 8vw, 60px);
+    padding: 0 clamp(16px, 3vw, 24px);
     border: none;
     border-radius: 50px;
     background: rgba(255, 255, 255, 0.8);
     color: var(--ink);
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     font-weight: 400;
     outline: none;
     transition: all 0.3s ease;
@@ -136,14 +137,14 @@ body {
 }
 
 .search .btn {
-    height: 60px;
-    width: 60px;
-    min-width: 60px;
+    height: clamp(50px, 8vw, 60px);
+    width: clamp(50px, 8vw, 60px);
+    min-width: clamp(50px, 8vw, 60px);
     border-radius: 50%;
     background: var(--bg);
     border: 2px solid var(--ink);
     color:#f0ebe7;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -163,15 +164,14 @@ body {
     width: 100%;
     max-width: 98vw;
     margin: 0 auto;
-    padding: 2rem;
+    padding: clamp(1rem, 3vw, 2rem);
 }
 
 .path-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(max(200px, calc(100% / 4 - 2rem)), 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
     margin-top: 1rem;
-    
 }
 
 .path-box {
@@ -179,37 +179,154 @@ body {
     border: 2px solid var(--stroke);
     border-color: var(--accent);
     border-radius: var(--radius-lg);
-    padding: 2rem;
+    padding: clamp(1.5rem, 4vw, 2rem);
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(20px);
     box-shadow: var(--shadow);
     text-align: center;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .path-box:hover {
     background: rgba(255, 255, 255, 0.95);
-    
     transform: translateY(-5px);
     box-shadow: 0 15px 40px rgba(235, 94, 40, 0.15);
 }
 
 .path-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem);
     font-weight: 600;
     color: var(--ink);
     margin-bottom: 1rem;
+    line-height: 1.2;
 }
 
 .path-description {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1rem);
     color: var(--ink-dim);
     margin-bottom: 0.5rem;
     font-weight: 400;
 }
 
 .path-stats {
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.2vw, 0.9rem);
     color: var(--accent);
     font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 1rem;
+    }
+    
+    .top {
+        padding: 2rem 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .content-sections {
+        margin-bottom: 2rem;
+        padding: 0 0.5rem;
+    }
+    
+    .search {
+        border-radius: 40px;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    
+    .search .btn {
+        flex-shrink: 0;
+    }
+    
+    .path-container {
+        grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+        gap: 1rem;
+    }
+    
+    .path-box {
+        min-height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 0.5rem;
+    }
+    
+    .top {
+        padding: 1.5rem 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .subtitle {
+        margin-bottom: 2rem;
+    }
+    
+    .content-sections {
+        margin-bottom: 1.5rem;
+        padding: 0 0.25rem;
+    }
+    
+    .search {
+        border-radius: 30px;
+        border-width: 2px;
+        padding: 0.75rem;
+    }
+    
+    .path-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .path-box {
+        min-height: 140px;
+        padding: 1.25rem;
+    }
+    
+    .selector {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .search {
+        padding: 0.5rem;
+        gap: 0.25rem;
+    }
+    
+    .search input {
+        padding: 0 12px;
+    }
+    
+    .path-box {
+        min-height: 120px;
+        padding: 1rem;
+    }
+}
+
+/* Large screen optimizations */
+@media (min-width: 1400px) {
+    .path-container {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        max-width: 1200px;
+        margin: 1rem auto 0;
+    }
+}
+
+/* No results styling */
+.no-results {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--ink-dim);
+    font-size: 1.1rem;
+}
+
+.no-results p {
+    margin: 0;
 }

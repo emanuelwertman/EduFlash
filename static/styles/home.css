@@ -174,7 +174,7 @@ body {
 .tutorial {
   width: min(1100px, 92vw);
   margin-top: 30vh;
-  font-size: 28px;
+  font-size: 40px;
   font-weight: bold;
   text-align: center;
 }
@@ -184,7 +184,8 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  max-width: 40vw;
+  width: 100%;
+  max-width: 900px;
   gap: 20px;
 }
 
@@ -280,16 +281,111 @@ body {
 }
 
 
+
 /* --------------------------------------------------
   Responsive tweaks (home)
 -------------------------------------------------- */
 @media (max-width: 900px) {
   .hero-title h1 { max-width: 22ch; }
   .community { grid-template-columns: 1fr; gap: 24px; }
+  
+  .tutorial {
+    margin-top: 20vh;
+  }
+  
+  .tutorial-section {
+    grid-template-columns: 1fr;
+    max-width: 600px;
+    gap: 40px;
+    text-align: center;
+  }
+  
+  .tutorial-caption-even,
+  .tutorial-caption-odd {
+    text-align: center;
+    order: 1; /* Always put text on top on mobile */
+  }
+  
+  .tutorial-image {
+    order: 2; /* Always put image below */
+    max-width: 500px;
+    width: 90%;
+    margin: 0 auto;
+  }
 }
+
 @media (max-width: 640px) {
   .hero { width: 94vw; padding: 18px; }
   .hero-title h1 { font-size: clamp(2.2rem, 1.6rem + 3vw, 3rem); }
+  
+  .tutorial {
+    margin-top: 15vh;
+    width: 94vw;
+  }
+  
+  .tutorial h1 {
+    font-size: 32px;
+  }
+  
+  .tutorial-section {
+    margin-top: 40px;
+    gap: 30px;
+    max-width: 100%;
+  }
+  
+  .tutorial-caption-even h3,
+  .tutorial-caption-odd h3 {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+  
+  .tutorial-caption-even p,
+  .tutorial-caption-odd p {
+    font-size: 16px;
+    line-height: 1.5;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .tutorial-image {
+    max-width: 100%;
+    width: 100%;
+    min-height: 200px;
+    object-fit: cover;
+  }
+}
+
+@media (max-width: 480px) {
+  .tutorial {
+    margin-top: 10vh;
+  }
+  
+  .tutorial h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .tutorial-caption-even h3,
+  .tutorial-caption-odd h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .tutorial-caption-even p,
+  .tutorial-caption-odd p {
+    font-size: 15px;
+    line-height: 1.4;
+    max-width: 350px;
+  }
+  
+  .tutorial-section {
+    margin-top: 32px;
+    gap: 24px;
+  }
+  
+  .tutorial-image {
+    min-height: 180px;
+  }
 }
 
 

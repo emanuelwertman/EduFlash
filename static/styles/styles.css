@@ -217,6 +217,7 @@ h1, h2, h3 { color: var(--accent); }
   text-align: center;
   color: var(--ink-dim);
   margin: 28px 0 8px 0;
+  padding: 20px;
 }
 .ef-footer a {
   color: var(--accent);
@@ -308,5 +309,15 @@ h1, h2, h3 { color: var(--accent); }
   
   .ef-logo {
     font-size: 1.1rem;
+  }
+  
+  .ef-footer {
+    margin: 20px 0 8px 0;
+    padding: 16px;
+    font-size: 14px;
+  }
+  
+  .footer-logo {
+    height: 32px;
   }
 }
