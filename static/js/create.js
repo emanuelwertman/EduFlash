@@ -6,17 +6,17 @@ let pathsData = null;
 
 function getCookie(name) {
   const cookieString = decodeURIComponent(document.cookie);
-  const cookies = cookieString.split(';');
+  const cookies = cookieString.split(";");
   for (let i = 0; i < cookies.length; i++) {
     let cookie = cookies[i];
-    while (cookie.charAt(0) === ' ') {
+    while (cookie.charAt(0) === " ") {
       cookie = cookie.substring(1);
     }
-    if (cookie.indexOf(name + '=') === 0) {
+    if (cookie.indexOf(name + "=") === 0) {
       return cookie.substring(name.length + 1, cookie.length);
     }
   }
-  return '';
+  return "";
 }
 
 const editorApp = {};
@@ -29,17 +29,17 @@ async function initializeEditor() {
   // Load paths data
   await loadPathsData();
 
-  const editor = document.getElementById('markdownEditor');
-  const preview = document.getElementById('previewContent');
-  const saveBtn = document.getElementById('saveBtn');
-  const previewToggle = document.getElementById('previewToggle');
-  const helpBtn = document.getElementById('helpBtn');
-  const aiBtn = document.getElementById('aiBtn');
-  const titleInput = document.getElementById('guideTitle');
-  const topicSelect = document.getElementById('guideTopic');
+  const editor = document.getElementById("markdownEditor");
+  const preview = document.getElementById("previewContent");
+  const saveBtn = document.getElementById("saveBtn");
+  const previewToggle = document.getElementById("previewToggle");
+  const helpBtn = document.getElementById("helpBtn");
+  const aiBtn = document.getElementById("aiBtn");
+  const titleInput = document.getElementById("guideTitle");
+  const topicSelect = document.getElementById("guideTopic");
 
   if (!editor || !preview) {
-    console.error('Editor elements not found');
+    console.error("Editor elements not found");
     return;
   }
 
@@ -53,7 +53,7 @@ async function initializeEditor() {
       return code;
     },
     breaks: true,
-    gfm: true
+    gfm: true,
   });
 
   // Update preview function
@@ -72,7 +72,7 @@ async function initializeEditor() {
       // Render KaTeX math
       renderMathInElement(preview);
     } catch (error) {
-      console.error('Error updating preview:', error);
+      console.error("Error updating preview:", error);
       preview.innerHTML = `<div style="color: red; padding: 20px;">
         <h3>Preview Error</h3>
         <p>There was an error rendering the preview:</p>
@@ -83,8 +83,8 @@ async function initializeEditor() {
 
   editorApp.updatePreview = updatePreview;
 
-  editor.addEventListener('input', updatePreview)
-  updatePreview()
+  editor.addEventListener("input", updatePreview);
+  updatePreview();
 
   // Auto-update title when user starts typing in editor
   function autoUpdateTitle() {
@@ -117,13 +117,13 @@ async function initializeEditor() {
     if (!katex) return;
 
     // Render block math
-    const mathBlocks = element.querySelectorAll('.math-block');
-    mathBlocks.forEach(block => {
+    const mathBlocks = element.querySelectorAll(".math-block");
+    mathBlocks.forEach((block) => {
       try {
         const math = block.textContent;
         katex.render(math, block, {
           displayMode: true,
-          throwOnError: false
+          throwOnError: false,
         });
       } catch (e) {
         block.innerHTML = `<span style="color: red;">Math Error: ${e.message}</span>`;
@@ -131,13 +131,13 @@ async function initializeEditor() {
     });
 
     // Render inline math
-    const mathInlines = element.querySelectorAll('.math-inline');
-    mathInlines.forEach(inline => {
+    const mathInlines = element.querySelectorAll(".math-inline");
+    mathInlines.forEach((inline) => {
       try {
         const math = inline.textContent;
         katex.render(math, inline, {
           displayMode: false,
-          throwOnError: false
+          throwOnError: false,
         });
       } catch (e) {
         inline.innerHTML = `<span style="color: red;">Math Error: ${e.message}</span>`;
@@ -146,29 +146,29 @@ async function initializeEditor() {
   }
 
   // Event listeners
-  editor.addEventListener('input', () => {
+  editor.addEventListener("input", () => {
     updatePreview();
     autoUpdateTitle();
   });
-  editor.addEventListener('scroll', syncScroll);
+  editor.addEventListener("scroll", syncScroll);
 
   // Save functionality
-  saveBtn.addEventListener('click', saveGuide);
+  saveBtn.addEventListener("click", saveGuide);
 
   // Preview toggle for mobile
-  previewToggle.addEventListener('click', togglePreview);
+  previewToggle.addEventListener("click", togglePreview);
 
   // Help button functionality
-  helpBtn.addEventListener('click', openMarkdownHelp);
+  helpBtn.addEventListener("click", openMarkdownHelp);
 
   // AI button functionality (placeholder)
-  aiBtn.addEventListener('click', handleAIAssistant);
+  aiBtn.addEventListener("click", handleAIAssistant);
 
   // Title input validation
-  titleInput.addEventListener('input', validateTitle);
+  titleInput.addEventListener("input", validateTitle);
 
   // Topic select validation
-  topicSelect.addEventListener('change', validateTopic);
+  topicSelect.addEventListener("change", validateTopic);
 
   // Initial preview update
   updatePreview();
@@ -177,42 +177,42 @@ async function initializeEditor() {
 // Load paths data from JSON file
 async function loadPathsData() {
   try {
-    const response = await fetch('/static/data/paths.json');
+    const response = await fetch("/static/data/paths.json");
     pathsData = await response.json();
   } catch (error) {
-    console.error('Error loading paths data:', error);
+    console.error("Error loading paths data:", error);
     pathsData = { paths: [] };
   }
 }
 
 // Populate topic dropdown with hierarchical structure
 function populateTopicDropdown() {
-  const topicSelect = document.getElementById('guideTopic');
+  const topicSelect = document.getElementById("guideTopic");
   if (!topicSelect || !pathsData) return;
 
   // Clear existing options except the first one
   topicSelect.innerHTML = '<option value="">Select a topic...</option>';
 
   // Create hierarchical structure: Path > Level > Topics
-  pathsData.paths.forEach(path => {
+  pathsData.paths.forEach((path) => {
     // Create optgroup for each path (subject area)
-    const pathOptgroup = document.createElement('optgroup');
+    const pathOptgroup = document.createElement("optgroup");
     pathOptgroup.label = `📚 ${path.name}`;
 
-    path.levels.forEach(level => {
+    path.levels.forEach((level) => {
       // Add level as a disabled option with visual hierarchy
-      const levelOption = document.createElement('option');
+      const levelOption = document.createElement("option");
       levelOption.disabled = true;
       levelOption.textContent = `   📋 ${level.name}`;
-      levelOption.className = 'level-header';
+      levelOption.className = "level-header";
       pathOptgroup.appendChild(levelOption);
 
       // Add topics under this level
-      level.topics.forEach(topic => {
-        const option = document.createElement('option');
+      level.topics.forEach((topic) => {
+        const option = document.createElement("option");
         option.value = topic.id;
         option.textContent = `      • ${topic.name}`;
-        option.className = 'topic-item';
+        option.className = "topic-item";
         option.dataset.pathId = path.id;
         option.dataset.levelId = level.id;
         option.dataset.pathName = path.name;
@@ -228,29 +228,29 @@ function populateTopicDropdown() {
 
 // Validate title input
 function validateTitle() {
-  const titleInput = document.getElementById('guideTitle');
+  const titleInput = document.getElementById("guideTitle");
   const title = titleInput.value.trim();
 
   if (title.length > 100) {
-    titleInput.style.borderColor = '#ef4444';
-    titleInput.title = 'Title must be 100 characters or less';
+    titleInput.style.borderColor = "#ef4444";
+    titleInput.title = "Title must be 100 characters or less";
   } else {
-    titleInput.style.borderColor = '';
-    titleInput.title = '';
+    titleInput.style.borderColor = "";
+    titleInput.title = "";
   }
 }
 
 // Validate topic selection
 function validateTopic() {
-  const topicSelect = document.getElementById('guideTopic');
+  const topicSelect = document.getElementById("guideTopic");
   const selectedValue = topicSelect.value;
 
   if (selectedValue) {
-    topicSelect.style.borderColor = '';
-    topicSelect.title = '';
+    topicSelect.style.borderColor = "";
+    topicSelect.title = "";
   } else {
-    topicSelect.style.borderColor = '';
-    topicSelect.title = '';
+    topicSelect.style.borderColor = "";
+    topicSelect.title = "";
   }
 }
 
@@ -258,7 +258,7 @@ function validateTopic() {
 async function loadExternalLibraries() {
   // Load marked.js
   if (!window.marked) {
-    await loadScript('https://cdn.jsdelivr.net/npm/marked/marked.min.js');
+    await loadScript("https://cdn.jsdelivr.net/npm/marked/marked.min.js");
     marked = window.marked;
   } else {
     marked = window.marked;
@@ -267,13 +267,16 @@ async function loadExternalLibraries() {
   // Load KaTeX
   if (!window.katex) {
     // Load KaTeX CSS
-    const katexCSS = document.createElement('link');
-    katexCSS.rel = 'stylesheet';
-    katexCSS.href = 'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css';
+    const katexCSS = document.createElement("link");
+    katexCSS.rel = "stylesheet";
+    katexCSS.href =
+      "https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css";
     document.head.appendChild(katexCSS);
 
     // Load KaTeX JS
-    await loadScript('https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js');
+    await loadScript(
+      "https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    );
     katex = window.katex;
   } else {
     katex = window.katex;
@@ -283,7 +286,7 @@ async function loadExternalLibraries() {
 // Helper function to load external scripts
 function loadScript(src) {
   return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src = src;
     script.onload = resolve;
     script.onerror = reject;
@@ -293,39 +296,41 @@ function loadScript(src) {
 
 // Sync scrolling between editor and preview
 function syncScroll() {
-  const editor = document.getElementById('markdownEditor');
-  const preview = document.getElementById('previewContent');
+  const editor = document.getElementById("markdownEditor");
+  const preview = document.getElementById("previewContent");
 
   if (!editor || !preview) return;
 
-  const scrollPercentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
-  const previewScrollTop = scrollPercentage * (preview.scrollHeight - preview.clientHeight);
+  const scrollPercentage =
+    editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+  const previewScrollTop =
+    scrollPercentage * (preview.scrollHeight - preview.clientHeight);
   preview.scrollTop = previewScrollTop;
 }
 
 // Save guide functionality
 function saveGuide() {
-  const editor = document.getElementById('markdownEditor');
-  const titleInput = document.getElementById('guideTitle');
-  const topicSelect = document.getElementById('guideTopic');
+  const editor = document.getElementById("markdownEditor");
+  const titleInput = document.getElementById("guideTitle");
+  const topicSelect = document.getElementById("guideTopic");
 
   const content = editor.value;
   const title = titleInput.value.trim();
   const selectedTopicId = topicSelect.value;
 
   if (!content.trim()) {
-    showNotification('Please add some content before saving.', 'error');
+    showNotification("Please add some content before saving.", "error");
     return;
   }
 
   if (!title) {
-    showNotification('Please enter a title for your guide.', 'error');
+    showNotification("Please enter a title for your guide.", "error");
     titleInput.focus();
     return;
   }
 
   if (!selectedTopicId) {
-    showNotification('Please select a topic for your guide.', 'error');
+    showNotification("Please select a topic for your guide.", "error");
     topicSelect.focus();
     return;
   }
@@ -333,39 +338,42 @@ function saveGuide() {
   // Get topic details from the selected option
   const selectedOption = topicSelect.options[topicSelect.selectedIndex];
   const pathData = {
-    path: selectedOption.dataset.pathId, 
+    path: selectedOption.dataset.pathId,
     level: selectedOption.dataset.levelId,
-    topic: selectedOption.dataset.topicName
-  }
+    topic: selectedOption.dataset.topicName,
+  };
   // Create guide object
   const guide = {
     token: getCookie("session"),
     title: title,
     file: content,
-    topic: pathData
+    topic: pathData,
   };
   const res = fetch("/api/makepage", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Accept": "application/json" },
-    body: JSON.stringify(guide)
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(guide),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
   // Get existing guides
-  const guides = JSON.parse(localStorage.getItem('eduflash_guides') || '[]');
+  const guides = JSON.parse(localStorage.getItem("eduflash_guides") || "[]");
   guides.push(guide);
-  localStorage.setItem('eduflash_guides', JSON.stringify(guides));
+  localStorage.setItem("eduflash_guides", JSON.stringify(guides));
 
-  showNotification(`Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`, 'success');
+  showNotification(
+    `Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`,
+    "success"
+  );
 }
 
 // Show notification function
-function showNotification(message, type = 'info') {
+function showNotification(message, type = "info") {
   // Remove existing notifications
-  const existingNotifications = document.querySelectorAll('.notification');
-  existingNotifications.forEach(n => n.remove());
+  const existingNotifications = document.querySelectorAll(".notification");
+  existingNotifications.forEach((n) => n.remove());
 
-  const notification = document.createElement('div');
+  const notification = document.createElement("div");
   notification.className = `notification notification-${type}`;
   notification.innerHTML = `
     <div class="notification-content">
@@ -375,9 +383,9 @@ function showNotification(message, type = 'info') {
   `;
 
   // Add notification styles if not already present
-  if (!document.querySelector('#notification-styles')) {
-    const styles = document.createElement('style');
-    styles.id = 'notification-styles';
+  if (!document.querySelector("#notification-styles")) {
+    const styles = document.createElement("style");
+    styles.id = "notification-styles";
     styles.textContent = `
       .notification {
         position: fixed;
@@ -444,7 +452,7 @@ function showNotification(message, type = 'info') {
   // Auto-remove after 5 seconds
   setTimeout(() => {
     if (notification.parentElement) {
-      notification.style.animation = 'slideIn 0.3s ease-out reverse';
+      notification.style.animation = "slideIn 0.3s ease-out reverse";
       setTimeout(() => notification.remove(), 300);
     }
   }, 5000);
@@ -452,10 +460,10 @@ function showNotification(message, type = 'info') {
 
 // Extract title from markdown content
 function extractTitle(content) {
-  const lines = content.split('\n');
+  const lines = content.split("\n");
   for (const line of lines) {
     const trimmed = line.trim();
-    if (trimmed.startsWith('# ')) {
+    if (trimmed.startsWith("# ")) {
       return trimmed.substring(2).trim();
     }
   }
@@ -464,42 +472,42 @@ function extractTitle(content) {
 
 // Toggle preview for mobile
 function togglePreview() {
-  const editor = document.querySelector('.editor-panel');
-  const preview = document.querySelector('.preview-panel');
+  const editor = document.querySelector(".editor-panel");
+  const preview = document.querySelector(".preview-panel");
 
   if (window.innerWidth <= 768) {
-    editor.classList.toggle('hide-mobile');
-    preview.classList.toggle('show-mobile');
+    editor.classList.toggle("hide-mobile");
+    preview.classList.toggle("show-mobile");
   }
 }
 
 // Handle window resize
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   if (window.innerWidth > 768) {
-    document.querySelector('.editor-panel').classList.remove('hide-mobile');
-    document.querySelector('.preview-panel').classList.remove('show-mobile');
+    document.querySelector(".editor-panel").classList.remove("hide-mobile");
+    document.querySelector(".preview-panel").classList.remove("show-mobile");
   }
 });
 
 // Auto-resize textarea
 function autoResize() {
-  const editor = document.getElementById('markdownEditor');
+  const editor = document.getElementById("markdownEditor");
   if (editor) {
-    editor.style.height = 'auto';
-    editor.style.height = editor.scrollHeight + 'px';
+    editor.style.height = "auto";
+    editor.style.height = editor.scrollHeight + "px";
   }
 }
 
 // Add keyboard shortcuts
-document.addEventListener('keydown', (e) => {
+document.addEventListener("keydown", (e) => {
   // Ctrl+S or Cmd+S to save
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+  if ((e.ctrlKey || e.metaKey) && e.key === "s") {
     e.preventDefault();
     saveGuide();
   }
 
   // Ctrl+/ or Cmd+/ to toggle preview on mobile
-  if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+  if ((e.ctrlKey || e.metaKey) && e.key === "/") {
     e.preventDefault();
     if (window.innerWidth <= 768) {
       togglePreview();
@@ -507,7 +515,7 @@ document.addEventListener('keydown', (e) => {
   }
 
   // F1 for help
-  if (e.key === 'F1') {
+  if (e.key === "F1") {
     e.preventDefault();
     openMarkdownHelp();
   }
@@ -515,8 +523,8 @@ document.addEventListener('keydown', (e) => {
 
 // Open markdown help in new tab
 function openMarkdownHelp() {
-  const modal = document.createElement('div');
-  modal.className = 'help-modal';
+  const modal = document.createElement("div");
+  modal.className = "help-modal";
   modal.innerHTML = `
     <div class="help-modal-content">
       <div class="help-modal-header">
@@ -578,9 +586,9 @@ function openMarkdownHelp() {
   `;
 
   // Add modal styles if not already present
-  if (!document.querySelector('#help-modal-styles')) {
-    const styles = document.createElement('style');
-    styles.id = 'help-modal-styles';
+  if (!document.querySelector("#help-modal-styles")) {
+    const styles = document.createElement("style");
+    styles.id = "help-modal-styles";
     styles.textContent = `
       .help-modal {
         position: fixed;
@@ -730,7 +738,7 @@ function openMarkdownHelp() {
   document.body.appendChild(modal);
 
   // Close modal when clicking outside
-  modal.addEventListener('click', (e) => {
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.remove();
     }
@@ -739,8 +747,8 @@ function openMarkdownHelp() {
 
 // AI Assistant placeholder function
 function handleAIAssistant() {
-  const modal = document.createElement('div');
-  modal.className = 'ai-modal';
+  const modal = document.createElement("div");
+  modal.className = "ai-modal";
   modal.innerHTML = `
     <div class="ai-modal-content">
       <div class="ai-modal-header">
@@ -768,9 +776,9 @@ function handleAIAssistant() {
   `;
 
   // Add modal styles if not already present
-  if (!document.querySelector('#ai-modal-styles')) {
-    const styles = document.createElement('style');
-    styles.id = 'ai-modal-styles';
+  if (!document.querySelector("#ai-modal-styles")) {
+    const styles = document.createElement("style");
+    styles.id = "ai-modal-styles";
     styles.textContent = `
       .ai-modal {
         position: fixed;
@@ -905,57 +913,58 @@ function handleAIAssistant() {
   document.body.appendChild(modal);
 
   // Variables to store input values
-  let topic = '';
-  let lang = '';
+  let topic = "";
+  let lang = "";
 
   // Get references to the input elements
-  const topicInput = modal.querySelector('#topic');
-  const languageInput = modal.querySelector('#language');
-  const generateBtn = modal.querySelector('#generate-btn');
+  const topicInput = modal.querySelector("#topic");
+  const languageInput = modal.querySelector("#language");
+  const generateBtn = modal.querySelector("#generate-btn");
 
   // Add event listeners to save input values to variables
-  topicInput.addEventListener('input', (e) => {
+  topicInput.addEventListener("input", (e) => {
     topic = e.target.value;
   });
 
-  languageInput.addEventListener('input', (e) => {
+  languageInput.addEventListener("input", (e) => {
     lang = e.target.value;
   });
 
   // Add click event listener to the generate button
-  generateBtn.addEventListener('click', (e) => {
+  generateBtn.addEventListener("click", (e) => {
     e.preventDefault();
 
     // Update variables with current input values
     topic = topicInput.value;
     lang = languageInput.value;
 
-    console.log('AI Topic:', topic);
-    console.log('AI Language:', lang);
+    console.log("AI Topic:", topic);
+    console.log("AI Language:", lang);
+
+    document.querySelector(".boxes").style.display = "block";
 
     //replace this with the actual fetch url for the flask instance whatever that is
     fetch("http://eduflash.org/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ topic: topic, lang: lang })
+      body: JSON.stringify({ topic: topic, lang: lang }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         const receivedTopic = data.flaskoutput;
         // console.log(receivedTopic);
-        const editor = document.getElementById('markdownEditor')
+        const editor = document.getElementById("markdownEditor");
 
-        editor.value = receivedTopic
+        editor.value = receivedTopic;
         editorApp.updatePreview();
-        console.log("populated")
-
+        console.log("populated");
+        document.querySelector(".boxes").style.display = "none";
       })
-      .catch(err => console.error(err))
-
+      .catch((err) => console.error(err));
   });
 
   // Close modal when clicking outside
-  modal.addEventListener('click', (e) => {
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) {
       modal.remove();
     }
@@ -963,9 +972,9 @@ function handleAIAssistant() {
 }
 
 // Initialize when the page loads
-initializeEditor().catch(error => {
-  console.error('Failed to initialize editor:', error);
-  document.getElementById('previewContent').innerHTML = `
+initializeEditor().catch((error) => {
+  console.error("Failed to initialize editor:", error);
+  document.getElementById("previewContent").innerHTML = `
     <div style="color: red; padding: 20px;">
       <h3>Initialization Error</h3>
       <p>Failed to load the markdown editor. Please refresh the page.</p>
