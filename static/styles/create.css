@@ -9,7 +9,7 @@
   max-width: 100%;
   margin: 0 auto;
   padding: 24px;
-  height: calc(100vh - 120px); /* Fixed height for proper scrolling */
+  height: 120vh;
   display: flex;
   flex-direction: column;
   background: var(--bg); /* Use website's background color */
@@ -409,7 +409,7 @@
   background: rgba(255, 255, 255, 0.3);
   color: var(--ink);
   min-height: 0; /* Allow to shrink below content size */
-  overflow-y: auto; /* Add scrollbar to editor */
+  /* overflow-y: auto; Add scrollbar to editor */
   transition: all 0.3s ease;
 }
 
@@ -672,16 +672,8 @@
 
 /* Hide preview on mobile by default */
 @media (max-width: 768px) {
-  .preview-panel {
-    display: none;
-  }
-  
-  .preview-panel.show-mobile {
-    display: flex;
-  }
-  
-  .editor-panel.hide-mobile {
-    display: none;
+  .create-container {
+    height: 200vh;
   }
 }
 
