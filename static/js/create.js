@@ -332,15 +332,17 @@ function saveGuide() {
 
   // Get topic details from the selected option
   const selectedOption = topicSelect.options[topicSelect.selectedIndex];
-
+  const pathData = {
+    path: selectedOption.dataset.pathId, 
+    level: selectedOption.dataset.levelId,
+    topic: selectedOption.dataset.topicName
+  }
   // Create guide object
   const guide = {
     token: getCookie("session"),
     title: title,
     file: content,
-    path: selectedOption.dataset.pathId, 
-    level: selectedOption.dataset.levelId,
-    topic: selectedOption.dataset.topicName,
+    topic: pathData
   };
   const res = fetch("/api/makepage", {
     method: "POST",
