@@ -41,9 +41,10 @@ async function searchLessonsByTopic(topic) {
      headers: {
        'Content-Type': 'application/json',
      },
-     body: JSON.stringify(searchData),
-     credentials: 'include'
+     body: JSON.stringify(searchData)
    });
+
+   alert(response);
 
 
    if (!response.ok) {
