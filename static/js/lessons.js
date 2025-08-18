@@ -136,29 +136,121 @@ async function loadLessonForTopic(topic) {
 
    console.log(searchResults);
   
-   // Take the first result (most relevant lesson for this topic)
-   const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = searchResults[0];
-  
-   // Fetch lesson content
-   const content = await fetchLessonContentByHash(hash);
-  
-   // Create lesson data object
-   lessonData = {
-     hash: hash,
-     title: title || 'Untitled Lesson',
-     topic: lessonTopic || topic,
-     owner: owner || 'Anonymous',
-     likes: likes || 0,
-     dislikes: dislikes || 0,
-     views: views || 0,
-     content: content
-   };
-  
-   // Show the lesson
-   showLessonContent(lessonData);
+   // Show lesson selection if multiple results
+   if (searchResults.length > 1) {
+     showLessonSelection(searchResults, topic);
+   } else {
+     // Load single lesson directly
+     const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = searchResults[0];
+     await loadSingleLesson(hash, title || 'Untitled Lesson', lessonTopic || topic, owner || 'Anonymous', likes || 0, dislikes || 0, views || 0);
+   }
   
  } catch (error) {
    console.error('Error loading lesson for topic:', error);
+   showError();
+ }
+}
+
+
+// Show lesson selection interface
+function showLessonSelection(searchResults, topic) {
+ document.getElementById('loadingState').style.display = 'none';
+ document.getElementById('errorState').style.display = 'none';
+ document.getElementById('lessonContent').style.display = 'none';
+ 
+ // Create lesson selection container if it doesn't exist
+ let selectionContainer = document.getElementById('lessonSelection');
+ if (!selectionContainer) {
+   selectionContainer = document.createElement('div');
+   selectionContainer.id = 'lessonSelection';
+   selectionContainer.className = 'lesson-selection-container glass';
+   document.querySelector('.lessons-container').appendChild(selectionContainer);
+ }
+ 
+ selectionContainer.style.display = 'block';
+ selectionContainer.innerHTML = `
+   <div class="selection-header">
+     <h2>Choose a Lesson</h2>
+     <p>We found ${searchResults.length} lessons for topic: <strong>${topic}</strong></p>
+   </div>
+   <div class="lesson-options">
+     ${searchResults.map((result, index) => {
+       const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = result;
+       return `
+         <div class="lesson-option" data-index="${index}">
+           <div class="lesson-option-content">
+             <h3 class="lesson-option-title">${title || 'Untitled Lesson'}</h3>
+             <p class="lesson-option-author">by ${owner || 'Anonymous'}</p>
+             <div class="lesson-option-stats">
+               <span class="stat">
+                 <i class="fas fa-eye"></i>
+                 ${views || 0} views
+               </span>
+               <span class="stat">
+                 <i class="fas fa-thumbs-up"></i>
+                 ${likes || 0}
+               </span>
+               <span class="stat">
+                 <i class="fas fa-thumbs-down"></i>
+                 ${dislikes || 0}
+               </span>
+             </div>
+           </div>
+           <button class="select-lesson-btn" data-hash="${hash}" data-title="${title || 'Untitled Lesson'}" 
+                   data-topic="${lessonTopic || topic}" data-owner="${owner || 'Anonymous'}" 
+                   data-likes="${likes || 0}" data-dislikes="${dislikes || 0}" data-views="${views || 0}">
+             Select Lesson
+           </button>
+         </div>
+       `;
+     }).join('')}
+   </div>
+ `;
+ 
+ // Add click handlers for lesson selection
+ const selectButtons = selectionContainer.querySelectorAll('.select-lesson-btn');
+ selectButtons.forEach(button => {
+   button.addEventListener('click', async (e) => {
+     const hash = e.target.dataset.hash;
+     const title = e.target.dataset.title;
+     const topic = e.target.dataset.topic;
+     const owner = e.target.dataset.owner;
+     const likes = parseInt(e.target.dataset.likes);
+     const dislikes = parseInt(e.target.dataset.dislikes);
+     const views = parseInt(e.target.dataset.views);
+     
+     selectionContainer.style.display = 'none';
+     await loadSingleLesson(hash, title, topic, owner, likes, dislikes, views);
+   });
+ });
+}
+
+
+// Load a single lesson by hash
+async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, views) {
+ try {
+   showLoading();
+   
+   // Fetch lesson content
+   const content = await fetchLessonContentByHash(hash);
+   
+   // Create lesson data object
+   lessonData = {
+     hash: hash,
+     title: title,
+     topic: topic,
+     owner: owner,
+     likes: likes,
+     dislikes: dislikes,
+     views: views,
+     content: content
+   };
+   
+   // Show the lesson
+   showLessonContent(lessonData);
+   
+ } catch (error) {
+   console.error('Error loading single lesson:', error);
    showError();
  }
 }
