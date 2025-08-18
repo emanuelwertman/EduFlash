@@ -219,8 +219,12 @@ function showLessonSelection(searchResults, topic) {
      const dislikes = parseInt(e.target.dataset.dislikes);
      const views = parseInt(e.target.dataset.views);
      
-     selectionContainer.style.display = 'none';
      await loadSingleLesson(hash, title, topic, owner, likes, dislikes, views);
+     
+     // Update back button after loading lesson
+     if (window.updateBackButton) {
+       window.updateBackButton();
+     }
    });
  });
 }
@@ -234,6 +238,9 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
    // Fetch lesson content
    const content = await fetchLessonContentByHash(hash);
    
+   // Increment views when lesson is loaded
+   const updatedViews = await incrementLessonViews(hash, views);
+   
    // Create lesson data object
    lessonData = {
      hash: hash,
@@ -242,9 +249,12 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
      owner: owner,
      likes: likes,
      dislikes: dislikes,
-     views: views,
+     views: updatedViews || views,
      content: content
    };
+   
+   // Check user's interaction status for this lesson
+   await checkUserInteractionStatus(hash);
    
    // Show the lesson
    showLessonContent(lessonData);
@@ -252,6 +262,86 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
  } catch (error) {
    console.error('Error loading single lesson:', error);
    showError();
+ }
+}
+
+
+// Increment lesson views
+async function incrementLessonViews(hash, currentViews) {
+ try {
+   const response = await fetch('/api/lesson/view', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       hash: hash
+     })
+   });
+
+   if (response.ok) {
+     const data = await response.json();
+     return data.views || (currentViews + 1);
+   } else {
+     // If API fails, increment locally
+     return currentViews + 1;
+   }
+ } catch (error) {
+   console.error('Error incrementing lesson views:', error);
+   // Return incremented view count even if API fails
+   return currentViews + 1;
+ }
+}
+
+
+// Check user's interaction status for the current lesson
+async function checkUserInteractionStatus(hash) {
+ const sessionToken = getSessionCookie();
+ if (!sessionToken) {
+   // Reset interactions if not logged in
+   userInteractions = {
+     liked: false,
+     disliked: false,
+     reported: false
+   };
+   return;
+ }
+
+ try {
+   const response = await fetch('/api/lesson/interactions', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       hash: hash
+     }),
+     credentials: 'include'
+   });
+
+   if (response.ok) {
+     const data = await response.json();
+     userInteractions = {
+       liked: data.liked || false,
+       disliked: data.disliked || false,
+       reported: data.reported || false
+     };
+   } else {
+     // Reset interactions if API fails
+     userInteractions = {
+       liked: false,
+       disliked: false,
+       reported: false
+     };
+   }
+ } catch (error) {
+   console.error('Error checking user interaction status:', error);
+   // Reset interactions if API fails
+   userInteractions = {
+     liked: false,
+     disliked: false,
+     reported: false
+   };
  }
 }
 
@@ -393,6 +483,12 @@ function showLessonContent(lesson) {
  document.getElementById('loadingState').style.display = 'none';
  document.getElementById('errorState').style.display = 'none';
  document.getElementById('lessonContent').style.display = 'block';
+ 
+ // Hide lesson selection if it exists
+ const selectionContainer = document.getElementById('lessonSelection');
+ if (selectionContainer) {
+   selectionContainer.style.display = 'none';
+ }
 
 
  // Update lesson title
@@ -435,6 +531,9 @@ function showLessonContent(lesson) {
 
  // Setup lesson interaction buttons
  setupLessonInteractions();
+ 
+ // Update button states based on user interactions
+ updateLikeDislikeButtons();
 }
 
 
@@ -474,11 +573,35 @@ async function toggleLike() {
     
      updateLikeDislikeButtons();
      updateLessonStats(data);
+     
+     // Update lesson data with new stats
+     if (lessonData) {
+       lessonData.likes = data.likes || lessonData.likes;
+       lessonData.dislikes = data.dislikes || lessonData.dislikes;
+     }
    }
  } catch (error) {
    console.error('Error liking lesson:', error);
    // Show mock feedback for development
    userInteractions.liked = !userInteractions.liked;
+   
+   // Update lesson data for mock
+   if (lessonData) {
+     if (userInteractions.liked) {
+       lessonData.likes += 1;
+       if (userInteractions.disliked) {
+         lessonData.dislikes -= 1;
+         userInteractions.disliked = false;
+       }
+     } else {
+       lessonData.likes -= 1;
+     }
+     
+     // Update display
+     document.getElementById('likeCount').textContent = lessonData.likes;
+     document.getElementById('dislikeCount').textContent = lessonData.dislikes;
+   }
+   
    updateLikeDislikeButtons();
    showNotification(userInteractions.liked ? 'Lesson liked!' : 'Like removed', 'success');
  }
@@ -520,11 +643,35 @@ async function toggleDislike() {
     
      updateLikeDislikeButtons();
      updateLessonStats(data);
+     
+     // Update lesson data with new stats
+     if (lessonData) {
+       lessonData.likes = data.likes || lessonData.likes;
+       lessonData.dislikes = data.dislikes || lessonData.dislikes;
+     }
    }
  } catch (error) {
    console.error('Error disliking lesson:', error);
    // Show mock feedback for development
    userInteractions.disliked = !userInteractions.disliked;
+   
+   // Update lesson data for mock
+   if (lessonData) {
+     if (userInteractions.disliked) {
+       lessonData.dislikes += 1;
+       if (userInteractions.liked) {
+         lessonData.likes -= 1;
+         userInteractions.liked = false;
+       }
+     } else {
+       lessonData.dislikes -= 1;
+     }
+     
+     // Update display
+     document.getElementById('likeCount').textContent = lessonData.likes;
+     document.getElementById('dislikeCount').textContent = lessonData.dislikes;
+   }
+   
    updateLikeDislikeButtons();
    showNotification(userInteractions.disliked ? 'Lesson disliked' : 'Dislike removed', 'info');
  }
@@ -735,11 +882,34 @@ function shareOnSocialMedia(platform, url, title) {
 // Handle back button
 function setupBackButton() {
  const backBtn = document.getElementById('backBtn');
- backBtn.textContent = '← Back to Topics';
- backBtn.addEventListener('click', () => {
-   // Navigate back to the topics page - you may need to adjust this based on your routing
-   window.location.href = '#/topics';
- });
+ 
+ function updateBackButton() {
+   const lessonContent = document.getElementById('lessonContent');
+   const lessonSelection = document.getElementById('lessonSelection');
+   
+   // Check if we're viewing a lesson and came from lesson selection
+   if (lessonContent.style.display !== 'none' && lessonSelection && lessonSelection.innerHTML.trim() !== '') {
+     // If we're viewing a lesson and have lesson selection available
+     backBtn.textContent = '← Back to Lesson Selection';
+     backBtn.onclick = () => {
+       lessonContent.style.display = 'none';
+       lessonSelection.style.display = 'block';
+       updateBackButton();
+     };
+   } else {
+     // Default back to topics
+     backBtn.textContent = '← Back to Topics';
+     backBtn.onclick = () => {
+       window.location.href = '#/topics';
+     };
+   }
+ }
+ 
+ // Initial setup
+ updateBackButton();
+ 
+ // Store the update function for use in other parts of the code
+ window.updateBackButton = updateBackButton;
 }
 
 
