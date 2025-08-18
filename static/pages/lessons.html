@@ -50,38 +50,6 @@
         <h1 id="lessonTitle" class="lesson-title">Lesson Title</h1>
       </div>
       
-      <!-- Lesson Stats Bar -->
-      <div class="lesson-stats-bar">
-        <div class="lesson-stats">
-          <div class="stat-item">
-            <i class="fas fa-eye"></i>
-            <span id="viewCount">0</span>
-            <span class="stat-label">views</span>
-          </div>
-          <div class="stat-item">
-            <i class="fas fa-user"></i>
-            <span class="stat-label">by</span>
-            <span id="authorName">Unknown</span>
-          </div>
-        </div>
-        <div class="lesson-actions">
-          <button id="likeBtn" class="action-btn like-btn">
-            <i class="fas fa-thumbs-up"></i>
-            <span id="likeCount">0</span>
-          </button>
-          <button id="dislikeBtn" class="action-btn dislike-btn">
-            <i class="fas fa-thumbs-down"></i>
-            <span id="dislikeCount">0</span>
-          </button>
-          <button id="reportBtn" class="action-btn report-btn" title="Report inappropriate content">
-            <i class="fas fa-flag"></i>
-          </button>
-          <button id="shareBtn" class="action-btn share-btn" title="Share this lesson">
-            <i class="fas fa-share"></i>
-          </button>
-        </div>
-      </div>
-
       <div id="renderedContent" class="rendered-content">
         <!-- Markdown/LaTeX content will be rendered here -->
       </div>
@@ -101,76 +69,10 @@
         <i class="fas fa-chevron-left"></i>
         Previous Lesson
       </button>
-      <div class="lesson-progress">
-        <span id="progressText">Lesson Progress</span>
-        <div class="progress-bar">
-          <div id="progressFill" class="progress-fill"></div>
-        </div>
-      </div>
       <button id="nextLessonBtn" class="nav-btn next-btn" style="display: none;">
         Next Lesson
         <i class="fas fa-chevron-right"></i>
       </button>
-    </div>
-  </div>
-
-  <!-- Report Modal -->
-  <div id="reportModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Report Content</h3>
-        <button id="closeReportModal" class="close-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Please select a reason for reporting this lesson:</p>
-        <div class="report-reasons">
-          <label><input type="radio" name="reportReason" value="inappropriate"> Inappropriate content</label>
-          <label><input type="radio" name="reportReason" value="incorrect"> Incorrect information</label>
-          <label><input type="radio" name="reportReason" value="spam"> Spam or irrelevant</label>
-          <label><input type="radio" name="reportReason" value="copyright"> Copyright violation</label>
-          <label><input type="radio" name="reportReason" value="other"> Other</label>
-        </div>
-        <textarea id="reportComment" placeholder="Additional details (optional)..." rows="3"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button id="cancelReport" class="btn-secondary">Cancel</button>
-        <button id="submitReport" class="btn-primary">Submit Report</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Share Modal -->
-  <div id="shareModal" class="modal" style="display: none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Share This Lesson</h3>
-        <button id="closeShareModal" class="close-btn">&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="share-option">
-          <label>Direct Link:</label>
-          <div class="share-link-container">
-            <input type="text" id="shareLink" readonly>
-            <button id="copyLinkBtn" class="copy-btn">
-              <i class="fas fa-copy"></i>
-            </button>
-          </div>
-        </div>
-        <div class="share-buttons">
-          <button class="social-btn twitter-btn" data-platform="twitter">
-            <i class="fab fa-twitter"></i>
-            Twitter
-          </button>
-          <button class="social-btn facebook-btn" data-platform="facebook">
-            <i class="fab fa-facebook"></i>
-            Facebook
-          </button>
-          <button class="social-btn reddit-btn" data-platform="reddit">
-            <i class="fab fa-reddit"></i>
-            Reddit
-          </button>
-        </div>
-      </div>
     </div>
   </div>
 </section>
