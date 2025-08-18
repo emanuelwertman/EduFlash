@@ -366,7 +366,7 @@ function saveGuide() {
     "success"
   );
 
-  window.location.reload();
+  this.$router.go(0);
 }
 
 // Show notification function
