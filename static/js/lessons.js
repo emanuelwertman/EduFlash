@@ -395,31 +395,61 @@ function showLessonContent(lesson) {
  document.getElementById('lessonContent').style.display = 'block';
 
 
- // Update lesson title
- document.getElementById('lessonTitle').textContent = lesson.title;
- document.getElementById('lessonPath').textContent = `Topic: ${lesson.topic}`;
+ // Update lesson title (with null check)
+ const lessonTitleElement = document.getElementById('lessonTitle');
+ if (lessonTitleElement) {
+   lessonTitleElement.textContent = lesson.title;
+ }
+ 
+ const lessonPathElement = document.getElementById('lessonPath');
+ if (lessonPathElement) {
+   lessonPathElement.textContent = `Topic: ${lesson.topic}`;
+ }
 
 
- // Update lesson stats
- document.getElementById('viewCount').textContent = lesson.views || 0;
- document.getElementById('authorName').textContent = lesson.owner || 'Unknown';
- document.getElementById('likeCount').textContent = lesson.likes || 0;
- document.getElementById('dislikeCount').textContent = lesson.dislikes || 0;
+ // Update lesson stats (with null checks)
+ const viewCountElement = document.getElementById('viewCount');
+ if (viewCountElement) {
+   viewCountElement.textContent = lesson.views || 0;
+ }
+ 
+ const authorNameElement = document.getElementById('authorName');
+ if (authorNameElement) {
+   authorNameElement.textContent = lesson.owner || 'Unknown';
+ }
+ 
+ const likeCountElement = document.getElementById('likeCount');
+ if (likeCountElement) {
+   likeCountElement.textContent = lesson.likes || 0;
+ }
+ 
+ const dislikeCountElement = document.getElementById('dislikeCount');
+ if (dislikeCountElement) {
+   dislikeCountElement.textContent = lesson.dislikes || 0;
+ }
 
 
  // Render the lesson content
  const renderedContent = document.getElementById('renderedContent');
- const html = renderMarkdownContent(lesson.content);
- renderedContent.innerHTML = html;
+ if (renderedContent) {
+   const html = renderMarkdownContent(lesson.content);
+   renderedContent.innerHTML = html;
+   
+   // Render math equations
+   renderMathInElement(renderedContent);
+ }
 
 
- // Render math equations
- renderMathInElement(renderedContent);
-
-
- // Update lesson metadata
- document.getElementById('progressText').textContent = `${lesson.views} views`;
- document.getElementById('progressFill').style.width = '100%';
+ // Update lesson metadata (with null checks)
+ const progressTextElement = document.getElementById('progressText');
+ if (progressTextElement) {
+   progressTextElement.textContent = `${lesson.views} views`;
+ }
+ 
+ const progressFillElement = document.getElementById('progressFill');
+ if (progressFillElement) {
+   progressFillElement.style.width = '100%';
+ }
 
 
  // Store lesson data for interactions
@@ -559,8 +589,11 @@ async function reportLesson(reason, comment) {
    if (response.ok) {
      userInteractions.reported = true;
      showNotification('Thank you for your report. We will review the content.', 'success');
-     document.getElementById('reportBtn').disabled = true;
-     document.getElementById('reportBtn').innerHTML = '<i class="fas fa-check"></i>';
+     const reportBtn = document.getElementById('reportBtn');
+     if (reportBtn) {
+       reportBtn.disabled = true;
+       reportBtn.innerHTML = '<i class="fas fa-check"></i>';
+     }
    }
  } catch (error) {
    console.error('Error reporting lesson:', error);
@@ -575,16 +608,31 @@ async function reportLesson(reason, comment) {
 // Update lesson stats after user interaction
 function updateLessonStats(newStats) {
  if (newStats.likes !== undefined) {
-   document.getElementById('likeCount').textContent = newStats.likes;
-   window.currentLessonData.likes = newStats.likes;
+   const likeCountElement = document.getElementById('likeCount');
+   if (likeCountElement) {
+     likeCountElement.textContent = newStats.likes;
+   }
+   if (window.currentLessonData) {
+     window.currentLessonData.likes = newStats.likes;
+   }
  }
  if (newStats.dislikes !== undefined) {
-   document.getElementById('dislikeCount').textContent = newStats.dislikes;
-   window.currentLessonData.dislikes = newStats.dislikes;
+   const dislikeCountElement = document.getElementById('dislikeCount');
+   if (dislikeCountElement) {
+     dislikeCountElement.textContent = newStats.dislikes;
+   }
+   if (window.currentLessonData) {
+     window.currentLessonData.dislikes = newStats.dislikes;
+   }
  }
  if (newStats.views !== undefined) {
-   document.getElementById('viewCount').textContent = newStats.views;
-   window.currentLessonData.views = newStats.views;
+   const viewCountElement = document.getElementById('viewCount');
+   if (viewCountElement) {
+     viewCountElement.textContent = newStats.views;
+   }
+   if (window.currentLessonData) {
+     window.currentLessonData.views = newStats.views;
+   }
  }
 }
 
@@ -593,25 +641,45 @@ function updateLessonStats(newStats) {
 function updateLikeDislikeButtons() {
  const likeBtn = document.getElementById('likeBtn');
  const dislikeBtn = document.getElementById('dislikeBtn');
-  likeBtn.classList.toggle('active', userInteractions.liked);
- dislikeBtn.classList.toggle('active', userInteractions.disliked);
+ 
+ if (likeBtn) {
+   likeBtn.classList.toggle('active', userInteractions.liked);
+ }
+ if (dislikeBtn) {
+   dislikeBtn.classList.toggle('active', userInteractions.disliked);
+ }
 }
 
 
 // Setup lesson interaction buttons
 function setupLessonInteractions() {
  // Like button
- document.getElementById('likeBtn').addEventListener('click', toggleLike);
-  // Dislike button
- document.getElementById('dislikeBtn').addEventListener('click', toggleDislike);
-  // Report button
- document.getElementById('reportBtn').addEventListener('click', () => {
-   if (!userInteractions.reported) {
-     showReportModal();
-   }
- });
-  // Share button
- document.getElementById('shareBtn').addEventListener('click', showShareModal);
+ const likeBtn = document.getElementById('likeBtn');
+ if (likeBtn) {
+   likeBtn.addEventListener('click', toggleLike);
+ }
+ 
+ // Dislike button
+ const dislikeBtn = document.getElementById('dislikeBtn');
+ if (dislikeBtn) {
+   dislikeBtn.addEventListener('click', toggleDislike);
+ }
+ 
+ // Report button
+ const reportBtn = document.getElementById('reportBtn');
+ if (reportBtn) {
+   reportBtn.addEventListener('click', () => {
+     if (!userInteractions.reported) {
+       showReportModal();
+     }
+   });
+ }
+ 
+ // Share button
+ const shareBtn = document.getElementById('shareBtn');
+ if (shareBtn) {
+   shareBtn.addEventListener('click', showShareModal);
+ }
 }
 
 

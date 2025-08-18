@@ -320,6 +320,21 @@
   overflow: hidden;
 }
 
+/* Lesson Title Section */
+.lesson-title-section {
+  padding: 24px;
+  background: rgba(var(--charcoal), 0.02);
+  border-bottom: 1px solid var(--stroke);
+}
+
+.lesson-title-section .lesson-title {
+  margin: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
 /* Lesson Stats Bar */
 .lesson-stats-bar {
   display: flex;
