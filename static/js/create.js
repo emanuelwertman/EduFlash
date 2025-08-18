@@ -365,8 +365,6 @@ function saveGuide() {
     `Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`,
     "success"
   );
-
-  window.location.reload();
 }
 
 // Show notification function
