@@ -127,36 +127,46 @@ async function loadLessonForTopic(topic) {
 }
 
 
-// Load external libraries for markdown and LaTeX rendering
+// Load external libraries
 async function loadExternalLibraries() {
- return new Promise((resolve) => {
-   // Check if libraries are already loaded
-   if (window.marked && window.katex && window.renderMathInElement) {
-     resolve();
-     return;
-   }
+  // Load marked.js
+  if (!window.marked) {
+    await loadScript("https://cdn.jsdelivr.net/npm/marked/marked.min.js");
+    marked = window.marked;
+  } else {
+    marked = window.marked;
+  }
 
+  // Load KaTeX
+  if (!window.katex) {
+    // Load KaTeX CSS
+    const katexCSS = document.createElement("link");
+    katexCSS.rel = "stylesheet";
+    katexCSS.href =
+      "https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css";
+    document.head.appendChild(katexCSS);
 
-   // Wait for all scripts to load
-   const checkLibraries = setInterval(() => {
-     if (window.marked && window.katex && window.renderMathInElement) {
-       clearInterval(checkLibraries);
-      
-       // Configure marked options
-       marked.setOptions({
-         highlight: function (code, lang) {
-           return code; // Basic syntax highlighting placeholder
-         },
-         breaks: true,
-         gfm: true
-       });
-      
-       resolve();
-     }
-   }, 100);
- });
+    // Load KaTeX JS
+    await loadScript(
+      "https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"
+    );
+    katex = window.katex;
+  } else {
+    katex = window.katex;
+  }
 }
 
+
+// Helper function to load external scripts
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+}
 
 // Process LaTeX math expressions in HTML
 function processLatexMath(html) {
