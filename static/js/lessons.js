@@ -44,7 +44,7 @@ async function searchLessonsByTopic(topic) {
      body: JSON.stringify(searchData)
    });
 
-   alert(response);
+   console.log(response);
 
 
    if (!response.ok) {
