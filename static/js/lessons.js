@@ -85,7 +85,7 @@ async function searchLessonsByTopic(topic) {
    }
 
    let results = await response.json();
-   for (int i = 0; i < results.length; i++) {
+   for (let i = 0; i < results.length; i++) {
      results[i] = parseQuery(results[i]);
    }
    return results;
