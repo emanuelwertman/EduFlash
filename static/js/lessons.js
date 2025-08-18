@@ -30,7 +30,7 @@ function getTopicFromURL() {
 function parseQuery(text) {
  text = text.substring(1, text.length - 1)
 
- arr = [];
+ let arr = [];
 
  text = text.split(/,(.*)/s);
  arr.push(text[0]);
