@@ -325,6 +325,11 @@
   padding: 24px;
   background: rgba(var(--charcoal), 0.02);
   border-bottom: 1px solid var(--stroke);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .lesson-title-section .lesson-title {
@@ -333,6 +338,40 @@
   font-weight: 700;
   font-size: 2rem;
   line-height: 1.2;
+  flex: 1;
+}
+
+.lesson-title-section .lesson-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.lesson-title-section .action-btn {
+  background: transparent;
+  border: 1px solid var(--stroke);
+  color: var(--ink-dim);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lesson-title-section .action-btn:hover {
+  background: var(--charcoal-50);
+  border-color: var(--charcoal);
+  color: var(--ink);
+}
+
+.lesson-title-section .share-btn:hover {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
 }
 
 /* Lesson Stats Bar */

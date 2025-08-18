@@ -48,6 +48,12 @@
       <!-- Lesson Title -->
       <div class="lesson-title-section">
         <h1 id="lessonTitle" class="lesson-title">Lesson Title</h1>
+        <div class="lesson-actions">
+          <button id="shareBtn" class="action-btn share-btn" title="Share this lesson">
+            <i class="fas fa-share"></i>
+            Share
+          </button>
+        </div>
       </div>
       
       <div id="renderedContent" class="rendered-content">
@@ -73,6 +79,41 @@
         Next Lesson
         <i class="fas fa-chevron-right"></i>
       </button>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div id="shareModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Share This Lesson</h3>
+        <button id="closeShareModal" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="share-option">
+          <label>Direct Link:</label>
+          <div class="share-link-container">
+            <input type="text" id="shareLink" readonly>
+            <button id="copyLinkBtn" class="copy-btn">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+        <div class="share-buttons">
+          <button class="social-btn twitter-btn" data-platform="twitter">
+            <i class="fab fa-twitter"></i>
+            Twitter
+          </button>
+          <button class="social-btn facebook-btn" data-platform="facebook">
+            <i class="fab fa-facebook"></i>
+            Facebook
+          </button>
+          <button class="social-btn reddit-btn" data-platform="reddit">
+            <i class="fab fa-reddit"></i>
+            Reddit
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </section>

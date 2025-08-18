@@ -404,6 +404,9 @@ function showLessonContent(lesson) {
    // Render math equations
    renderMathInElement(renderedContent);
  }
+ 
+ // Setup share button
+ setupShareButton();
 }
 
 
@@ -433,6 +436,93 @@ function showNotification(message, type = 'info') {
      notification.remove();
    }
  }, 5000);
+}
+
+
+// Show share modal
+function showShareModal() {
+ const currentUrl = window.location.href;
+ const shareLink = document.getElementById('shareLink');
+ if (shareLink) {
+   shareLink.value = currentUrl;
+ }
+ 
+ const shareModal = document.getElementById('shareModal');
+ if (shareModal) {
+   shareModal.style.display = 'flex';
+ }
+ 
+ // Setup share modal events
+ const closeShareModalBtn = document.getElementById('closeShareModal');
+ if (closeShareModalBtn) {
+   closeShareModalBtn.addEventListener('click', closeShareModal);
+ }
+ 
+ const copyLinkBtn = document.getElementById('copyLinkBtn');
+ if (copyLinkBtn) {
+   copyLinkBtn.addEventListener('click', copyShareLink);
+ }
+ 
+ // Social sharing buttons
+ document.querySelectorAll('.social-btn').forEach(btn => {
+   btn.addEventListener('click', (e) => {
+     const platform = e.currentTarget.dataset.platform;
+     shareOnSocialMedia(platform, currentUrl, lessonData ? lessonData.title : 'Lesson');
+   });
+ });
+}
+
+
+// Close share modal
+function closeShareModal() {
+ const shareModal = document.getElementById('shareModal');
+ if (shareModal) {
+   shareModal.style.display = 'none';
+ }
+}
+
+
+// Copy share link
+function copyShareLink() {
+ const shareLink = document.getElementById('shareLink');
+ if (shareLink) {
+   shareLink.select();
+   document.execCommand('copy');
+   showNotification('Link copied to clipboard!', 'success');
+ }
+}
+
+
+// Share on social media
+function shareOnSocialMedia(platform, url, title) {
+ const encodedUrl = encodeURIComponent(url);
+ const encodedTitle = encodeURIComponent(`Check out this lesson: ${title}`);
+ 
+ let shareUrl;
+ switch (platform) {
+   case 'twitter':
+     shareUrl = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+     break;
+   case 'facebook':
+     shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+     break;
+   case 'reddit':
+     shareUrl = `https://reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`;
+     break;
+   default:
+     return;
+ }
+ 
+ window.open(shareUrl, '_blank', 'width=600,height=400');
+}
+
+
+// Setup share button interaction
+function setupShareButton() {
+ const shareBtn = document.getElementById('shareBtn');
+ if (shareBtn) {
+   shareBtn.addEventListener('click', showShareModal);
+ }
 }
 
 
