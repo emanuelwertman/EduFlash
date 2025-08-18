@@ -219,12 +219,8 @@ function showLessonSelection(searchResults, topic) {
      const dislikes = parseInt(e.target.dataset.dislikes);
      const views = parseInt(e.target.dataset.views);
      
+     selectionContainer.style.display = 'none';
      await loadSingleLesson(hash, title, topic, owner, likes, dislikes, views);
-     
-     // Update back button after loading lesson
-     if (window.updateBackButton) {
-       window.updateBackButton();
-     }
    });
  });
 }
@@ -238,9 +234,6 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
    // Fetch lesson content
    const content = await fetchLessonContentByHash(hash);
    
-   // Increment views when lesson is loaded
-   const updatedViews = await incrementLessonViews(hash, views);
-   
    // Create lesson data object
    lessonData = {
      hash: hash,
@@ -249,12 +242,12 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
      owner: owner,
      likes: likes,
      dislikes: dislikes,
-     views: updatedViews || views,
+     views: views,
      content: content
    };
    
-   // Check user's interaction status for this lesson
-   await checkUserInteractionStatus(hash);
+   // Increment view count
+   await incrementViewCount(hash);
    
    // Show the lesson
    showLessonContent(lessonData);
@@ -266,49 +259,10 @@ async function loadSingleLesson(hash, title, topic, owner, likes, dislikes, view
 }
 
 
-// Increment lesson views
-async function incrementLessonViews(hash, currentViews) {
+// Increment view count for a lesson
+async function incrementViewCount(hash) {
  try {
    const response = await fetch('/api/lesson/view', {
-     method: 'POST',
-     headers: {
-       'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({
-       hash: hash
-     })
-   });
-
-   if (response.ok) {
-     const data = await response.json();
-     return data.views || (currentViews + 1);
-   } else {
-     // If API fails, increment locally
-     return currentViews + 1;
-   }
- } catch (error) {
-   console.error('Error incrementing lesson views:', error);
-   // Return incremented view count even if API fails
-   return currentViews + 1;
- }
-}
-
-
-// Check user's interaction status for the current lesson
-async function checkUserInteractionStatus(hash) {
- const sessionToken = getSessionCookie();
- if (!sessionToken) {
-   // Reset interactions if not logged in
-   userInteractions = {
-     liked: false,
-     disliked: false,
-     reported: false
-   };
-   return;
- }
-
- try {
-   const response = await fetch('/api/lesson/interactions', {
      method: 'POST',
      headers: {
        'Content-Type': 'application/json',
@@ -321,27 +275,25 @@ async function checkUserInteractionStatus(hash) {
 
    if (response.ok) {
      const data = await response.json();
-     userInteractions = {
-       liked: data.liked || false,
-       disliked: data.disliked || false,
-       reported: data.reported || false
-     };
-   } else {
-     // Reset interactions if API fails
-     userInteractions = {
-       liked: false,
-       disliked: false,
-       reported: false
-     };
+     if (data.views !== undefined && lessonData) {
+       lessonData.views = data.views;
+       // Update the view count in the UI if the lesson is already displayed
+       const viewCountElement = document.getElementById('viewCount');
+       if (viewCountElement) {
+         viewCountElement.textContent = data.views;
+       }
+       const progressTextElement = document.getElementById('progressText');
+       if (progressTextElement) {
+         progressTextElement.textContent = `${data.views} views`;
+       }
+       if (window.currentLessonData) {
+         window.currentLessonData.views = data.views;
+       }
+     }
    }
  } catch (error) {
-   console.error('Error checking user interaction status:', error);
-   // Reset interactions if API fails
-   userInteractions = {
-     liked: false,
-     disliked: false,
-     reported: false
-   };
+   console.error('Error incrementing view count:', error);
+   // Don't throw error as this is not critical for lesson display
  }
 }
 
@@ -483,12 +435,6 @@ function showLessonContent(lesson) {
  document.getElementById('loadingState').style.display = 'none';
  document.getElementById('errorState').style.display = 'none';
  document.getElementById('lessonContent').style.display = 'block';
- 
- // Hide lesson selection if it exists
- const selectionContainer = document.getElementById('lessonSelection');
- if (selectionContainer) {
-   selectionContainer.style.display = 'none';
- }
 
 
  // Update lesson title
@@ -532,20 +478,69 @@ function showLessonContent(lesson) {
  // Setup lesson interaction buttons
  setupLessonInteractions();
  
- // Update button states based on user interactions
- updateLikeDislikeButtons();
+ // Check user's current interaction state
+ checkUserInteractionState();
+}
+
+
+// Check user's current interaction state with the lesson
+async function checkUserInteractionState() {
+ if (!lessonData || !lessonData.hash) return;
+ 
+ const sessionToken = getSessionCookie();
+ if (!sessionToken) return;
+
+ try {
+   const response = await fetch('/api/lesson/interaction-state', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       hash: lessonData.hash
+     }),
+     credentials: 'include'
+   });
+
+   if (response.ok) {
+     const data = await response.json();
+     userInteractions.liked = data.liked || false;
+     userInteractions.disliked = data.disliked || false;
+     userInteractions.reported = data.reported || false;
+     
+     // Update button states
+     updateLikeDislikeButtons();
+     
+     // Update report button if already reported
+     if (userInteractions.reported) {
+       const reportBtn = document.getElementById('reportBtn');
+       if (reportBtn) {
+         reportBtn.disabled = true;
+         reportBtn.innerHTML = '<i class="fas fa-check"></i>';
+       }
+     }
+   }
+ } catch (error) {
+   console.error('Error checking user interaction state:', error);
+   // Don't throw error as this is not critical for lesson display
+ }
 }
 
 
 // Like/dislike functionality
 async function toggleLike() {
  if (!lessonData || !lessonData.hash) return;
-  const sessionToken = getSessionCookie();
+ const sessionToken = getSessionCookie();
  if (!sessionToken) {
    alert('Please log in to like this lesson.');
    return;
  }
 
+ // Show loading state on button
+ const likeBtn = document.getElementById('likeBtn');
+ const originalContent = likeBtn.innerHTML;
+ likeBtn.disabled = true;
+ likeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
  try {
    const response = await fetch('/api/lesson/like', {
@@ -560,7 +555,6 @@ async function toggleLike() {
      credentials: 'include'
    });
 
-
    if (response.ok) {
      const data = await response.json();
      userInteractions.liked = !userInteractions.liked;
@@ -571,51 +565,61 @@ async function toggleLike() {
        document.getElementById('dislikeBtn').classList.remove('active');
      }
     
+     // Update local lesson data
+     if (data.likes !== undefined) {
+       lessonData.likes = data.likes;
+     }
+     if (data.dislikes !== undefined) {
+       lessonData.dislikes = data.dislikes;
+     }
+    
      updateLikeDislikeButtons();
      updateLessonStats(data);
-     
-     // Update lesson data with new stats
-     if (lessonData) {
-       lessonData.likes = data.likes || lessonData.likes;
-       lessonData.dislikes = data.dislikes || lessonData.dislikes;
-     }
+     showNotification(userInteractions.liked ? 'Lesson liked!' : 'Like removed', 'success');
+   } else {
+     throw new Error(`HTTP error! status: ${response.status}`);
    }
  } catch (error) {
    console.error('Error liking lesson:', error);
-   // Show mock feedback for development
+   // Update local state for development/offline mode
    userInteractions.liked = !userInteractions.liked;
    
-   // Update lesson data for mock
-   if (lessonData) {
-     if (userInteractions.liked) {
-       lessonData.likes += 1;
-       if (userInteractions.disliked) {
-         lessonData.dislikes -= 1;
-         userInteractions.disliked = false;
-       }
-     } else {
-       lessonData.likes -= 1;
+   // Update local counters
+   if (userInteractions.liked) {
+     lessonData.likes = (lessonData.likes || 0) + 1;
+     if (userInteractions.disliked) {
+       lessonData.dislikes = Math.max(0, (lessonData.dislikes || 0) - 1);
+       userInteractions.disliked = false;
+       document.getElementById('dislikeBtn').classList.remove('active');
      }
-     
-     // Update display
-     document.getElementById('likeCount').textContent = lessonData.likes;
-     document.getElementById('dislikeCount').textContent = lessonData.dislikes;
+   } else {
+     lessonData.likes = Math.max(0, (lessonData.likes || 0) - 1);
    }
    
    updateLikeDislikeButtons();
-   showNotification(userInteractions.liked ? 'Lesson liked!' : 'Like removed', 'success');
+   updateLessonStats({ likes: lessonData.likes, dislikes: lessonData.dislikes });
+   showNotification(userInteractions.liked ? 'Lesson liked! (offline mode)' : 'Like removed (offline mode)', 'success');
+ } finally {
+   // Restore button state
+   likeBtn.disabled = false;
+   likeBtn.innerHTML = originalContent;
  }
 }
 
 
 async function toggleDislike() {
  if (!lessonData || !lessonData.hash) return;
-  const sessionToken = getSessionCookie();
+ const sessionToken = getSessionCookie();
  if (!sessionToken) {
    alert('Please log in to dislike this lesson.');
    return;
  }
 
+ // Show loading state on button
+ const dislikeBtn = document.getElementById('dislikeBtn');
+ const originalContent = dislikeBtn.innerHTML;
+ dislikeBtn.disabled = true;
+ dislikeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
  try {
    const response = await fetch('/api/lesson/dislike', {
@@ -630,7 +634,6 @@ async function toggleDislike() {
      credentials: 'include'
    });
 
-
    if (response.ok) {
      const data = await response.json();
      userInteractions.disliked = !userInteractions.disliked;
@@ -641,39 +644,44 @@ async function toggleDislike() {
        document.getElementById('likeBtn').classList.remove('active');
      }
     
+     // Update local lesson data
+     if (data.likes !== undefined) {
+       lessonData.likes = data.likes;
+     }
+     if (data.dislikes !== undefined) {
+       lessonData.dislikes = data.dislikes;
+     }
+    
      updateLikeDislikeButtons();
      updateLessonStats(data);
-     
-     // Update lesson data with new stats
-     if (lessonData) {
-       lessonData.likes = data.likes || lessonData.likes;
-       lessonData.dislikes = data.dislikes || lessonData.dislikes;
-     }
+     showNotification(userInteractions.disliked ? 'Lesson disliked' : 'Dislike removed', 'info');
+   } else {
+     throw new Error(`HTTP error! status: ${response.status}`);
    }
  } catch (error) {
    console.error('Error disliking lesson:', error);
-   // Show mock feedback for development
+   // Update local state for development/offline mode
    userInteractions.disliked = !userInteractions.disliked;
    
-   // Update lesson data for mock
-   if (lessonData) {
-     if (userInteractions.disliked) {
-       lessonData.dislikes += 1;
-       if (userInteractions.liked) {
-         lessonData.likes -= 1;
-         userInteractions.liked = false;
-       }
-     } else {
-       lessonData.dislikes -= 1;
+   // Update local counters
+   if (userInteractions.disliked) {
+     lessonData.dislikes = (lessonData.dislikes || 0) + 1;
+     if (userInteractions.liked) {
+       lessonData.likes = Math.max(0, (lessonData.likes || 0) - 1);
+       userInteractions.liked = false;
+       document.getElementById('likeBtn').classList.remove('active');
      }
-     
-     // Update display
-     document.getElementById('likeCount').textContent = lessonData.likes;
-     document.getElementById('dislikeCount').textContent = lessonData.dislikes;
+   } else {
+     lessonData.dislikes = Math.max(0, (lessonData.dislikes || 0) - 1);
    }
    
    updateLikeDislikeButtons();
-   showNotification(userInteractions.disliked ? 'Lesson disliked' : 'Dislike removed', 'info');
+   updateLessonStats({ likes: lessonData.likes, dislikes: lessonData.dislikes });
+   showNotification(userInteractions.disliked ? 'Lesson disliked (offline mode)' : 'Dislike removed (offline mode)', 'info');
+ } finally {
+   // Restore button state
+   dislikeBtn.disabled = false;
+   dislikeBtn.innerHTML = originalContent;
  }
 }
 
@@ -723,15 +731,34 @@ async function reportLesson(reason, comment) {
 function updateLessonStats(newStats) {
  if (newStats.likes !== undefined) {
    document.getElementById('likeCount').textContent = newStats.likes;
-   window.currentLessonData.likes = newStats.likes;
+   if (window.currentLessonData) {
+     window.currentLessonData.likes = newStats.likes;
+   }
+   if (lessonData) {
+     lessonData.likes = newStats.likes;
+   }
  }
  if (newStats.dislikes !== undefined) {
    document.getElementById('dislikeCount').textContent = newStats.dislikes;
-   window.currentLessonData.dislikes = newStats.dislikes;
+   if (window.currentLessonData) {
+     window.currentLessonData.dislikes = newStats.dislikes;
+   }
+   if (lessonData) {
+     lessonData.dislikes = newStats.dislikes;
+   }
  }
  if (newStats.views !== undefined) {
    document.getElementById('viewCount').textContent = newStats.views;
-   window.currentLessonData.views = newStats.views;
+   const progressTextElement = document.getElementById('progressText');
+   if (progressTextElement) {
+     progressTextElement.textContent = `${newStats.views} views`;
+   }
+   if (window.currentLessonData) {
+     window.currentLessonData.views = newStats.views;
+   }
+   if (lessonData) {
+     lessonData.views = newStats.views;
+   }
  }
 }
 
@@ -747,18 +774,39 @@ function updateLikeDislikeButtons() {
 
 // Setup lesson interaction buttons
 function setupLessonInteractions() {
- // Like button
- document.getElementById('likeBtn').addEventListener('click', toggleLike);
-  // Dislike button
- document.getElementById('dislikeBtn').addEventListener('click', toggleDislike);
-  // Report button
- document.getElementById('reportBtn').addEventListener('click', () => {
-   if (!userInteractions.reported) {
-     showReportModal();
-   }
- });
-  // Share button
- document.getElementById('shareBtn').addEventListener('click', showShareModal);
+ // Remove existing event listeners to prevent duplicates
+ const likeBtn = document.getElementById('likeBtn');
+ const dislikeBtn = document.getElementById('dislikeBtn');
+ const reportBtn = document.getElementById('reportBtn');
+ const shareBtn = document.getElementById('shareBtn');
+ 
+ if (likeBtn) {
+   likeBtn.replaceWith(likeBtn.cloneNode(true));
+   const newLikeBtn = document.getElementById('likeBtn');
+   newLikeBtn.addEventListener('click', toggleLike);
+ }
+ 
+ if (dislikeBtn) {
+   dislikeBtn.replaceWith(dislikeBtn.cloneNode(true));
+   const newDislikeBtn = document.getElementById('dislikeBtn');
+   newDislikeBtn.addEventListener('click', toggleDislike);
+ }
+ 
+ if (reportBtn) {
+   reportBtn.replaceWith(reportBtn.cloneNode(true));
+   const newReportBtn = document.getElementById('reportBtn');
+   newReportBtn.addEventListener('click', () => {
+     if (!userInteractions.reported) {
+       showReportModal();
+     }
+   });
+ }
+ 
+ if (shareBtn) {
+   shareBtn.replaceWith(shareBtn.cloneNode(true));
+   const newShareBtn = document.getElementById('shareBtn');
+   newShareBtn.addEventListener('click', showShareModal);
+ }
 }
 
 
@@ -882,34 +930,11 @@ function shareOnSocialMedia(platform, url, title) {
 // Handle back button
 function setupBackButton() {
  const backBtn = document.getElementById('backBtn');
- 
- function updateBackButton() {
-   const lessonContent = document.getElementById('lessonContent');
-   const lessonSelection = document.getElementById('lessonSelection');
-   
-   // Check if we're viewing a lesson and came from lesson selection
-   if (lessonContent.style.display !== 'none' && lessonSelection && lessonSelection.innerHTML.trim() !== '') {
-     // If we're viewing a lesson and have lesson selection available
-     backBtn.textContent = '← Back to Lesson Selection';
-     backBtn.onclick = () => {
-       lessonContent.style.display = 'none';
-       lessonSelection.style.display = 'block';
-       updateBackButton();
-     };
-   } else {
-     // Default back to topics
-     backBtn.textContent = '← Back to Topics';
-     backBtn.onclick = () => {
-       window.location.href = '#/topics';
-     };
-   }
- }
- 
- // Initial setup
- updateBackButton();
- 
- // Store the update function for use in other parts of the code
- window.updateBackButton = updateBackButton;
+ backBtn.textContent = '← Back to Topics';
+ backBtn.addEventListener('click', () => {
+   // Navigate back to the topics page - you may need to adjust this based on your routing
+   window.location.href = '#/topics';
+ });
 }
 
 
