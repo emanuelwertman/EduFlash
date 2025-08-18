@@ -960,6 +960,8 @@ function handleAIAssistant() {
         document.querySelector(".boxes").style.display = "none";
       })
       .catch((err) => console.error(err));
+
+      generateBtn.style.display = 'none';
   });
 
   // Close modal when clicking outside
