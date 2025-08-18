@@ -99,7 +99,7 @@ async function searchLessonsByTopic(topic) {
 // Fetch lesson content by hash (filename)
 async function fetchLessonContentByHash(hash) {
  try {
-   const response = await fetch(`/static/pages/${hash}`, {
+   const response = await fetch(`/pages/${hash}`, {
      method: 'GET',
      headers: {
        'Content-Type': 'text/plain',
