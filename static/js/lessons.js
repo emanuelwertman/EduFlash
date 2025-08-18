@@ -27,6 +27,42 @@ function getTopicFromURL() {
  return topicMatch ? decodeURIComponent(topicMatch[1]) : null;
 }
 
+function parseQuery(text) {
+ text = text.substring(1, text.length - 1)
+
+ arr = [];
+
+ text = text.split(/,(.*)/s);
+ arr.push(text[0]);
+ text = text[1];
+
+ text = text.split(/,(.*)/s);
+ arr.push(text[0]);
+ text = text[1];
+
+ text = text.split(/,(.*)/s);
+ arr.push(parseInt(text[0]));
+ text = text[1];
+
+ text = text.split(/,(.*)/s);
+ arr.push(parseInt(text[0]));
+ text = text[1];
+
+ text = text.split(/,(.*)/s);
+ arr.push(parseInt(text[0]));
+ text = text[1];
+
+ text = text.split(/,(.*)/s);
+ arr.push(parseInt(text[0]));
+ text = text[1];
+
+ text = text.split("\",\"");
+ arr.push(JSON.parse(text[0].substring(1, text[0].length).replaceAll("'", "\"")));
+ arr.push(text[1].substring(0, text[1].length - 1));
+
+ return arr;
+}
+
 
 // Search for lessons by topic using the backend API
 async function searchLessonsByTopic(topic) {
@@ -34,7 +70,6 @@ async function searchLessonsByTopic(topic) {
    const searchData = {
      topic: topic
    };
-
 
    const response = await fetch('/api/search', {
      method: 'POST',
@@ -49,8 +84,10 @@ async function searchLessonsByTopic(topic) {
      throw new Error(`HTTP error! status: ${response.status}`);
    }
 
-
-   const results = await response.json();
+   let results = await response.json();
+   for (int i = 0; i < results.length(); i++) {
+     results[i] = parseQuery(results[i]);
+   }
    return results;
  } catch (error) {
    console.error('Error searching lessons by topic:', error);
@@ -96,6 +133,8 @@ async function loadLessonForTopic(topic) {
      showError();
      return;
    }
+
+   console.log(searchResults);
   
    // Take the first result (most relevant lesson for this topic)
    const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = searchResults[0];
