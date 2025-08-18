@@ -414,17 +414,6 @@
   cursor: not-allowed;
 }
 
-.action-btn:disabled:hover {
-  background: transparent;
-  border-color: var(--stroke);
-  color: var(--ink-dim);
-  transform: none;
-}
-
-.action-btn .fa-spinner {
-  animation: spin 1s linear infinite;
-}
-
 .rendered-content {
   max-width: none;
   color: var(--ink);
