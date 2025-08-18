@@ -44,8 +44,6 @@ async function searchLessonsByTopic(topic) {
      body: JSON.stringify(searchData)
    });
 
-   console.log(response);
-
 
    if (!response.ok) {
      throw new Error(`HTTP error! status: ${response.status}`);

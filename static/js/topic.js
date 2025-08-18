@@ -125,7 +125,7 @@ function renderTopics(topics) {
             
             topicBox.addEventListener('click', () => {
                 console.log(`Selected topic: ${topic.name} (ID: ${topic.id})`);
-                window.location.href = `#/lessons/${topic.id}`;
+                window.location.href = `#/lessons/${topic.name}`;
             });
             
             topicsGrid.appendChild(topicBox);
