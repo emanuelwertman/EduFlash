@@ -365,6 +365,8 @@ function saveGuide() {
     `Guide "${guide.title}" saved successfully for topic "${topicData.name}"!`,
     "success"
   );
+
+  window.location.reload();
 }
 
 // Show notification function
@@ -960,6 +962,8 @@ function handleAIAssistant() {
         document.querySelector(".boxes").style.display = "none";
       })
       .catch((err) => console.error(err));
+
+      generateBtn.style.display = 'none';
   });
 
   // Close modal when clicking outside
