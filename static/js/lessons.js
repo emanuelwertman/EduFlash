@@ -377,12 +377,6 @@ function showLoading() {
  document.getElementById('loadingState').style.display = 'block';
  document.getElementById('errorState').style.display = 'none';
  document.getElementById('lessonContent').style.display = 'none';
- 
- // Hide lesson selection if it exists
- const lessonSelection = document.getElementById('lessonSelection');
- if (lessonSelection) {
-   lessonSelection.style.display = 'none';
- }
 }
 
 
@@ -398,44 +392,23 @@ function showError() {
 function showLessonContent(lesson) {
  document.getElementById('loadingState').style.display = 'none';
  document.getElementById('errorState').style.display = 'none';
- 
- // Hide lesson selection if it exists
- const lessonSelection = document.getElementById('lessonSelection');
- if (lessonSelection) {
-   lessonSelection.style.display = 'none';
- }
- 
  document.getElementById('lessonContent').style.display = 'block';
 
- // Check if required elements exist before updating them
- const lessonTitle = document.getElementById('lessonTitle');
- const lessonPath = document.getElementById('lessonPath');
- const viewCount = document.getElementById('viewCount');
- const authorName = document.getElementById('authorName');
- const likeCount = document.getElementById('likeCount');
- const dislikeCount = document.getElementById('dislikeCount');
- const renderedContent = document.getElementById('renderedContent');
- const progressText = document.getElementById('progressText');
- const progressFill = document.getElementById('progressFill');
-
- if (!lessonTitle || !lessonPath || !viewCount || !authorName || !likeCount || !dislikeCount || !renderedContent) {
-   console.error('Required lesson content elements not found in DOM');
-   showError();
-   return;
- }
 
  // Update lesson title
- lessonTitle.textContent = lesson.title;
- lessonPath.textContent = `Topic: ${lesson.topic}`;
+ document.getElementById('lessonTitle').textContent = lesson.title;
+ document.getElementById('lessonPath').textContent = `Topic: ${lesson.topic}`;
+
 
  // Update lesson stats
- viewCount.textContent = lesson.views || 0;
- authorName.textContent = lesson.owner || 'Unknown';
- likeCount.textContent = lesson.likes || 0;
- dislikeCount.textContent = lesson.dislikes || 0;
+ document.getElementById('viewCount').textContent = lesson.views || 0;
+ document.getElementById('authorName').textContent = lesson.owner || 'Unknown';
+ document.getElementById('likeCount').textContent = lesson.likes || 0;
+ document.getElementById('dislikeCount').textContent = lesson.dislikes || 0;
 
 
  // Render the lesson content
+ const renderedContent = document.getElementById('renderedContent');
  const html = renderMarkdownContent(lesson.content);
  renderedContent.innerHTML = html;
 
@@ -445,12 +418,8 @@ function showLessonContent(lesson) {
 
 
  // Update lesson metadata
- if (progressText) {
-   progressText.textContent = `${lesson.views} views`;
- }
- if (progressFill) {
-   progressFill.style.width = '100%';
- }
+ document.getElementById('progressText').textContent = `${lesson.views} views`;
+ document.getElementById('progressFill').style.width = '100%';
 
 
  // Store lesson data for interactions
@@ -500,10 +469,7 @@ async function toggleLike() {
      // If user liked, remove dislike if present
      if (userInteractions.liked && userInteractions.disliked) {
        userInteractions.disliked = false;
-       const dislikeBtn = document.getElementById('dislikeBtn');
-       if (dislikeBtn) {
-         dislikeBtn.classList.remove('active');
-       }
+       document.getElementById('dislikeBtn').classList.remove('active');
      }
     
      updateLikeDislikeButtons();
@@ -549,10 +515,7 @@ async function toggleDislike() {
      // If user disliked, remove like if present
      if (userInteractions.disliked && userInteractions.liked) {
        userInteractions.liked = false;
-       const likeBtn = document.getElementById('likeBtn');
-       if (likeBtn) {
-         likeBtn.classList.remove('active');
-       }
+       document.getElementById('likeBtn').classList.remove('active');
      }
     
      updateLikeDislikeButtons();
@@ -611,27 +574,17 @@ async function reportLesson(reason, comment) {
 
 // Update lesson stats after user interaction
 function updateLessonStats(newStats) {
- const likeCount = document.getElementById('likeCount');
- const dislikeCount = document.getElementById('dislikeCount');
- const viewCount = document.getElementById('viewCount');
- 
- if (newStats.likes !== undefined && likeCount) {
-   likeCount.textContent = newStats.likes;
-   if (window.currentLessonData) {
-     window.currentLessonData.likes = newStats.likes;
-   }
+ if (newStats.likes !== undefined) {
+   document.getElementById('likeCount').textContent = newStats.likes;
+   window.currentLessonData.likes = newStats.likes;
  }
- if (newStats.dislikes !== undefined && dislikeCount) {
-   dislikeCount.textContent = newStats.dislikes;
-   if (window.currentLessonData) {
-     window.currentLessonData.dislikes = newStats.dislikes;
-   }
+ if (newStats.dislikes !== undefined) {
+   document.getElementById('dislikeCount').textContent = newStats.dislikes;
+   window.currentLessonData.dislikes = newStats.dislikes;
  }
- if (newStats.views !== undefined && viewCount) {
-   viewCount.textContent = newStats.views;
-   if (window.currentLessonData) {
-     window.currentLessonData.views = newStats.views;
-   }
+ if (newStats.views !== undefined) {
+   document.getElementById('viewCount').textContent = newStats.views;
+   window.currentLessonData.views = newStats.views;
  }
 }
 
@@ -640,45 +593,25 @@ function updateLessonStats(newStats) {
 function updateLikeDislikeButtons() {
  const likeBtn = document.getElementById('likeBtn');
  const dislikeBtn = document.getElementById('dislikeBtn');
- 
- if (likeBtn) {
-   likeBtn.classList.toggle('active', userInteractions.liked);
- }
- if (dislikeBtn) {
-   dislikeBtn.classList.toggle('active', userInteractions.disliked);
- }
+  likeBtn.classList.toggle('active', userInteractions.liked);
+ dislikeBtn.classList.toggle('active', userInteractions.disliked);
 }
 
 
 // Setup lesson interaction buttons
 function setupLessonInteractions() {
  // Like button
- const likeBtn = document.getElementById('likeBtn');
- if (likeBtn) {
-   likeBtn.addEventListener('click', toggleLike);
- }
-  
- // Dislike button
- const dislikeBtn = document.getElementById('dislikeBtn');
- if (dislikeBtn) {
-   dislikeBtn.addEventListener('click', toggleDislike);
- }
-  
- // Report button
- const reportBtn = document.getElementById('reportBtn');
- if (reportBtn) {
-   reportBtn.addEventListener('click', () => {
-     if (!userInteractions.reported) {
-       showReportModal();
-     }
-   });
- }
-  
- // Share button
- const shareBtn = document.getElementById('shareBtn');
- if (shareBtn) {
-   shareBtn.addEventListener('click', showShareModal);
- }
+ document.getElementById('likeBtn').addEventListener('click', toggleLike);
+  // Dislike button
+ document.getElementById('dislikeBtn').addEventListener('click', toggleDislike);
+  // Report button
+ document.getElementById('reportBtn').addEventListener('click', () => {
+   if (!userInteractions.reported) {
+     showReportModal();
+   }
+ });
+  // Share button
+ document.getElementById('shareBtn').addEventListener('click', showShareModal);
 }
 
 
