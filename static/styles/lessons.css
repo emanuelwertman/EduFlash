@@ -445,9 +445,22 @@
   color: white;
 }
 
+.like-btn.active {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
 .dislike-btn:hover {
   background: #ef4444;
   border-color: #ef4444;
+  color: white;
+}
+
+.dislike-btn.active {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
   color: white;
 }
 

@@ -211,13 +211,37 @@ async function loadSingleLesson(hash, title, topic, owner) {
    // Fetch lesson content
    const content = await fetchLessonContentByHash(hash);
    
+   // Try to fetch metrics if available
+   let likes = 0;
+   let dislikes = 0;
+   
+   try {
+     const metricsResponse = await fetch(`/api/lesson/metrics?hash=${hash}`, {
+       method: 'GET',
+       headers: {
+         'Content-Type': 'application/json'
+       }
+     });
+     
+     if (metricsResponse.ok) {
+       const metrics = await metricsResponse.json();
+       likes = metrics.likes || 0;
+       dislikes = metrics.dislikes || 0;
+     }
+   } catch (error) {
+     console.error('Error fetching lesson metrics:', error);
+     // Proceed anyway with default values
+   }
+   
    // Create lesson data object
    lessonData = {
      hash: hash,
      title: title,
      topic: topic,
      owner: owner,
-     content: content
+     content: content,
+     likes: likes,
+     dislikes: dislikes
    };
    
    // Show the lesson
@@ -405,8 +429,23 @@ function showLessonContent(lesson) {
    renderMathInElement(renderedContent);
  }
  
+ // Update like and dislike counts in the UI
+ const likeCountElement = document.getElementById('likeCount');
+ const dislikeCountElement = document.getElementById('dislikeCount');
+ 
+ if (likeCountElement) {
+   likeCountElement.textContent = lesson.likes || 0;
+ }
+ 
+ if (dislikeCountElement) {
+   dislikeCountElement.textContent = lesson.dislikes || 0;
+ }
+ 
  // Setup share button
  setupShareButton();
+ 
+ // Setup like and dislike buttons
+ setupLikeDislikeButtons();
 }
 
 
@@ -592,6 +631,214 @@ async function initializeLessonsPage() {
  }
 }
 
+
+// Set up like and dislike buttons
+function setupLikeDislikeButtons() {
+  const likeBtn = document.getElementById('likeBtn');
+  const dislikeBtn = document.getElementById('dislikeBtn');
+  
+  if (likeBtn && lessonData) {
+    // Check if user has already liked this lesson
+    const userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
+    const userDislikes = JSON.parse(localStorage.getItem('userDislikes') || '{}');
+    
+    // Set the active state based on local storage
+    if (userLikes[lessonData.hash]) {
+      likeBtn.classList.add('active');
+    } else {
+      likeBtn.classList.remove('active');
+    }
+    
+    if (userDislikes[lessonData.hash]) {
+      dislikeBtn.classList.add('active');
+    } else {
+      dislikeBtn.classList.remove('active');
+    }
+    
+    likeBtn.addEventListener('click', handleLikeClick);
+  }
+  
+  if (dislikeBtn && lessonData) {
+    dislikeBtn.addEventListener('click', handleDislikeClick);
+  }
+}
+
+// Handle like button click
+async function handleLikeClick() {
+  if (!lessonData || !lessonData.hash) {
+    showNotification('Cannot like this lesson right now.', 'error');
+    return;
+  }
+  
+  const likeBtn = document.getElementById('likeBtn');
+  const dislikeBtn = document.getElementById('dislikeBtn');
+  
+  // Get user interaction history from local storage
+  const userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
+  const userDislikes = JSON.parse(localStorage.getItem('userDislikes') || '{}');
+  
+  // Toggle like state
+  const wasLiked = userLikes[lessonData.hash];
+  
+  try {
+    if (wasLiked) {
+      // User is unliking
+      await updateLessonMetrics(lessonData.hash, 'unlike');
+      delete userLikes[lessonData.hash];
+      likeBtn.classList.remove('active');
+      showNotification('Like removed', 'info');
+    } else {
+      // User is liking
+      await updateLessonMetrics(lessonData.hash, 'like');
+      userLikes[lessonData.hash] = true;
+      likeBtn.classList.add('active');
+      
+      // Remove dislike if exists
+      if (userDislikes[lessonData.hash]) {
+        delete userDislikes[lessonData.hash];
+        dislikeBtn.classList.remove('active');
+        await updateLessonMetrics(lessonData.hash, 'undislike');
+      }
+      showNotification('Lesson liked!', 'success');
+    }
+    
+    // Save to local storage
+    localStorage.setItem('userLikes', JSON.stringify(userLikes));
+    localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
+    
+    // Update the like/dislike counts
+    updateLikeDislikeCounts();
+  } catch (error) {
+    console.error('Error updating like:', error);
+    showNotification('Could not update like. Please try again.', 'error');
+  }
+}
+
+// Handle dislike button click
+async function handleDislikeClick() {
+  if (!lessonData || !lessonData.hash) {
+    showNotification('Cannot dislike this lesson right now.', 'error');
+    return;
+  }
+  
+  const likeBtn = document.getElementById('likeBtn');
+  const dislikeBtn = document.getElementById('dislikeBtn');
+  
+  // Get user interaction history from local storage
+  const userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
+  const userDislikes = JSON.parse(localStorage.getItem('userDislikes') || '{}');
+  
+  // Toggle dislike state
+  const wasDisliked = userDislikes[lessonData.hash];
+  
+  try {
+    if (wasDisliked) {
+      // User is removing dislike
+      await updateLessonMetrics(lessonData.hash, 'undislike');
+      delete userDislikes[lessonData.hash];
+      dislikeBtn.classList.remove('active');
+      showNotification('Dislike removed', 'info');
+    } else {
+      // User is disliking
+      await updateLessonMetrics(lessonData.hash, 'dislike');
+      userDislikes[lessonData.hash] = true;
+      dislikeBtn.classList.add('active');
+      
+      // Remove like if exists
+      if (userLikes[lessonData.hash]) {
+        delete userLikes[lessonData.hash];
+        likeBtn.classList.remove('active');
+        await updateLessonMetrics(lessonData.hash, 'unlike');
+      }
+      showNotification('Feedback recorded', 'success');
+    }
+    
+    // Save to local storage
+    localStorage.setItem('userLikes', JSON.stringify(userLikes));
+    localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
+    
+    // Update the like/dislike counts
+    updateLikeDislikeCounts();
+  } catch (error) {
+    console.error('Error updating dislike:', error);
+    showNotification('Could not update dislike. Please try again.', 'error');
+  }
+}
+
+// Update lesson metrics (likes, dislikes) on the server
+async function updateLessonMetrics(hash, action) {
+  try {
+    const sessionCookie = getSessionCookie();
+    const updateData = {
+      hash: hash,
+      action: action
+    };
+    
+    const response = await fetch('/api/lesson/update-metrics', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionCookie ? `Bearer ${sessionCookie}` : ''
+      },
+      body: JSON.stringify(updateData)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error updating lesson metrics:', error);
+    throw error;
+  }
+}
+
+// Fetch and update the like and dislike counts
+async function updateLikeDislikeCounts() {
+  if (!lessonData || !lessonData.hash) return;
+  
+  try {
+    const response = await fetch(`/api/lesson/metrics?hash=${lessonData.hash}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const metrics = await response.json();
+    
+    // Update the count displays
+    const likeCountElement = document.getElementById('likeCount');
+    const dislikeCountElement = document.getElementById('dislikeCount');
+    
+    if (likeCountElement && metrics.likes !== undefined) {
+      likeCountElement.textContent = metrics.likes;
+    }
+    
+    if (dislikeCountElement && metrics.dislikes !== undefined) {
+      dislikeCountElement.textContent = metrics.dislikes;
+    }
+  } catch (error) {
+    console.error('Error fetching metrics:', error);
+    // Fallback to show placeholder counts if API fails
+    const likeCountElement = document.getElementById('likeCount');
+    const dislikeCountElement = document.getElementById('dislikeCount');
+    
+    if (likeCountElement) {
+      likeCountElement.textContent = '0';
+    }
+    
+    if (dislikeCountElement) {
+      dislikeCountElement.textContent = '0';
+    }
+  }
+}
 
 // Setup event listeners
 function setupEventListeners() {
