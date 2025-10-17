@@ -35,21 +35,12 @@ function showLevels(path) {
     currentLevel = null;
     
     document.getElementById('topic-container').style.display = 'none';
-    document.getElementById('level-container').style.display = 'grid';
+    document.getElementById('level-container').style.display = 'block';
     
-    renderLevels(path.levels);
+    renderLevelsWithDropdown(path);
 }
 
-function showTopics(level) {
-    currentLevel = level;
-    
-    document.getElementById('level-container').style.display = 'none';
-    document.getElementById('topic-container').style.display = 'grid';
-    
-    renderTopics(level.topics);
-}
-
-function renderLevels(levels) {
+function renderLevelsWithDropdown(path) {
     const container = document.getElementById('level-container');
     container.innerHTML = '';
     
@@ -60,95 +51,57 @@ function renderLevels(levels) {
     backButton.onclick = () => window.location.hash = '#/paths';
     container.appendChild(backButton);
     
-    const levelGrid = document.createElement('div');
-    levelGrid.className = 'path-container';
+    // Add path title
+    const pathHeader = document.createElement('div');
+    pathHeader.className = 'path-header';
+    pathHeader.innerHTML = `
+        <h2 class="current-path-title">${path.name}</h2>
+        <p class="current-path-subtitle">${path.levels.length} levels • ${path.levels.reduce((t, l) => t + l.topics.length, 0)} topics</p>
+    `;
+    container.appendChild(pathHeader);
     
-    levels.forEach(level => {
-        const levelBox = document.createElement('div');
-        levelBox.className = 'path-box';
-        levelBox.innerHTML = `
-            <h3 class="path-title">${level.name}</h3>
-            <p class="path-description">${level.topics.length} topics available</p>
-            <p class="path-stats">Click to explore topics</p>
+    // Create levels container
+    const levelsContainer = document.createElement('div');
+    levelsContainer.className = 'levels-accordion-container';
+    
+    path.levels.forEach((level) => {
+        const levelWrapper = document.createElement('div');
+        levelWrapper.className = 'level-accordion-wrapper';
+        
+        const levelHeader = document.createElement('div');
+        levelHeader.className = 'level-accordion-header';
+        levelHeader.innerHTML = `
+            <div class="level-header-content">
+                <h3 class="level-name">${level.name}</h3>
+                <span class="level-info">${level.topics.length} topics</span>
+            </div>
+            <span class="level-arrow">▼</span>
         `;
         
-        levelBox.addEventListener('click', () => {
-            showTopics(level);
-        });
+        const topicsContainer = document.createElement('div');
+        topicsContainer.className = 'topics-accordion-container';
         
-        levelGrid.appendChild(levelBox);
-    });
-    
-    container.appendChild(levelGrid);
-}
-
-function renderTopics(topics) {
-    const container = document.getElementById('topic-container');
-    container.innerHTML = '';
-    
-    const backButton = document.createElement('button');
-    backButton.className = 'back-to-levels';
-    backButton.innerHTML = '← Back to Levels';
-    backButton.onclick = () => showLevels(currentPath);
-    container.appendChild(backButton);
-    
-    const searchSection = document.createElement('section');
-    searchSection.className = 'search glass';
-    searchSection.innerHTML = `
-        <input type="text" placeholder="Search lessons" aria-label="Search">
-        <button class="btn"><h1 id="plus">+</h1></button>
-    `;
-    container.appendChild(searchSection);
-    
-    const topicsGrid = document.createElement('div');
-    topicsGrid.className = 'path-container';
-    
-    const renderFilteredTopics = (topicsToRender) => {
-        topicsGrid.innerHTML = '';
-        
-        if (topicsToRender.length === 0) {
-            const noResults = document.createElement('div');
-            noResults.className = 'no-results';
-            noResults.innerHTML = '<p>No topics found matching your search.</p>';
-            topicsGrid.appendChild(noResults);
-            return;
-        }
-        
-        topicsToRender.forEach(topic => {
-            const topicBox = document.createElement('div');
-            topicBox.className = 'path-box';
-            topicBox.innerHTML = `
-                <h3 class="path-title">${topic.name}</h3>
-                <p class="path-description">${topic.hasCommunityLessons ? 'Community lessons available' : 'Standard lessons'}</p>
-                <p class="path-stats">Click to start learning</p>
+        level.topics.forEach((topic) => {
+            const topicItem = document.createElement('a');
+            topicItem.className = 'topic-accordion-item';
+            topicItem.href = `#/lessons/${topic.name}`;
+            topicItem.innerHTML = `
+                <span class="topic-name">${topic.name}</span>
+                ${topic.hasCommunityLessons ? '<span class="community-badge">Community</span>' : ''}
             `;
-            
-            topicBox.addEventListener('click', () => {
-                console.log(`Selected topic: ${topic.name} (ID: ${topic.id})`);
-                window.location.href = `#/lessons/${topic.name}`;
-            });
-            
-            topicsGrid.appendChild(topicBox);
+            topicsContainer.appendChild(topicItem);
         });
-    };
-    
-    renderFilteredTopics(topics);
-    
-    searchSection.querySelector('input').addEventListener('input', (e) => {
-        const query = e.target.value.trim();
-        if (!query) {
-            renderFilteredTopics(topics);
-            return;
-        }
         
-        const filteredTopics = topics.filter(topic => 
-            topic.name.toLowerCase().includes(query.toLowerCase())
-        );
+        levelHeader.addEventListener('click', () => {
+            levelWrapper.classList.toggle('active');
+        });
         
-        renderFilteredTopics(filteredTopics);
+        levelWrapper.appendChild(levelHeader);
+        levelWrapper.appendChild(topicsContainer);
+        levelsContainer.appendChild(levelWrapper);
     });
     
-    container.appendChild(topicsGrid);
+    container.appendChild(levelsContainer);
 }
 
 function showError(message) {
