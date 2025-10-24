@@ -151,13 +151,11 @@ window.addEventListener('hashchange', function() {
     }
 });
 
-// Force initialization after a delay (backup)
+// Initialize immediately when the script loads (for router-based loading)
 setTimeout(() => {
-    if (window.location.hash.includes('/profile') || window.location.pathname.includes('profile')) {
-        console.log('Backup initialization triggered');
-        initializeProfilePage();
-    }
-}, 1000);
+    console.log('Profile.js loaded, initializing...');
+    initializeProfilePage();
+}, 50);
 
 // Export for module usage if needed
 if (typeof module !== 'undefined' && module.exports) {

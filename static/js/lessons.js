@@ -446,6 +446,9 @@ function showLessonContent(lesson) {
  
  // Setup like and dislike buttons
  setupLikeDislikeButtons();
+ 
+ // Setup navigation buttons
+ setupNavigationButtons();
 }
 
 
@@ -564,6 +567,21 @@ function setupShareButton() {
  }
 }
 
+// Setup navigation buttons (prev/next lesson)
+function setupNavigationButtons() {
+  const prevBtn = document.getElementById('prevLessonBtn');
+  const nextBtn = document.getElementById('nextLessonBtn');
+  
+  // For now, hide them as we don't have lesson sequence data
+  // In the future, you can implement lesson navigation based on topic structure
+  if (prevBtn) {
+    prevBtn.style.display = 'none';
+  }
+  if (nextBtn) {
+    nextBtn.style.display = 'none';
+  }
+}
+
 
 // Handle back button
 function setupBackButton() {
@@ -607,6 +625,10 @@ async function initializeLessonsPage() {
    // Load external libraries first
    await loadExternalLibraries();
 
+   // Setup button handlers first (before loading content)
+   setupBackButton();
+   setupCreateLessonButton();
+   setupBackToTopicsButton();
 
    // Get topic from URL
    const topic = getTopicFromURL();
@@ -840,26 +862,8 @@ async function updateLikeDislikeCounts() {
   }
 }
 
-// Setup event listeners
-function setupEventListeners() {
- setupBackButton();
- setupCreateLessonButton();
- setupBackToTopicsButton();
-}
-
-
-// Main initialization
-document.addEventListener('DOMContentLoaded', () => {
- setupEventListeners();
- initializeLessonsPage();
-});
-
-
-// Re-initialize when navigating to this page via router
-if (window.routeParams) {
- setupEventListeners();
- initializeLessonsPage();
-}
+// Main initialization - call when page loads
+initializeLessonsPage();
 
 
 
