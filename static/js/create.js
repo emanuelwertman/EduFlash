@@ -890,7 +890,7 @@ function handleAIAssistant() {
         border: 2px solid var(--stroke);
         border-radius: var(--radius);
         background: var(--glass);
-        color: var(--ink);
+        color: white;
         font-size: 1rem;
       }
       
