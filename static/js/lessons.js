@@ -830,6 +830,8 @@ async function handleDislikeClick() {
   
   const likeBtn = document.getElementById('likeBtn');
   const dislikeBtn = document.getElementById('dislikeBtn');
+  const likeCountElement = document.getElementById('likeCount');
+  const dislikeCountElement = document.getElementById('dislikeCount');
   
   // Get user interaction history from local storage
   const userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
@@ -837,13 +839,20 @@ async function handleDislikeClick() {
   
   // Toggle dislike state
   const wasDisliked = userDislikes[lessonData.hash];
+  const wasLiked = userLikes[lessonData.hash];
   
   try {
     if (wasDisliked) {
-      // User is removing dislike - for now we'll just remove from local storage
-      // You may want to add an /api/undislike endpoint
+      // User is removing dislike
       delete userDislikes[lessonData.hash];
       dislikeBtn.classList.remove('active');
+      
+      // Optimistically update UI
+      lessonData.dislikes = Math.max(0, lessonData.dislikes - 1);
+      if (dislikeCountElement) {
+        dislikeCountElement.textContent = lessonData.dislikes;
+      }
+      
       showNotification('Dislike removed', 'info');
     } else {
       // User is disliking
@@ -865,11 +874,23 @@ async function handleDislikeClick() {
       userDislikes[lessonData.hash] = true;
       dislikeBtn.classList.add('active');
       
+      // Optimistically update UI
+      lessonData.dislikes = lessonData.dislikes + 1;
+      if (dislikeCountElement) {
+        dislikeCountElement.textContent = lessonData.dislikes;
+      }
+      
       // Remove like if exists
-      if (userLikes[lessonData.hash]) {
+      if (wasLiked) {
         delete userLikes[lessonData.hash];
         likeBtn.classList.remove('active');
+        
+        lessonData.likes = Math.max(0, lessonData.likes - 1);
+        if (likeCountElement) {
+          likeCountElement.textContent = lessonData.likes;
+        }
       }
+      
       showNotification('Feedback recorded', 'success');
     }
     
@@ -877,11 +898,13 @@ async function handleDislikeClick() {
     localStorage.setItem('userLikes', JSON.stringify(userLikes));
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
-    // Update the like/dislike counts
+    // Update the like/dislike counts from server to ensure accuracy
     await updateLikeDislikeCounts();
   } catch (error) {
     console.error('Error updating dislike:', error);
     showNotification('Could not update dislike. Please try again.', 'error');
+    // Revert optimistic update on error
+    await updateLikeDislikeCounts();
   }
 }
 
