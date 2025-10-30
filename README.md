@@ -1,3 +1,6 @@
+## Backend Repository
+https://github.com/neilkumaran/EduFlashBackend
+
 ## Inspiration
 Many students, especially those who are first generation and low-income, struggle to find reliable, affordable and well-structured education resources. According to UNICEF, many of these problems arise due to a lack of trained teachers and inadequate education material.
 
