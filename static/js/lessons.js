@@ -461,7 +461,7 @@ function showLessonContent(lesson) {
  }
  
  if (ratingValueElement) {
-   const rating = lesson.rating || 0;
+   const rating = Number(lesson.rating) || 0;
    ratingValueElement.textContent = rating.toFixed(1);
  }
  
