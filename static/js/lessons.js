@@ -739,6 +739,7 @@ async function handleLikeClick() {
   const userDislikes = JSON.parse(localStorage.getItem('userDislikes') || '{}');
   
   const wasLiked = userLikes[lessonData.hash];
+  const wasDisliked = userDislikes[lessonData.hash];
   
   if (wasLiked) {
     // Unlike - just update UI locally (no server endpoint for unlike)
@@ -759,9 +760,11 @@ async function handleLikeClick() {
     
     if (!response.ok) throw new Error('Failed to like');
     
-    // Update local state
+    // Update local state - add like and remove any dislike
     userLikes[lessonData.hash] = true;
-    delete userDislikes[lessonData.hash];
+    if (wasDisliked) {
+      delete userDislikes[lessonData.hash];
+    }
     localStorage.setItem('userLikes', JSON.stringify(userLikes));
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
@@ -796,6 +799,7 @@ async function handleDislikeClick() {
   const userDislikes = JSON.parse(localStorage.getItem('userDislikes') || '{}');
   
   const wasDisliked = userDislikes[lessonData.hash];
+  const wasLiked = userLikes[lessonData.hash];
   
   if (wasDisliked) {
     // Remove dislike - just update UI locally
@@ -816,9 +820,11 @@ async function handleDislikeClick() {
     
     if (!response.ok) throw new Error('Failed to dislike');
     
-    // Update local state
+    // Update local state - add dislike and remove any like
     userDislikes[lessonData.hash] = true;
-    delete userLikes[lessonData.hash];
+    if (wasLiked) {
+      delete userLikes[lessonData.hash];
+    }
     localStorage.setItem('userLikes', JSON.stringify(userLikes));
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
