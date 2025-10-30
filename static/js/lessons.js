@@ -23,39 +23,64 @@ function getTopicFromURL() {
 }
 
 function parseQuery(text) {
- text = text.substring(1, text.length - 1)
+ try {
+   // Remove outer parentheses
+   text = text.substring(1, text.length - 1);
 
- let arr = [];
+   let arr = [];
 
- text = text.split(/,(.*)/s);
- arr.push(text[0]);
- text = text[1];
+   // Parse first field (hash)
+   text = text.split(/,(.*)/s);
+   arr.push(text[0].replace(/^["']|["']$/g, '')); // Remove quotes
+   text = text[1];
 
- text = text.split(/,(.*)/s);
- arr.push(text[0]);
- text = text[1];
+   // Parse second field (owner)
+   text = text.split(/,(.*)/s);
+   arr.push(text[0].replace(/^["']|["']$/g, '')); // Remove quotes
+   text = text[1];
 
- text = text.split(/,(.*)/s);
- arr.push(parseInt(text[0]));
- text = text[1];
+   // Parse numeric fields (likes, dislikes, reports, views)
+   text = text.split(/,(.*)/s);
+   arr.push(parseInt(text[0]));
+   text = text[1];
 
- text = text.split(/,(.*)/s);
- arr.push(parseInt(text[0]));
- text = text[1];
+   text = text.split(/,(.*)/s);
+   arr.push(parseInt(text[0]));
+   text = text[1];
 
- text = text.split(/,(.*)/s);
- arr.push(parseInt(text[0]));
- text = text[1];
+   text = text.split(/,(.*)/s);
+   arr.push(parseInt(text[0]));
+   text = text[1];
 
- text = text.split(/,(.*)/s);
- arr.push(parseInt(text[0]));
- text = text[1];
+   text = text.split(/,(.*)/s);
+   arr.push(parseInt(text[0]));
+   text = text[1];
 
- text = text.split("\",\"");
- arr.push(JSON.parse(text[0].substring(1, text[0].length).replaceAll("'", "\"")));
- arr.push(text[1].substring(0, text[1].length - 1));
+   // Parse the remaining two fields (lessonTopic JSON and title)
+   // Find the last comma that separates the JSON object from the title
+   const lastCommaIndex = text.lastIndexOf(',"');
+   if (lastCommaIndex !== -1) {
+     const jsonPart = text.substring(0, lastCommaIndex);
+     const titlePart = text.substring(lastCommaIndex + 1);
+     
+     // Clean and parse JSON
+     const cleanedJson = jsonPart.replace(/^["']|["']$/g, '').replaceAll("'", '"');
+     arr.push(JSON.parse(cleanedJson));
+     
+     // Clean title
+     arr.push(titlePart.replace(/^["']|["']$/g, ''));
+   } else {
+     // Fallback if format is unexpected
+     arr.push({});
+     arr.push(text.replace(/^["']|["']$/g, ''));
+   }
 
- return arr;
+   return arr;
+ } catch (error) {
+   console.error('Error parsing query:', error, 'Original text:', text);
+   // Return a safe default structure
+   return ['', '', 0, 0, 0, 0, {}, ''];
+ }
 }
 
 
@@ -73,7 +98,6 @@ async function searchLessonsByTopic(topic) {
      },
      body: JSON.stringify(searchData)
    });
-
 
    if (!response.ok) {
      throw new Error(`HTTP error! status: ${response.status}`);
