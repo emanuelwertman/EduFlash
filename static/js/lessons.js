@@ -251,7 +251,11 @@ async function loadSingleLesson(hash, title, topic, owner) {
      topic: topic,
      owner: owner,
      content: content,
-     ...metrics
+     likes: metrics.likes,
+     dislikes: metrics.dislikes,
+     views: metrics.views,
+     rating: metrics.rating,
+     reports: metrics.reports
    };
    
    // Show the lesson
