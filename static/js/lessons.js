@@ -709,11 +709,16 @@ function setupLikeDislikeButtons() {
       dislikeBtn.classList.remove('active');
     }
     
-    likeBtn.addEventListener('click', handleLikeClick);
+    // Remove old event listeners by cloning the buttons
+    const newLikeBtn = likeBtn.cloneNode(true);
+    likeBtn.parentNode.replaceChild(newLikeBtn, likeBtn);
+    newLikeBtn.addEventListener('click', handleLikeClick);
   }
   
   if (dislikeBtn && lessonData) {
-    dislikeBtn.addEventListener('click', handleDislikeClick);
+    const newDislikeBtn = dislikeBtn.cloneNode(true);
+    dislikeBtn.parentNode.replaceChild(newDislikeBtn, dislikeBtn);
+    newDislikeBtn.addEventListener('click', handleDislikeClick);
   }
 }
 
@@ -732,6 +737,8 @@ async function handleLikeClick() {
   
   const likeBtn = document.getElementById('likeBtn');
   const dislikeBtn = document.getElementById('dislikeBtn');
+  const likeCountElement = document.getElementById('likeCount');
+  const dislikeCountElement = document.getElementById('dislikeCount');
   
   // Get user interaction history from local storage
   const userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
@@ -739,13 +746,20 @@ async function handleLikeClick() {
   
   // Toggle like state
   const wasLiked = userLikes[lessonData.hash];
+  const wasDisliked = userDislikes[lessonData.hash];
   
   try {
     if (wasLiked) {
-      // User is unliking - for now we'll just remove from local storage
-      // You may want to add an /api/unlike endpoint
+      // User is unliking
       delete userLikes[lessonData.hash];
       likeBtn.classList.remove('active');
+      
+      // Optimistically update UI
+      lessonData.likes = Math.max(0, lessonData.likes - 1);
+      if (likeCountElement) {
+        likeCountElement.textContent = lessonData.likes;
+      }
+      
       showNotification('Like removed', 'info');
     } else {
       // User is liking
@@ -767,11 +781,23 @@ async function handleLikeClick() {
       userLikes[lessonData.hash] = true;
       likeBtn.classList.add('active');
       
+      // Optimistically update UI
+      lessonData.likes = lessonData.likes + 1;
+      if (likeCountElement) {
+        likeCountElement.textContent = lessonData.likes;
+      }
+      
       // Remove dislike if exists
-      if (userDislikes[lessonData.hash]) {
+      if (wasDisliked) {
         delete userDislikes[lessonData.hash];
         dislikeBtn.classList.remove('active');
+        
+        lessonData.dislikes = Math.max(0, lessonData.dislikes - 1);
+        if (dislikeCountElement) {
+          dislikeCountElement.textContent = lessonData.dislikes;
+        }
       }
+      
       showNotification('Lesson liked!', 'success');
     }
     
@@ -779,11 +805,13 @@ async function handleLikeClick() {
     localStorage.setItem('userLikes', JSON.stringify(userLikes));
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
-    // Update the like/dislike counts
+    // Update the like/dislike counts from server to ensure accuracy
     await updateLikeDislikeCounts();
   } catch (error) {
     console.error('Error updating like:', error);
     showNotification('Could not update like. Please try again.', 'error');
+    // Revert optimistic update on error
+    await updateLikeDislikeCounts();
   }
 }
 
