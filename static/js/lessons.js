@@ -211,22 +211,33 @@ async function loadSingleLesson(hash, title, topic, owner) {
    // Fetch lesson content
    const content = await fetchLessonContentByHash(hash);
    
-   // Try to fetch metrics if available
-   let likes = 0;
-   let dislikes = 0;
+   // Fetch metrics from the new API endpoint
+   let metrics = {
+     likes: 0,
+     dislikes: 0,
+     views: 0,
+     rating: 0,
+     reports: 0
+   };
    
    try {
-     const metricsResponse = await fetch(`/api/lesson/metrics?hash=${hash}`, {
-       method: 'GET',
+     const metricsResponse = await fetch(`/api/metrics`, {
+       method: 'POST',
        headers: {
          'Content-Type': 'application/json'
-       }
+       },
+       body: JSON.stringify({ hash: hash })
      });
      
      if (metricsResponse.ok) {
-       const metrics = await metricsResponse.json();
-       likes = metrics.likes || 0;
-       dislikes = metrics.dislikes || 0;
+       const data = await metricsResponse.json();
+       metrics = {
+         likes: data.likes || 0,
+         dislikes: data.dislikes || 0,
+         views: data.views || 0,
+         rating: data.rating || 0,
+         reports: data.reports || 0
+       };
      }
    } catch (error) {
      console.error('Error fetching lesson metrics:', error);
@@ -240,8 +251,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
      topic: topic,
      owner: owner,
      content: content,
-     likes: likes,
-     dislikes: dislikes
+     ...metrics
    };
    
    // Show the lesson
@@ -439,6 +449,24 @@ function showLessonContent(lesson) {
  
  if (dislikeCountElement) {
    dislikeCountElement.textContent = lesson.dislikes || 0;
+ }
+ 
+ // Update new stats: views, rating, reports
+ const viewCountElement = document.getElementById('viewCount');
+ const ratingValueElement = document.getElementById('ratingValue');
+ const reportCountElement = document.getElementById('reportCount');
+ 
+ if (viewCountElement) {
+   viewCountElement.textContent = lesson.views || 0;
+ }
+ 
+ if (ratingValueElement) {
+   const rating = lesson.rating || 0;
+   ratingValueElement.textContent = rating.toFixed(1);
+ }
+ 
+ if (reportCountElement) {
+   reportCountElement.textContent = lesson.reports || 0;
  }
  
  // Setup share button
@@ -692,6 +720,12 @@ async function handleLikeClick() {
     return;
   }
   
+  const sessionCookie = getSessionCookie();
+  if (!sessionCookie) {
+    showNotification('Please log in to like this lesson.', 'error');
+    return;
+  }
+  
   const likeBtn = document.getElementById('likeBtn');
   const dislikeBtn = document.getElementById('dislikeBtn');
   
@@ -704,14 +738,28 @@ async function handleLikeClick() {
   
   try {
     if (wasLiked) {
-      // User is unliking
-      await updateLessonMetrics(lessonData.hash, 'unlike');
+      // User is unliking - for now we'll just remove from local storage
+      // You may want to add an /api/unlike endpoint
       delete userLikes[lessonData.hash];
       likeBtn.classList.remove('active');
       showNotification('Like removed', 'info');
     } else {
       // User is liking
-      await updateLessonMetrics(lessonData.hash, 'like');
+      const response = await fetch('/api/like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: sessionCookie,
+          hash: lessonData.hash
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       userLikes[lessonData.hash] = true;
       likeBtn.classList.add('active');
       
@@ -719,7 +767,6 @@ async function handleLikeClick() {
       if (userDislikes[lessonData.hash]) {
         delete userDislikes[lessonData.hash];
         dislikeBtn.classList.remove('active');
-        await updateLessonMetrics(lessonData.hash, 'undislike');
       }
       showNotification('Lesson liked!', 'success');
     }
@@ -729,7 +776,7 @@ async function handleLikeClick() {
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
     // Update the like/dislike counts
-    updateLikeDislikeCounts();
+    await updateLikeDislikeCounts();
   } catch (error) {
     console.error('Error updating like:', error);
     showNotification('Could not update like. Please try again.', 'error');
@@ -740,6 +787,12 @@ async function handleLikeClick() {
 async function handleDislikeClick() {
   if (!lessonData || !lessonData.hash) {
     showNotification('Cannot dislike this lesson right now.', 'error');
+    return;
+  }
+  
+  const sessionCookie = getSessionCookie();
+  if (!sessionCookie) {
+    showNotification('Please log in to dislike this lesson.', 'error');
     return;
   }
   
@@ -755,14 +808,28 @@ async function handleDislikeClick() {
   
   try {
     if (wasDisliked) {
-      // User is removing dislike
-      await updateLessonMetrics(lessonData.hash, 'undislike');
+      // User is removing dislike - for now we'll just remove from local storage
+      // You may want to add an /api/undislike endpoint
       delete userDislikes[lessonData.hash];
       dislikeBtn.classList.remove('active');
       showNotification('Dislike removed', 'info');
     } else {
       // User is disliking
-      await updateLessonMetrics(lessonData.hash, 'dislike');
+      const response = await fetch('/api/dislike', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: sessionCookie,
+          hash: lessonData.hash
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       userDislikes[lessonData.hash] = true;
       dislikeBtn.classList.add('active');
       
@@ -770,7 +837,6 @@ async function handleDislikeClick() {
       if (userLikes[lessonData.hash]) {
         delete userLikes[lessonData.hash];
         likeBtn.classList.remove('active');
-        await updateLessonMetrics(lessonData.hash, 'unlike');
       }
       showNotification('Feedback recorded', 'success');
     }
@@ -780,40 +846,10 @@ async function handleDislikeClick() {
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     
     // Update the like/dislike counts
-    updateLikeDislikeCounts();
+    await updateLikeDislikeCounts();
   } catch (error) {
     console.error('Error updating dislike:', error);
     showNotification('Could not update dislike. Please try again.', 'error');
-  }
-}
-
-// Update lesson metrics (likes, dislikes) on the server
-async function updateLessonMetrics(hash, action) {
-  try {
-    const sessionCookie = getSessionCookie();
-    const updateData = {
-      hash: hash,
-      action: action
-    };
-    
-    const response = await fetch('/api/lesson/update-metrics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': sessionCookie ? `Bearer ${sessionCookie}` : ''
-      },
-      body: JSON.stringify(updateData)
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error('Error updating lesson metrics:', error);
-    throw error;
   }
 }
 
@@ -822,11 +858,12 @@ async function updateLikeDislikeCounts() {
   if (!lessonData || !lessonData.hash) return;
   
   try {
-    const response = await fetch(`/api/lesson/metrics?hash=${lessonData.hash}`, {
-      method: 'GET',
+    const response = await fetch(`/api/metrics`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({ hash: lessonData.hash })
     });
     
     if (!response.ok) {
@@ -835,9 +872,12 @@ async function updateLikeDislikeCounts() {
     
     const metrics = await response.json();
     
-    // Update the count displays
+    // Update all metric displays
     const likeCountElement = document.getElementById('likeCount');
     const dislikeCountElement = document.getElementById('dislikeCount');
+    const viewCountElement = document.getElementById('viewCount');
+    const ratingValueElement = document.getElementById('ratingValue');
+    const reportCountElement = document.getElementById('reportCount');
     
     if (likeCountElement && metrics.likes !== undefined) {
       likeCountElement.textContent = metrics.likes;
@@ -846,6 +886,26 @@ async function updateLikeDislikeCounts() {
     if (dislikeCountElement && metrics.dislikes !== undefined) {
       dislikeCountElement.textContent = metrics.dislikes;
     }
+    
+    if (viewCountElement && metrics.views !== undefined) {
+      viewCountElement.textContent = metrics.views;
+    }
+    
+    if (ratingValueElement && metrics.rating !== undefined) {
+      ratingValueElement.textContent = (metrics.rating || 0).toFixed(1);
+    }
+    
+    if (reportCountElement && metrics.reports !== undefined) {
+      reportCountElement.textContent = metrics.reports;
+    }
+    
+    // Update lessonData object
+    lessonData.likes = metrics.likes || 0;
+    lessonData.dislikes = metrics.dislikes || 0;
+    lessonData.views = metrics.views || 0;
+    lessonData.rating = metrics.rating || 0;
+    lessonData.reports = metrics.reports || 0;
+    
   } catch (error) {
     console.error('Error fetching metrics:', error);
     // Fallback to show placeholder counts if API fails
