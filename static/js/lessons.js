@@ -39,15 +39,7 @@ function parseQuery(text) {
    arr.push(text[0].replace(/^["']|["']$/g, '')); // Remove quotes
    text = text[1];
 
-   // Parse numeric fields (likes, dislikes, reports, views)
-   text = text.split(/,(.*)/s);
-   arr.push(parseInt(text[0]));
-   text = text[1];
-
-   text = text.split(/,(.*)/s);
-   arr.push(parseInt(text[0]));
-   text = text[1];
-
+   // Parse numeric fields (likes, dislikes)
    text = text.split(/,(.*)/s);
    arr.push(parseInt(text[0]));
    text = text[1];
@@ -79,7 +71,7 @@ function parseQuery(text) {
  } catch (error) {
    console.error('Error parsing query:', error, 'Original text:', text);
    // Return a safe default structure
-   return ['', '', 0, 0, 0, 0, {}, ''];
+   return ['', '', 0, 0, {}, ''];
  }
 }
 
@@ -160,7 +152,7 @@ async function loadLessonForTopic(topic) {
      showLessonSelection(searchResults, topic);
    } else {
      // Load single lesson directly
-     const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = searchResults[0];
+     const [hash, owner, likes, dislikes, lessonTopic, title] = searchResults[0];
      await loadSingleLesson(hash, title || 'Untitled Lesson', lessonTopic || topic, owner || 'Anonymous');
    }
   
@@ -194,7 +186,7 @@ function showLessonSelection(searchResults, topic) {
    </div>
    <div class="lesson-options">
      ${searchResults.map((result, index) => {
-       const [hash, owner, likes, dislikes, reports, views, lessonTopic, title] = result;
+       const [hash, owner, likes, dislikes, lessonTopic, title] = result;
        return `
          <div class="lesson-option" data-index="${index}">
            <div class="lesson-option-content">
@@ -239,9 +231,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
    let metrics = {
      likes: 0,
      dislikes: 0,
-     views: 0,
-     rating: 0,
-     reports: 0
+     rating: 0
    };
    
    try {
@@ -258,9 +248,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
        metrics = {
          likes: data.likes || 0,
          dislikes: data.dislikes || 0,
-         views: data.views || 0,
-         rating: data.rating || 0,
-         reports: data.reports || 0
+         rating: data.rating || 0
        };
      }
    } catch (error) {
@@ -277,9 +265,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
      content: content,
      likes: metrics.likes,
      dislikes: metrics.dislikes,
-     views: metrics.views,
-     rating: metrics.rating,
-     reports: metrics.reports
+     rating: metrics.rating
    };
    
    // Show the lesson
@@ -487,9 +473,7 @@ function updateStatsDisplay() {
   
   const likeCountElement = document.getElementById('likeCount');
   const dislikeCountElement = document.getElementById('dislikeCount');
-  const viewCountElement = document.getElementById('viewCount');
   const ratingValueElement = document.getElementById('ratingValue');
-  const reportCountElement = document.getElementById('reportCount');
   
   if (likeCountElement) {
     likeCountElement.textContent = lessonData.likes || 0;
@@ -499,17 +483,9 @@ function updateStatsDisplay() {
     dislikeCountElement.textContent = lessonData.dislikes || 0;
   }
   
-  if (viewCountElement) {
-    viewCountElement.textContent = lessonData.views || 0;
-  }
-  
   if (ratingValueElement) {
     const rating = Number(lessonData.rating) || 0;
     ratingValueElement.textContent = rating.toFixed(1);
-  }
-  
-  if (reportCountElement) {
-    reportCountElement.textContent = lessonData.reports || 0;
   }
 }
 
@@ -884,9 +860,7 @@ async function fetchAndUpdateStats() {
     // Update lessonData
     lessonData.likes = metrics.likes || 0;
     lessonData.dislikes = metrics.dislikes || 0;
-    lessonData.views = metrics.views || 0;
     lessonData.rating = metrics.rating || 0;
-    lessonData.reports = metrics.reports || 0;
     
     // Update display
     updateStatsDisplay();
