@@ -231,7 +231,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
    let metrics = {
      likes: 0,
      dislikes: 0,
-     rating: 0
+     rating: 'N/A'
    };
    
    try {
@@ -248,7 +248,7 @@ async function loadSingleLesson(hash, title, topic, owner) {
        metrics = {
          likes: data.likes || 0,
          dislikes: data.dislikes || 0,
-         rating: data.rating || 0
+         rating: data.rating || 'N/A'
        };
      }
    } catch (error) {
@@ -484,8 +484,7 @@ function updateStatsDisplay() {
   }
   
   if (ratingValueElement) {
-    const rating = Number(lessonData.rating) || 0;
-    ratingValueElement.textContent = rating.toFixed(1);
+    ratingValueElement.textContent = lessonData.rating || 'N/A';
   }
 }
 
@@ -860,7 +859,7 @@ async function fetchAndUpdateStats() {
     // Update lessonData
     lessonData.likes = metrics.likes || 0;
     lessonData.dislikes = metrics.dislikes || 0;
-    lessonData.rating = metrics.rating || 0;
+    lessonData.rating = metrics.rating || 'N/A';
     
     // Update display
     updateStatsDisplay();
