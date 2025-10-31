@@ -48,6 +48,16 @@ function parseQuery(text) {
    arr.push(parseInt(text[0]));
    text = text[1];
 
+   // Skip reports field (backend sends it but we don't need it)
+   text = text.split(/,(.*)/s);
+   const reports = parseInt(text[0]); // Parse but don't add to array
+   text = text[1];
+
+   // Skip views field (backend sends it but we don't need it)
+   text = text.split(/,(.*)/s);
+   const views = parseInt(text[0]); // Parse but don't add to array
+   text = text[1];
+
    // Parse the remaining two fields (lessonTopic JSON and title)
    // Find the last comma that separates the JSON object from the title
    const lastCommaIndex = text.lastIndexOf(',"');
