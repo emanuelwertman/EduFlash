@@ -48,16 +48,6 @@ function parseQuery(text) {
    arr.push(parseInt(text[0]));
    text = text[1];
 
-   // Skip reports field (we don't use it but backend still sends it)
-   text = text.split(/,(.*)/s);
-   // arr.push(parseInt(text[0])); // reports - skipped
-   text = text[1];
-
-   // Skip views field (we don't use it but backend still sends it)
-   text = text.split(/,(.*)/s);
-   // arr.push(parseInt(text[0])); // views - skipped
-   text = text[1];
-
    // Parse the remaining two fields (lessonTopic JSON and title)
    // Find the last comma that separates the JSON object from the title
    const lastCommaIndex = text.lastIndexOf(',"');
@@ -751,29 +741,11 @@ async function handleLikeClick() {
   const wasDisliked = userDislikes[lessonData.hash];
   
   if (wasLiked) {
-    // Unlike - send unlike request to server
-    try {
-      const response = await fetch('/api/like', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: sessionCookie, hash: lessonData.hash })
-      });
-      
-      if (!response.ok) throw new Error('Failed to unlike');
-      
-      // Update local storage
-      delete userLikes[lessonData.hash];
-      localStorage.setItem('userLikes', JSON.stringify(userLikes));
-      likeBtn.classList.remove('active');
-      
-      // Fetch fresh stats from server to reflect the change
-      await fetchAndUpdateStats();
-      
-      showNotification('Like removed', 'info');
-    } catch (error) {
-      console.error('Error unliking:', error);
-      showNotification('Could not remove like. Please try again.', 'error');
-    }
+    // Unlike - just update UI locally (no server endpoint for unlike)
+    delete userLikes[lessonData.hash];
+    localStorage.setItem('userLikes', JSON.stringify(userLikes));
+    likeBtn.classList.remove('active');
+    showNotification('Like removed', 'info');
     return;
   }
   
@@ -829,29 +801,11 @@ async function handleDislikeClick() {
   const wasLiked = userLikes[lessonData.hash];
   
   if (wasDisliked) {
-    // Remove dislike - send undislike request to server
-    try {
-      const response = await fetch('/api/dislike', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: sessionCookie, hash: lessonData.hash })
-      });
-      
-      if (!response.ok) throw new Error('Failed to remove dislike');
-      
-      // Update local storage
-      delete userDislikes[lessonData.hash];
-      localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
-      dislikeBtn.classList.remove('active');
-      
-      // Fetch fresh stats from server to reflect the change
-      await fetchAndUpdateStats();
-      
-      showNotification('Dislike removed', 'info');
-    } catch (error) {
-      console.error('Error removing dislike:', error);
-      showNotification('Could not remove dislike. Please try again.', 'error');
-    }
+    // Remove dislike - just update UI locally
+    delete userDislikes[lessonData.hash];
+    localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
+    dislikeBtn.classList.remove('active');
+    showNotification('Dislike removed', 'info');
     return;
   }
   
