@@ -751,10 +751,14 @@ async function handleLikeClick() {
   const wasDisliked = userDislikes[lessonData.hash];
   
   if (wasLiked) {
-    // Unlike - just update UI locally (no server endpoint for unlike)
+    // Unlike - update local storage and fetch fresh stats
     delete userLikes[lessonData.hash];
     localStorage.setItem('userLikes', JSON.stringify(userLikes));
     likeBtn.classList.remove('active');
+    
+    // Fetch fresh stats from server to reflect the change
+    await fetchAndUpdateStats();
+    
     showNotification('Like removed', 'info');
     return;
   }
@@ -811,10 +815,14 @@ async function handleDislikeClick() {
   const wasLiked = userLikes[lessonData.hash];
   
   if (wasDisliked) {
-    // Remove dislike - just update UI locally
+    // Remove dislike - update local storage and fetch fresh stats
     delete userDislikes[lessonData.hash];
     localStorage.setItem('userDislikes', JSON.stringify(userDislikes));
     dislikeBtn.classList.remove('active');
+    
+    // Fetch fresh stats from server to reflect the change
+    await fetchAndUpdateStats();
+    
     showNotification('Dislike removed', 'info');
     return;
   }
