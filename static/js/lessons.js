@@ -24,59 +24,94 @@ function getTopicFromURL() {
 
 function parseQuery(text) {
  try {
+   const originalText = text; // Save for debugging
    // Remove outer parentheses
    text = text.substring(1, text.length - 1);
 
    let arr = [];
-
-   // Parse first field (hash)
-   text = text.split(/,(.*)/s);
-   arr.push(text[0].replace(/^["']|["']$/g, '')); // Remove quotes
-   text = text[1];
-
-   // Parse second field (owner)
-   text = text.split(/,(.*)/s);
-   arr.push(text[0].replace(/^["']|["']$/g, '')); // Remove quotes
-   text = text[1];
-
-   // Parse numeric fields (likes, dislikes)
-   text = text.split(/,(.*)/s);
-   arr.push(parseInt(text[0]));
-   text = text[1];
-
-   text = text.split(/,(.*)/s);
-   arr.push(parseInt(text[0]));
-   text = text[1];
-
-   // Skip reports field (backend sends it but we don't need it)
-   text = text.split(/,(.*)/s);
-   const reports = parseInt(text[0]); // Parse but don't add to array
-   text = text[1];
-
-   // Skip views field (backend sends it but we don't need it)
-   text = text.split(/,(.*)/s);
-   const views = parseInt(text[0]); // Parse but don't add to array
-   text = text[1];
-
-   // Parse the remaining two fields (lessonTopic JSON and title)
-   // Find the last comma that separates the JSON object from the title
-   const lastCommaIndex = text.lastIndexOf(',"');
-   if (lastCommaIndex !== -1) {
-     const jsonPart = text.substring(0, lastCommaIndex);
-     const titlePart = text.substring(lastCommaIndex + 1);
+   let parts = [];
+   
+   // Split by commas but be careful with commas inside JSON/strings
+   // First, let's count how many top-level comma-separated parts we have
+   let depth = 0;
+   let currentPart = '';
+   let inString = false;
+   let stringChar = null;
+   
+   for (let i = 0; i < text.length; i++) {
+     const char = text[i];
+     const prevChar = i > 0 ? text[i-1] : null;
      
-     // Clean and parse JSON
-     const cleanedJson = jsonPart.replace(/^["']|["']$/g, '').replaceAll("'", '"');
-     arr.push(JSON.parse(cleanedJson));
+     if ((char === '"' || char === "'") && prevChar !== '\\') {
+       if (!inString) {
+         inString = true;
+         stringChar = char;
+       } else if (char === stringChar) {
+         inString = false;
+         stringChar = null;
+       }
+     }
      
-     // Clean title
-     arr.push(titlePart.replace(/^["']|["']$/g, ''));
-   } else {
-     // Fallback if format is unexpected
-     arr.push({});
-     arr.push(text.replace(/^["']|["']$/g, ''));
+     if (!inString) {
+       if (char === '{' || char === '[') depth++;
+       if (char === '}' || char === ']') depth--;
+       
+       if (char === ',' && depth === 0) {
+         parts.push(currentPart.trim());
+         currentPart = '';
+         continue;
+       }
+     }
+     
+     currentPart += char;
    }
-
+   
+   if (currentPart) {
+     parts.push(currentPart.trim());
+   }
+   
+   console.log('Parts found:', parts.length, parts);
+   
+   // Now parse based on how many parts we have
+   // Expected: hash, owner, likes, dislikes, reports, views, lessonTopic, title (8 parts)
+   
+   if (parts.length === 8) {
+     // Full format: hash, owner, likes, dislikes, reports, views, lessonTopic, title
+     arr.push(parts[0].replace(/^["']|["']$/g, '')); // hash
+     arr.push(parts[1].replace(/^["']|["']$/g, '')); // owner
+     arr.push(parseInt(parts[2])); // likes
+     arr.push(parseInt(parts[3])); // dislikes
+     // Skip parts[4] (reports) and parts[5] (views)
+     const cleanedJson = parts[6].replace(/^["']|["']$/g, '').replaceAll("'", '"');
+     arr.push(JSON.parse(cleanedJson)); // lessonTopic
+     arr.push(parts[7].replace(/^["']|["']$/g, '')); // title
+   } else if (parts.length === 4) {
+     // Incomplete format: likes, dislikes, lessonTopic, title (missing hash, owner, reports, views)
+     arr.push(''); // hash - empty
+     arr.push(''); // owner - empty
+     arr.push(parseInt(parts[0])); // likes
+     arr.push(parseInt(parts[1])); // dislikes
+     // No reports/views to skip
+     const cleanedJson = parts[2].replace(/^["']|["']$/g, '').replaceAll("'", '"');
+     arr.push(JSON.parse(cleanedJson)); // lessonTopic
+     arr.push(parts[3].replace(/^["']|["']$/g, '')); // title
+   } else if (parts.length === 5) {
+     // Incomplete format: owner, likes, dislikes, lessonTopic, title (missing hash, reports, views)
+     arr.push(''); // hash - empty
+     arr.push(parts[0].replace(/^["']|["']$/g, '')); // owner
+     arr.push(parseInt(parts[1])); // likes
+     arr.push(parseInt(parts[2])); // dislikes
+     // No reports/views to skip
+     const cleanedJson = parts[3].replace(/^["']|["']$/g, '').replaceAll("'", '"');
+     arr.push(JSON.parse(cleanedJson)); // lessonTopic
+     arr.push(parts[4].replace(/^["']|["']$/g, '')); // title
+   } else {
+     console.warn('Unexpected number of parts:', parts.length, 'from:', originalText);
+     // Return safe defaults
+     return ['', '', 0, 0, {}, ''];
+   }
+   
+   console.log('Parsed title:', arr[5], 'from original:', originalText);
    return arr;
  } catch (error) {
    console.error('Error parsing query:', error, 'Original text:', text);
